@@ -30,3 +30,5 @@ courses. The idea is to have a central place for all materials linked by course.
      - Can add/modify/remove courses.
  - Add an option for the user to edit his own details.
  - Logout with a redirect to the login page.
+
+![FMI_Materials_ER](https://user-images.githubusercontent.com/73421736/166812099-e7193dfb-2054-4030-bb09-dd240ce4ec55.jpg)
