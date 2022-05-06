@@ -1,33 +1,48 @@
 package com.fmi.materials.mapper;
 
-import com.fmi.materials.dto.CourseDto;
+import com.fmi.materials.dto.course.CourseDto;
+import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.model.Course;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CourseDtoMapper {
-    public CourseDto convertToDto(Course course) {
-        return new CourseDto(
-                course.getId(),
-                course.getName(),
-                course.getDescription(),
-                course.getGroupId()
-        );
-    }
 
-    public Course convertToEntity(CourseDto courseDto) {
-        if (courseDto.getId() != null) {
-            return new Course(
-                    courseDto.getId(),
-                    courseDto.getName(),
-                    courseDto.getDescription(),
-                    courseDto.getGroupId()
-            );
-        }
+    public Course toEntity(CourseDto courseDto) {
         return new Course(
                 courseDto.getName(),
                 courseDto.getDescription(),
-                courseDto.getGroupId()
+                courseDto.getFacultyDepartment(),
+                courseDto.getCourseGroup()
+        );
+    }
+
+    public Course toEntityWithId(CourseDtoWithId courseDto) {
+        return new Course(
+                courseDto.getId(),
+                courseDto.getName(),
+                courseDto.getDescription(),
+                courseDto.getFacultyDepartment(),
+                courseDto.getCourseGroup()
+        );
+    }
+
+    public CourseDto toDto(Course course) {
+        return new CourseDto(
+                course.getName(),
+                course.getDescription(),
+                course.getFacultyDepartment(),
+                course.getCourseGroup()
+        );
+    }
+
+    public CourseDto toDtoWithId(Course course) {
+        return new CourseDtoWithId(
+                course.getId(),
+                course.getName(),
+                course.getDescription(),
+                course.getFacultyDepartment(),
+                course.getCourseGroup()
         );
     }
 }

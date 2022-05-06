@@ -1,6 +1,7 @@
 package com.fmi.materials.service;
 
-import com.fmi.materials.dto.CourseDto;
+import com.fmi.materials.dto.course.CourseDto;
+import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.mapper.CourseDtoMapper;
 import com.fmi.materials.model.Course;
 import com.fmi.materials.repository.CourseRepository;
@@ -22,12 +23,9 @@ public class CourseServiceImpl implements CourseService {
     private CourseDtoMapper courseDtoMapper;
 
     @Override
-    public CourseDto createCourse(CourseDto courseDto) {
-        if(this.courseRepository.existsById(courseDto.getId())) {
-            throw new IllegalArgumentException(String.format(ALREADY_EXISTS_MESSAGE, courseDto.getId()));
-        }
-        Course course = this.courseDtoMapper.convertToEntity(courseDto);
-        return this.courseDtoMapper.convertToDto(this.courseRepository.save(course));
+    public CourseDtoWithId createCourse(CourseDto courseDto) {
+        Course course = this.courseDtoMapper.toEntity(courseDto);
+        return this.courseDtoMapper.toDtoWithId(this.courseRepository.save(course));
     }
 
     @Override
@@ -39,24 +37,24 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDto updateCourse(CourseDto courseDto) {
-        if(this.courseRepository.existsById(courseDto.getId())) {
-            throw new IllegalArgumentException(String.format(ALREADY_EXISTS_MESSAGE, courseDto.getId()));
+    public CourseDtoWithId updateCourse(CourseDtoWithId courseDto) {
+        if(!this.courseRepository.existsById(courseDto.getId())) {
+            throw new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, courseDto.getId()));
         }
         Course course = this.courseDtoMapper.convertToEntity(courseDto);
-        return this.courseDtoMapper.convertToDto(this.courseRepository.save(course));
+        return this.courseDtoMapper.toDtoWithId(this.courseRepository.save(course));
     }
 
     @Override
-    public CourseDto findById(Long courseId) {
-        return this.courseDtoMapper.convertToDto(this.courseRepository.findById(courseId)
+    public CourseDtoWithId findById(Long courseId) {
+        return this.courseDtoMapper.toDtoWithId(this.courseRepository.findById(courseId)
                 .orElseThrow(() -> new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, courseId))));
     }
 
     @Override
-    public List<CourseDto> findAllCourses() {
+    public List<CourseDtoWithId> findAllCourses() {
         return this.courseRepository.findAll().stream()
-                .map(this.courseDtoMapper::convertToDto)
+                .map(this.courseDtoMapper::toDtoWithId)
                 .collect(Collectors.toList());
     }
 }

@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.fmi.materials.model.Course;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CourseRepository extends CrudRepository<Course, Long> {
+public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findAll();
 
     // @Query(value =

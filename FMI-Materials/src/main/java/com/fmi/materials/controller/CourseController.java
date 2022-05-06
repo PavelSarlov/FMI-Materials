@@ -1,6 +1,7 @@
 package com.fmi.materials.controller;
 
-import com.fmi.materials.dto.CourseDto;
+import com.fmi.materials.dto.course.CourseDto;
+import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,15 +16,15 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @PostMapping("courses")
-    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto) {
+    @PostMapping
+    public ResponseEntity createCourse(@RequestBody CourseDto courseDto) {
         try {
-            return new ResponseEntity<CourseDto>(
+            return new ResponseEntity(
                     this.courseService.createCourse(courseDto),
                     HttpStatus.CREATED
             );
         } catch (Exception e) {
-            return new ResponseEntity<CourseDto>(
+            return new ResponseEntity(
                     courseDto,
                     HttpStatus.CONFLICT
             );
@@ -31,22 +32,22 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseDto>> findAllCourses() {
-        return new ResponseEntity<List<CourseDto>>(
+    public ResponseEntity findAllCourses() {
+        return new ResponseEntity(
                 this.courseService.findAllCourses(),
                 HttpStatus.OK
         );
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<CourseDto> findCourseById(@PathVariable Long id) {
+    public ResponseEntity findCourseById(@PathVariable Long id) {
         try {
-            return new ResponseEntity<CourseDto>(
+            return new ResponseEntity(
                     this.courseService.findById(id),
                     HttpStatus.FOUND
             );
         } catch (Exception e) {
-            return new ResponseEntity<CourseDto>(
+            return new ResponseEntity(
                     HttpStatus.NOT_FOUND
             );
         }
@@ -68,14 +69,14 @@ public class CourseController {
     }
 
     @PutMapping
-    public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDto courseDto) {
+    public ResponseEntity updateCourse(@RequestBody CourseDtoWithId courseDto) {
         try {
-            return new ResponseEntity<CourseDto>(
+            return new ResponseEntity(
                     this.courseService.updateCourse(courseDto),
                     HttpStatus.FOUND
             );
         } catch (Exception e) {
-            return new ResponseEntity<CourseDto>(
+            return new ResponseEntity(
                     courseDto,
                     HttpStatus.NOT_FOUND
             );
