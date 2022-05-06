@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,17 +17,20 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "Name", length = 50, nullable = false)
+    @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "Password", length = 255, nullable = false)
+    @Column(name = "password", length = 255, nullable = false)
     private String passwordHash;
 
-    @Column(name = "Email", length = 50, nullable = false)
+    @Column(name = "email", length = 50, nullable = false)
     private String email;
+
+    @OneToMany(mappedBy = "user")
+    private List<CourseList> courseLists;
 
     public User() {
     }

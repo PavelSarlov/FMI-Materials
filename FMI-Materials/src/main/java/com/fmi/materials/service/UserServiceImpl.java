@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUserById(Long id) {
         if(!this.userRepository.existsById(id)) {
             throw new NoSuchElementException(String.format(INSTANCE_NOT_FOUND, id));
         }
@@ -48,8 +48,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findUserById(Long id) {
+    public UserDtoWithId findUserById(Long id) {
         User user = this.userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(String.format(INSTANCE_NOT_FOUND, id)));
-        return this.userDtoMapper.convertToDto(user);
+        return this.userDtoMapper.convertToDtoWithId(user);
     }
 }
