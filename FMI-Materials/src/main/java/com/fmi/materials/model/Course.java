@@ -1,5 +1,7 @@
 package com.fmi.materials.model;
 
+import com.fmi.materials.vo.CourseGroup;
+import com.fmi.materials.vo.FacultyDepartment;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,19 +28,25 @@ public class Course {
     @Column(name = "Description", length = 255)
     private String description;
 
-    @Column(name = "GroupId")
-    private Long groupId;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "FacultyDepartment")
+    private FacultyDepartment facultyDepartment;
+
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "CourseGroup")
+    private CourseGroup courseGroup;
 
     public Course() {}
 
-    public Course(String name, String description, Long groupId) {
-        this(null, name, description, groupId);
+    public Course(String name, String description, FacultyDepartment facultyDepartment, CourseGroup courseGroup) {
+        this(null, name, description, facultyDepartment, courseGroup);
     }
 
-    public Course(Long id, String name, String description, Long groupId) {
+    public Course(Long id, String name, String description, FacultyDepartment facultyDepartment, CourseGroup courseGroup) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.groupId = groupId;
+        this.facultyDepartment = facultyDepartment;
+        this.courseGroup = courseGroup;
     }
 }
