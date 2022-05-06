@@ -1,17 +1,18 @@
 package com.fmi.materials.service;
 
+import com.fmi.materials.dto.CourseDto;
+
 import java.util.List;
 
-import com.fmi.materials.model.Course;
-
 public interface CourseService {
-    Course createCourse(Course course);
+    CourseDto createCourse(CourseDto course);
 
     void deleteCourse(Long courseId);
 
-    Course updateCourse(Course course);
+    CourseDto updateCourse(CourseDto course);
 
-    Course findById(Long courseId);
+    CourseDto findById(Long courseId);
 
-    List<Course> findAllCourses();
+    List<CourseDto> findAllCourses();
+
 }
