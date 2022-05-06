@@ -1,10 +1,11 @@
-package com.fmi.materials.service;
+package com.fmi.materials.service.impl;
 
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.mapper.CourseDtoMapper;
 import com.fmi.materials.model.Course;
 import com.fmi.materials.repository.CourseRepository;
+import com.fmi.materials.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class CourseServiceImpl implements CourseService {
         if(!this.courseRepository.existsById(courseDto.getId())) {
             throw new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, courseDto.getId()));
         }
-        Course course = this.courseDtoMapper.convertToEntity(courseDto);
+        Course course = this.courseDtoMapper.toEntityWithId(courseDto);
         return this.courseDtoMapper.toDtoWithId(this.courseRepository.save(course));
     }
 

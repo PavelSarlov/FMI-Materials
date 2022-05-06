@@ -5,38 +5,40 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.*;
+
 @Getter
 @Setter
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "Materials")
+@Table(name = "materials")
 public class Material {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "FileType", nullable = false, length = 10)
-    private String fileType;
+    @Column(name = "file_format")
+    private String fileFormat;
 
-    @Column(name = "Data", nullable = false)
+    @Column(name = "data")
     private byte[] data;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SectionId", nullable = false)
+    @JoinColumn(name = "section_id")
     private Section section;
 
     public Material() {}
 
-    public Material(String fileType, byte[] data, Section section) {
-        this(null, fileType, data, section);
+    public Material(String fileFormat, byte[] data, Section section) {
+        this(null, fileFormat, data, section);
     }
 
-    public Material(Long id, String fileType, byte[] data, Section section) {
+    public Material(Long id, String fileFormat, byte[] data, Section section) {
         this.id = id;
-        this.fileType = fileType;
+        this.fileFormat = fileFormat;
         this.data = data;
         this.section = section;
     }

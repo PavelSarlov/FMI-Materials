@@ -1,55 +1,55 @@
-CREATE TABLE Courses(
-    Id SERIAL,
-    Name VARCHAR(50) NOT NULL,
-    Description VARCHAR(255) NOT NULL,
-    FacultyDepartment INT NOT NULL,
-    CourseGroup INT NOT NULL,
+CREATE TABLE courses(
+    id SERIAL,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    faculty_department INT NOT NULL,
+    course_group INT NOT NULL,
 
-    CONSTRAINT PK_Courses PRIMARY KEY(Id)
+    CONSTRAINT PK_courses PRIMARY KEY(id)
 );
 
-CREATE TABLE Sections (
-    Id SERIAL,
-    Name VARCHAR(50) NOT NULL,
-    CourseId INT NOT NULL,
+CREATE TABLE sections (
+    id SERIAL,
+    name VARCHAR(50) NOT NULL,
+    course_id INT NOT NULL,
 
-    CONSTRAINT PK_Sections PRIMARY KEY(Id),
-    CONSTRAINT FK_Sections_Courses FOREIGN KEY(Id) REFERENCES Courses(Id) ON DELETE NO ACTION
+    CONSTRAINT PK_sections PRIMARY KEY(id),
+    CONSTRAINT FK_sections__courses FOREIGN KEY(id) REFERENCES courses(id) ON DELETE NO ACTION
 );
 
-CREATE TABLE Materials (
-    Id SERIAL,
-    FileFormat VARCHAR(50) NOT NULL,
-    Data BYTEA NOT NULL,
-    SectionId INT NOT NULL,
+CREATE TABLE materials (
+    id SERIAL,
+    file_format VARCHAR(50) NOT NULL,
+    data BYTEA NOT NULL,
+    section_id INT NOT NULL,
 
-    CONSTRAINT PK_Items PRIMARY KEY(Id),
-    CONSTRAINT FK_Items_Sections FOREIGN KEY(Id) REFERENCES Sections(Id) ON DELETE NO ACTION
+    CONSTRAINT PK_materials PRIMARY KEY(id),
+    CONSTRAINT FK_materials__sections FOREIGN KEY(id) REFERENCES sections(id) ON DELETE NO ACTION
 );
 
-CREATE TABLE Users(
-    Id SERIAL,
-    Name VARCHAR(50) NOT NULL,
-    Email VARCHAR(50) NOT NULL,
-    Password VARCHAR(255) NOT NULL,
+CREATE TABLE users(
+    id SERIAL,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
 
-    CONSTRAINT PK_Users PRIMARY KEY(Id)
+    CONSTRAINT PK_users PRIMARY KEY(id)
 );
 
-CREATE TABLE UserCoursesLists(
-    Id SERIAL,
-    Name VARCHAR(50) NOT NULL,
-    UserId INT NOT NULL,
+CREATE TABLE user_courses_lists(
+    id SERIAL,
+    name VARCHAR(50) NOT NULL,
+    user_id INT NOT NULL,
 
-    CONSTRAINT PK_UserCoursesLists PRIMARY KEY(Id),
-    CONSTRAINT FK_UserCoursesLists_Users FOREIGN KEY(Id) REFERENCES Users(Id) ON DELETE NO ACTION
+    CONSTRAINT PK_user_courses_lists PRIMARY KEY(Id),
+    CONSTRAINT FK_user_courses_lists__users FOREIGN KEY(Id) REFERENCES Users(Id) ON DELETE NO ACTION
 );
 
-CREATE TABLE Courses_UserCoursesLists(
-    CourseId INT NOT NULL,
-    UserCoursesListId INT NOT NULL,
+CREATE TABLE courses__user_courses_lists(
+    course_id INT NOT NULL,
+    user_courses_list_id INT NOT NULL,
 
-    CONSTRAINT PK_Courses_UserCoursesLists PRIMARY KEY(CourseId, UserCoursesListId),
-    CONSTRAINT FK_Courses FOREIGN KEY(CourseId) REFERENCES Courses(Id) ON DELETE NO ACTION,
-    CONSTRAINT FK_UserCoursesLists FOREIGN KEY(UserCoursesListId) REFERENCES UserCoursesLists(Id) ON DELETE NO ACTION
+    CONSTRAINT PK_courses__user_courses_lists PRIMARY KEY(course_id, user_courses_list_id),
+    CONSTRAINT FK_courses FOREIGN KEY(course_id) REFERENCES courses(id) ON DELETE NO ACTION,
+    CONSTRAINT FK_user_courses_lists FOREIGN KEY(user_courses_list_id) REFERENCES user_courses_lists(id) ON DELETE NO ACTION
 );

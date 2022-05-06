@@ -13,7 +13,8 @@ public class CourseDtoMapper {
                 courseDto.getName(),
                 courseDto.getDescription(),
                 courseDto.getFacultyDepartment(),
-                courseDto.getCourseGroup()
+                courseDto.getCourseGroup(),
+                null
         );
     }
 
@@ -23,7 +24,8 @@ public class CourseDtoMapper {
                 courseDto.getName(),
                 courseDto.getDescription(),
                 courseDto.getFacultyDepartment(),
-                courseDto.getCourseGroup()
+                courseDto.getCourseGroup(),
+                null
         );
     }
 
@@ -36,7 +38,7 @@ public class CourseDtoMapper {
         );
     }
 
-    public CourseDto toDtoWithId(Course course) {
+    public CourseDtoWithId toDtoWithId(Course course) {
         return new CourseDtoWithId(
                 course.getId(),
                 course.getName(),
