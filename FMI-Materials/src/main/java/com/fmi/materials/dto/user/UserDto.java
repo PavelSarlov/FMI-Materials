@@ -10,13 +10,11 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class UserDto {
-    private Long id;
     private String name;
     private String passwordHash;
     private String email;
 
-    public UserDto(Long id, String name, String passwordHash, String email) {
-        this.id = id;
+    public UserDto(String name, String passwordHash, String email) {
         this.name = name;
         this.passwordHash = passwordHash;
         this.email = email;

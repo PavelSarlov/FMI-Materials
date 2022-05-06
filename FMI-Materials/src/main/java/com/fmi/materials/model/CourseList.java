@@ -1,2 +1,4 @@
-package com.fmi.materials.model;public class CourseList {
+package com.fmi.materials.model;
+
+public class CourseList {
 }
