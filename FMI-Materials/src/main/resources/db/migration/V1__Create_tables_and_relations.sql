@@ -19,7 +19,7 @@ CREATE TABLE Sections (
 
 CREATE TABLE Materials (
     Id SERIAL,
-    FileFormat INT NOT NULL,
+    FileFormat VARCHAR(50) NOT NULL,
     Data BYTEA NOT NULL,
     SectionId INT NOT NULL,
 
@@ -29,9 +29,9 @@ CREATE TABLE Materials (
 
 CREATE TABLE Users(
     Id SERIAL,
-    Name VARCHAR(50),
-    Email VARCHAR(50),
-    Password VARCHAR(255),
+    Name VARCHAR(50) NOT NULL,
+    Email VARCHAR(50) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
 
     CONSTRAINT PK_Users PRIMARY KEY(Id)
 );
