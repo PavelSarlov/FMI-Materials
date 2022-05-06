@@ -1,9 +1,16 @@
 package com.fmi.materials.vo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
-public enum CourseGroup {
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum CourseGroup implements Serializable {
     OTHER("Other"),
     CSF("Computer Science Fundamentals"),
     CSC("Computer Science Core"),
@@ -15,5 +22,20 @@ public enum CourseGroup {
 
     CourseGroup(String name) {
         this.name = name;
+    }
+
+    @JsonCreator
+    public static CourseGroup fromNode(JsonNode node) {
+        if(!node.has("id"))
+            return null;
+
+        String id = node.get("id").asText();
+
+        return CourseGroup.valueOf(id);
+    }
+
+    @JsonProperty
+    public String getId() {
+        return name();
     }
 }

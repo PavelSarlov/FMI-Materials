@@ -54,6 +54,6 @@ public class Course {
         this.description = description;
         this.facultyDepartment = facultyDepartment;
         this.courseGroup = courseGroup;
-        this.sections = sections.stream().collect(Collectors.toSet());
+        this.sections = (sections != null ? sections.stream().collect(Collectors.toSet()) : null);
     }
 }

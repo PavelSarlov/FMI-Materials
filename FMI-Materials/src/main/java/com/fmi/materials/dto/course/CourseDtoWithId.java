@@ -16,5 +16,6 @@ public class CourseDtoWithId extends CourseDto {
 
     public CourseDtoWithId(Long id, String name, String description, FacultyDepartment facultyDepartment, CourseGroup courseGroup) {
         super(name, description, facultyDepartment, courseGroup);
+        this.id = id;
     }
 }

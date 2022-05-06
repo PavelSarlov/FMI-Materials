@@ -3,6 +3,8 @@ package com.fmi.materials.controller;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.service.CourseService;
+import com.fmi.materials.vo.CourseGroup;
+import com.fmi.materials.vo.FacultyDepartment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,5 +81,19 @@ public class CourseController {
                     HttpStatus.NOT_FOUND
             );
         }
+    }
+
+    @GetMapping("/template")
+    public ResponseEntity getTemplate() {
+        return new ResponseEntity(
+                new CourseDtoWithId(
+                        0L,
+                        "Web Development with Java",
+                        "Spring Boot",
+                        FacultyDepartment.IT,
+                        CourseGroup.CSF
+                ),
+                HttpStatus.OK
+        );
     }
 }

@@ -43,6 +43,6 @@ public class Section {
         this.id = id;
         this.name = name;
         this.course = course;
-        this.materials = materials.stream().collect(Collectors.toSet());
+        this.materials =  (materials != null ? materials.stream().collect(Collectors.toSet()) : null);
     }
 }
