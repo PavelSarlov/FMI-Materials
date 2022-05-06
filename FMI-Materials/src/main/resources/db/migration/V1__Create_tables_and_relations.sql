@@ -1,17 +1,11 @@
-CREATE TABLE Groups(
-    Id SERIAL,
-    Name VARCHAR(10) NOT NULL,
-
-    CONSTRAINT PK_Groups PRIMARY KEY(Id)
-);
-
 CREATE TABLE Courses(
     Id SERIAL,
     Name VARCHAR(50) NOT NULL,
-    GroupId INT NOT NULL,
+    Description VARCHAR(255) NOT NULL,
+    FacultyDepartment INT NOT NULL,
+    CourseGroup INT NOT NULL,
 
-    CONSTRAINT PK_Courses PRIMARY KEY(Id),
-    CONSTRAINT FK_Courses_Groups FOREIGN KEY(Id) REFERENCES Groups(Id) ON DELETE NO ACTION
+    CONSTRAINT PK_Courses PRIMARY KEY(Id)
 );
 
 CREATE TABLE Sections (
@@ -23,17 +17,10 @@ CREATE TABLE Sections (
     CONSTRAINT FK_Sections_Courses FOREIGN KEY(Id) REFERENCES Courses(Id) ON DELETE NO ACTION
 );
 
-CREATE TABLE FileFormats (
-    Id SERIAL,
-    Name VARCHAR(50) NOT NULL,
-
-    CONSTRAINT PK_FileFormats PRIMARY KEY(Id)
-);
-
-CREATE TABLE Items (
+CREATE TABLE Materials (
     Id SERIAL,
     FileFormat INT NOT NULL,
-    File BYTEA NOT NULL,
+    Data BYTEA NOT NULL,
     SectionId INT NOT NULL,
 
     CONSTRAINT PK_Items PRIMARY KEY(Id),
