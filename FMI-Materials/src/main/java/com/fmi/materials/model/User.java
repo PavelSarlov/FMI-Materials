@@ -13,27 +13,26 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", length = 50, nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "password", length = 255, nullable = false)
+    @Column(name = "password_hash")
     private String passwordHash;
 
-    @Column(name = "email", length = 50, nullable = false)
+    @Column(name = "email")
     private String email;
 
     @OneToMany(mappedBy = "user")
     private List<CourseList> courseLists;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String name, String passwordHash, String email) {
         this(null, name, passwordHash, email);

@@ -12,11 +12,10 @@ spring:
     properties:
       hibernate:
         dialect: "org.hibernate.dialect.PostgreSQLDialect"
-
-flyway:
-  url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
-  user: "postgres"
-  password: "postgres"
-  schemas: "public"
-  defaultSchema: "public"
-  createSchemas: false
+  flyway:
+    url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
+    user: "postgres"
+    password: "postgres"
+    schemas: "public"
+    defaultSchema: "public"
+    createSchemas: "true"

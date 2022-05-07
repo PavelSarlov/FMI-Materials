@@ -12,15 +12,15 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "UserCoursesLists")
+@Table(name = "user_courses_lists")
 public class CourseList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Long Id;
+    private Long id;
 
-    @Column(name = "list_name", length = 50, nullable = false)
-    private String ListName;
+    @Column(name = "list_name")
+    private String listName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -31,7 +31,7 @@ public class CourseList {
     }
 
     public CourseList(Long id, String listName) {
-        Id = id;
-        ListName = listName;
+        this.id = id;
+        this.listName = listName;
     }
 }
