@@ -16,10 +16,10 @@ import javax.persistence.ManyToOne;
 @ToString
 public class CourseListDto {
     private Long id;
-    private String ListName;
+    private String listName;
 
     public CourseListDto(Long id, String listName) {
         this.id = id;
-        ListName = listName;
+        this.listName = listName;
     }
 }
