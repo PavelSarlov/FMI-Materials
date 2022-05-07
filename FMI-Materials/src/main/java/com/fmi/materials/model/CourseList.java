@@ -29,4 +29,9 @@ public class CourseList {
     public CourseList() {
 
     }
+
+    public CourseList(Long id, String listName) {
+        Id = id;
+        ListName = listName;
+    }
 }

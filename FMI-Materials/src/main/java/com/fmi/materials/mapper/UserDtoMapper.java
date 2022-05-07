@@ -16,10 +16,10 @@ public class UserDtoMapper {
     }
 
     public User convertToEntity(UserDto userDto) {
-        return new User(userDto.getName(), userDto.getEmail(), userDto.getEmail());
+        return new User(userDto.getName(), userDto.getPasswordHash(), userDto.getEmail());
     }
 
     public User convertToEntityWithId(UserDtoWithId userDto) {
-        return new User(userDto.getId(), userDto.getName(), userDto.getEmail(), userDto.getEmail());
+        return new User(userDto.getId(), userDto.getName(), userDto.getPasswordHash(), userDto.getEmail());
     }
 }

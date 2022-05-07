@@ -14,9 +14,10 @@ public class UserDto {
     private String passwordHash;
     private String email;
 
-    public UserDto(String name, String passwordHash, String email) {
+    public UserDto(String name, String password, String email) {
         this.name = name;
-        this.passwordHash = passwordHash;
+        // to hash
+        this.passwordHash = password;
         this.email = email;
     }
 }
