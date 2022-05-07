@@ -1,4 +1,4 @@
-package com.fmi.materials.service;
+package com.fmi.materials.service.impl;
 
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.user.UserDto;
@@ -8,6 +8,7 @@ import com.fmi.materials.mapper.CourseListDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
 import com.fmi.materials.model.User;
 import com.fmi.materials.repository.UserRepository;
+import com.fmi.materials.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

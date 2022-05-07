@@ -4,3 +4,7 @@ config:
     host: "localhost"
     port: 5432
     name: "fmi_materials"
+  security:
+    password_hash:
+      iterations: 10
+      algorithm: "bcrypt"
