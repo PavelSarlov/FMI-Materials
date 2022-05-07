@@ -26,9 +26,7 @@ public class CourseList {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public CourseList() {
-
-    }
+    public CourseList() {}
 
     public CourseList(Long id, String listName) {
         this.id = id;

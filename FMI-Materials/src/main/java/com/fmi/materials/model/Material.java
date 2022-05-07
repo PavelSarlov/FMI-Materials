@@ -23,6 +23,9 @@ public class Material {
     @Column(name = "file_format")
     private String fileFormat;
 
+    @Column(name = "file_name")
+    private String fileName;
+
     @Column(name = "data")
     private byte[] data;
 
@@ -32,13 +35,14 @@ public class Material {
 
     public Material() {}
 
-    public Material(String fileFormat, byte[] data, Section section) {
-        this(null, fileFormat, data, section);
+    public Material(String fileFormat, String fileName, byte[] data, Section section) {
+        this(null, fileFormat, fileName, data, section);
     }
 
-    public Material(Long id, String fileFormat, byte[] data, Section section) {
+    public Material(Long id, String fileFormat, String fileName, byte[] data, Section section) {
         this.id = id;
         this.fileFormat = fileFormat;
+        this.fileName = fileName;
         this.data = data;
         this.section = section;
     }

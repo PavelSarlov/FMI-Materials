@@ -25,8 +25,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDtoWithId createCourse(CourseDto courseDto) {
-        Course course = this.courseDtoMapper.toEntity(courseDto);
-        return this.courseDtoMapper.toDtoWithId(this.courseRepository.save(course));
+        Course course = this.courseDtoMapper.convertToEntity(courseDto);
+        return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.save(course));
     }
 
     @Override
@@ -42,20 +42,20 @@ public class CourseServiceImpl implements CourseService {
         if(!this.courseRepository.existsById(courseDto.getId())) {
             throw new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, courseDto.getId()));
         }
-        Course course = this.courseDtoMapper.toEntityWithId(courseDto);
-        return this.courseDtoMapper.toDtoWithId(this.courseRepository.save(course));
+        Course course = this.courseDtoMapper.convertToEntityWithId(courseDto);
+        return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.save(course));
     }
 
     @Override
     public CourseDtoWithId findById(Long courseId) {
-        return this.courseDtoMapper.toDtoWithId(this.courseRepository.findById(courseId)
+        return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.findById(courseId)
                 .orElseThrow(() -> new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, courseId))));
     }
 
     @Override
     public List<CourseDtoWithId> findAllCourses() {
         return this.courseRepository.findAll().stream()
-                .map(this.courseDtoMapper::toDtoWithId)
+                .map(this.courseDtoMapper::convertToDtoWithId)
                 .collect(Collectors.toList());
     }
 }

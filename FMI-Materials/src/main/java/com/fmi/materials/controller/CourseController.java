@@ -2,16 +2,16 @@ package com.fmi.materials.controller;
 
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
+import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.vo.CourseGroup;
-import com.fmi.materials.vo.FacultyDepartment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/courses")
+@RequestMapping(value = "api/courses")
 public class CourseController {
     @Autowired
     private CourseService courseService;
@@ -90,8 +90,10 @@ public class CourseController {
                         0L,
                         "Web Development with Java",
                         "Spring Boot",
-                        FacultyDepartment.IT,
-                        CourseGroup.CSF
+                        "Nqkoi Sitam",
+                        new FacultyDepartmentDto("Information Technologies"),
+                        CourseGroup.CSF,
+                        null
                 ),
                 HttpStatus.OK
         );
