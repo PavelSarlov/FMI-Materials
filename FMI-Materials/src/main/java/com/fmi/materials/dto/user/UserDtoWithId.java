@@ -12,8 +12,8 @@ import lombok.ToString;
 public class UserDtoWithId extends UserDto{
     private Long id;
 
-    public UserDtoWithId(Long id, String name, String passwordHash, String email) {
-        super(name, passwordHash, email);
+    public UserDtoWithId(Long id, String name, String password, String email) {
+        super(name, password, email);
         this.id = id;
     }
 }

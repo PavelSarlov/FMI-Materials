@@ -2,6 +2,7 @@ package com.fmi.materials.service;
 
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.user.UserDto;
+import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
 import com.fmi.materials.mapper.CourseListDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
@@ -16,6 +17,8 @@ import java.util.NoSuchElementException;
 @Service
 public class UserServiceImpl implements UserService {
     private final String INSTANCE_NOT_FOUND = "User with id: '%s', nof found.";
+    private final String PASSWORDS_NOT_EQUAL = "The inputted passwords are not equal.";
+    private final String EMAIL_TAKEN = "The email already exists";
 
     private UserRepository userRepository;
     private UserDtoMapper userDtoMapper;
@@ -29,7 +32,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto createUser(UserDto userDto) {
+    public UserDto createUser(UserDtoRegistration userDto) {
+        if(!userDto.getPassword().equals(userDto.getRepeatedPassword())) {
+            throw new IllegalArgumentException(PASSWORDS_NOT_EQUAL);
+        }
+        else if(this.userRepository.findByEmail(userDto.getEmail())!=null) {
+            throw new IllegalArgumentException(EMAIL_TAKEN);
+        }
         User user = this.userDtoMapper.convertToEntity(userDto);
         return this.userDtoMapper.convertToDto(this.userRepository.save(user));
     }

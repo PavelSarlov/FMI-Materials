@@ -11,13 +11,12 @@ import lombok.ToString;
 @ToString
 public class UserDto {
     private String name;
-    private String passwordHash;
+    private String password;
     private String email;
 
     public UserDto(String name, String password, String email) {
         this.name = name;
-        // to hash
-        this.passwordHash = password;
+        this.password = password;
         this.email = email;
     }
 }

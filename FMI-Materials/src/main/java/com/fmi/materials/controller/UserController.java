@@ -1,6 +1,7 @@
 package com.fmi.materials.controller;
 
 import com.fmi.materials.dto.user.UserDto;
+import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
 import com.fmi.materials.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto)
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDtoRegistration userDto)
     {
         try {
             return new ResponseEntity(
