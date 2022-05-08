@@ -1,7 +1,6 @@
 package com.fmi.materials.model;
 
 import com.fmi.materials.vo.CourseGroup;
-import com.fmi.materials.vo.FacultyDepartment;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,8 +30,11 @@ public class Course {
     @Column(name = "description")
     private String description;
 
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "faculty_department")
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "faculty_department_id")
     private FacultyDepartment facultyDepartment;
 
     @Enumerated(EnumType.ORDINAL)
@@ -44,14 +46,15 @@ public class Course {
 
     public Course() {}
 
-    public Course(String name, String description, FacultyDepartment facultyDepartment, CourseGroup courseGroup, List<Section> sections) {
-        this(null, name, description, facultyDepartment, courseGroup, sections);
+    public Course(String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup, List<Section> sections) {
+        this(null, name, description, createdBy, facultyDepartment, courseGroup, sections);
     }
 
-    public Course(Long id, String name, String description, FacultyDepartment facultyDepartment, CourseGroup courseGroup, List<Section> sections) {
+    public Course(Long id, String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup, List<Section> sections) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.createdBy = createdBy;
         this.facultyDepartment = facultyDepartment;
         this.courseGroup = courseGroup;
         this.sections = (sections != null ? sections.stream().collect(Collectors.toSet()) : null);
