@@ -6,6 +6,7 @@ import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
 import com.fmi.materials.mapper.CourseListDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
+import com.fmi.materials.model.CourseList;
 import com.fmi.materials.model.User;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.UserService;
@@ -19,7 +20,8 @@ import java.util.NoSuchElementException;
 public class UserServiceImpl implements UserService {
     private final String INSTANCE_NOT_FOUND = "User with id: '%s', nof found.";
     private final String PASSWORDS_NOT_EQUAL = "The inputted passwords are not equal.";
-    private final String EMAIL_TAKEN = "The email already exists";
+    private final String EMAIL_TAKEN = "The email already exists.";
+    private final String NO_SUCH_USER = "Wrong credentials.";
 
     private UserRepository userRepository;
     private UserDtoMapper userDtoMapper;
@@ -67,5 +69,21 @@ public class UserServiceImpl implements UserService {
     public UserDtoWithId findUserById(Long id) {
         User user = this.userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(String.format(INSTANCE_NOT_FOUND, id)));
         return this.userDtoMapper.convertToDtoWithId(user);
+    }
+
+    @Override
+    public Long existsUser(UserDto userDto) {
+        Long userId = this.userRepository.findByUserByNameAndEmailAndPassword(userDto.getName(), userDto.getEmail(), userDto.getPassword());
+        if (userId > 0) {
+            return userId;
+        }
+        else {
+            throw new NoSuchElementException(NO_SUCH_USER);
+        }
+    }
+
+    @Override
+    public List<CourseList> getAllCourseLists(Long id) {
+        return this.userRepository.findUserCourseLists(id);
     }
 }
