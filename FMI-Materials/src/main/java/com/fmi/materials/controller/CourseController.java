@@ -73,7 +73,7 @@ public class CourseController {
         try {
             return new ResponseEntity(
                     this.courseService.updateCourse(courseDto),
-                    HttpStatus.FOUND
+                    HttpStatus.OK
             );
         } catch (Exception e) {
             return new ResponseEntity(
@@ -83,7 +83,21 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/templates")
+    @GetMapping("search")
+    public ResponseEntity getCoursesByName(@RequestParam String name) {
+        try {
+            return new ResponseEntity(
+                    this.courseService.findAllCoursesByName(name),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @GetMapping("/template")
     public ResponseEntity getTemplate() {
         return new ResponseEntity(
                 new CourseDtoWithId(

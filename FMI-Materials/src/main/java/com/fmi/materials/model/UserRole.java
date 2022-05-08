@@ -10,8 +10,6 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "user_roles")
 public class UserRole {

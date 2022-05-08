@@ -9,8 +9,6 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "materials")
 public class Material {

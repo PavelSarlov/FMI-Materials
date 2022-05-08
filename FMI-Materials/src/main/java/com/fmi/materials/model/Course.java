@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "courses")
 public class Course {

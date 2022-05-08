@@ -10,8 +10,6 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "faculty_departments")
 public class FacultyDepartment {

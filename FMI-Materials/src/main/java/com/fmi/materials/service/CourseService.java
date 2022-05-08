@@ -16,4 +16,5 @@ public interface CourseService {
 
     List<CourseDtoWithId> findAllCourses();
 
+    List<CourseDtoWithId> findAllCoursesByName(String name);
 }

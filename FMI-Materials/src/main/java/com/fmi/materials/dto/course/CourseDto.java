@@ -19,15 +19,15 @@ public class CourseDto {
     private String name;
     private String description;
     private String createdBy;
-    private FacultyDepartmentDto facultyDepartment;
+    private FacultyDepartmentDto facultyDepartmentDto;
     private CourseGroup courseGroup;
     private List<SectionDto> sectionDtos;
 
-    public CourseDto(String name, String description, String createdBy, FacultyDepartmentDto facultyDepartment, CourseGroup courseGroup, List<SectionDto> sectionDtos) {
+    public CourseDto(String name, String description, String createdBy, FacultyDepartmentDto facultyDepartmentDto, CourseGroup courseGroup, List<SectionDto> sectionDtos) {
         this.name = name;
         this.description = description;
         this.createdBy = createdBy;
-        this.facultyDepartment = facultyDepartment;
+        this.facultyDepartmentDto = facultyDepartmentDto;
         this.courseGroup = courseGroup;
         this.sectionDtos = sectionDtos;
     }

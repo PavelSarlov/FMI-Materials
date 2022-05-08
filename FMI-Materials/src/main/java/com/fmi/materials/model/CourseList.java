@@ -9,8 +9,6 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "user_courses_lists")
 public class CourseList {

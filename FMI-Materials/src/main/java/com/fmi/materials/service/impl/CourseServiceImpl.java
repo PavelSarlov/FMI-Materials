@@ -9,7 +9,9 @@ import com.fmi.materials.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -54,8 +56,30 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDtoWithId> findAllCourses() {
+        List<Course> courses = this.courseRepository.findAll();
+
         return this.courseRepository.findAll().stream()
                 .map(this.courseDtoMapper::convertToDtoWithId)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseDtoWithId> findAllCoursesByName(String name) {
+        List<String> keyWords = Arrays.stream(name.split("[\\p{Punct}\\p{Blank}]"))
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+        List<CourseDtoWithId> courses = this.courseRepository.findAll().stream()
+                .filter(c -> {
+                    for (String w : keyWords){
+                        if (!c.getName().toLowerCase(Locale.ROOT).contains(w)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+                .map(this.courseDtoMapper::convertToDtoWithId)
+                .collect(Collectors.toList());
+
+        return courses;
     }
 }
