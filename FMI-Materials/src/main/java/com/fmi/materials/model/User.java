@@ -34,12 +34,12 @@ public class User {
     private List<CourseList> courseLists;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "courses__user_courses_lists",
+    @JoinTable(name = "users__user_roles",
             joinColumns = {
-                    @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false, updatable = false),
+                    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "user_courses_list_id", referencedColumnName = "id", nullable = false, updatable = false),
+                    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false, updatable = false),
             })
     private Set<UserRole> roles;
 
