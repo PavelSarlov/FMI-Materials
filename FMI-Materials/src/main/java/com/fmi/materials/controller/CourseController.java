@@ -83,7 +83,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/template")
+    @GetMapping("/templates")
     public ResponseEntity getTemplate() {
         return new ResponseEntity(
                 new CourseDtoWithId(

@@ -27,6 +27,14 @@ public class UserDtoMapper {
         return new User(userDto.getName(), encodedPassword, userDto.getEmail());
     }
 
+    public User convertToEntity(UserDto userDto) {
+        int strength = 10;
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength, new SecureRandom());
+        String encodedPassword = bCryptPasswordEncoder.encode(userDto.getPassword());
+
+        return new User(userDto.getName(), encodedPassword, userDto.getEmail());
+    }
+
     public User convertToEntityWithId(UserDtoWithId userDto) {
         int strength = 10;
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength, new SecureRandom());

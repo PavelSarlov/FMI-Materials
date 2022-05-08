@@ -3,14 +3,17 @@ package com.fmi.materials.controller;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
+import com.fmi.materials.model.CourseList;
 import com.fmi.materials.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("api/users/{id}")
 public class UserController {
     private UserService userService;
 
@@ -19,7 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("{id}")
+    /*@GetMapping("{id}")
     public ResponseEntity<UserDto> findCourseById(@PathVariable Long id) {
         try {
             return new ResponseEntity(
@@ -31,9 +34,9 @@ public class UserController {
                     HttpStatus.NOT_FOUND
             );
         }
-    }
+    }*/
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody UserDtoRegistration userDto)
     {
         try {
@@ -47,9 +50,9 @@ public class UserController {
                     HttpStatus.CONFLICT
             );
         }
-    }
+    }*/
 
-    @DeleteMapping("{id}")
+    /*@DeleteMapping("{id}")
     public ResponseEntity deleteUserById(@PathVariable Long id) {
         try {
             this.userService.deleteUserById(id);
@@ -62,9 +65,9 @@ public class UserController {
                     HttpStatus.NOT_FOUND
             );
         }
-    }
+    }*/
 
-    @PutMapping
+    /*@PutMapping
     public ResponseEntity<UserDtoWithId> updateCourse(@RequestBody UserDtoWithId userDtoWithId) {
         try {
             return new ResponseEntity(
@@ -75,6 +78,20 @@ public class UserController {
             return new ResponseEntity(
                     userDtoWithId,
                     HttpStatus.NOT_FOUND
+            );
+        }
+    }*/
+
+    @GetMapping
+    public ResponseEntity<List<CourseList>> courseLists(@PathVariable Long id) {
+        try {
+            return new ResponseEntity(
+                    this.userService.getAllCourseLists(id),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
             );
         }
     }
