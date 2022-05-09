@@ -1,7 +1,11 @@
 spring:
   profiles:
+<<<<<<< HEAD:backend/src/main/resources/application.yaml
     active: "dev"
     include: "private"
+=======
+    active: "local"
+>>>>>>> added logging from lab:FMI-Materials/src/main/resources/application.yaml
   datasource:
     url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
     username: "${database.username}"
