@@ -18,6 +18,4 @@ public interface UserService {
     UserDtoWithId findUserById(Long id);
 
     Long existsUser(UserDto userDto);
-
-    List<CourseList> getAllCourseLists(Long id);
 }

@@ -44,6 +44,9 @@ public class Course {
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Section> sections;
 
+    @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<CourseList> courseLists;
+
     public Course() {}
 
     public Course(String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup, List<Section> sections) {

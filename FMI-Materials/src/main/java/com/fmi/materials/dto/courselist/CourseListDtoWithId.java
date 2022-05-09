@@ -9,13 +9,11 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class CourseListDto {
-    private String listName;
+public class CourseListDtoWithId extends CourseListDto {
+    private Long id;
 
-    public CourseListDto() {
-    }
-
-    public CourseListDto(String listName) {
-        this.listName = listName;
+    public CourseListDtoWithId(Long id, String listName) {
+        super(listName);
+        this.id = id;
     }
 }

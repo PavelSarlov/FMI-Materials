@@ -83,7 +83,7 @@ CREATE TABLE user_courses_lists(
     user_id INT NOT NULL,
 
     CONSTRAINT PK_user_courses_lists PRIMARY KEY(id),
-    CONSTRAINT FK_user_courses_lists__users FOREIGN KEY(id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT FK_user_courses_lists__users FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE courses__user_courses_lists(

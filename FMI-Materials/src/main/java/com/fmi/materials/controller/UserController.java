@@ -1,9 +1,12 @@
 package com.fmi.materials.controller;
 
+import com.fmi.materials.dto.courselist.CourseListDto;
+import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
 import com.fmi.materials.model.CourseList;
+import com.fmi.materials.service.CourseListService;
 import com.fmi.materials.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,13 +16,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/users/{id}")
+@RequestMapping("api/users/{userId}")
 public class UserController {
     private UserService userService;
+    private CourseListService courseListService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, CourseListService courseListService) {
         this.userService = userService;
+        this.courseListService = courseListService;
     }
 
     /*@GetMapping("{id}")
@@ -83,11 +88,39 @@ public class UserController {
     }*/
 
     @GetMapping
-    public ResponseEntity<List<CourseList>> courseLists(@PathVariable Long id) {
+    public ResponseEntity<List<CourseListDtoWithId>> courseLists(@PathVariable Long userId) {
         try {
             return new ResponseEntity(
-                    this.userService.getAllCourseLists(id),
+                    this.courseListService.getAllCourseLists(userId),
                     HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @GetMapping("/lists/{courseListId}")
+    public ResponseEntity<CourseListDtoWithId> courseList(@PathVariable Long userId, @PathVariable Long courseListId) {
+        try {
+            return new ResponseEntity(
+                    this.courseListService.getCourseList(courseListId, userId),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<CourseListDtoWithId> createCourseList(@PathVariable Long userId, @RequestBody CourseListDto courseListDto) {
+        try {
+            return new ResponseEntity(
+                    this.courseListService.createCourseList(courseListDto, userId),
+                    HttpStatus.CREATED
             );
         } catch (Exception e) {
             return new ResponseEntity(
