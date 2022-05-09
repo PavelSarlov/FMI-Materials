@@ -1,6 +1,5 @@
 package com.fmi.materials.service;
 
-import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
