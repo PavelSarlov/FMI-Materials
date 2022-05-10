@@ -1,9 +1,7 @@
 package com.fmi.materials.model;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -11,19 +9,18 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @Entity
 @Table(name = "user_courses_lists")
 public class CourseList {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @Column(name = "list_name")
     private String listName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -35,7 +32,7 @@ public class CourseList {
             inverseJoinColumns = {
                     @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false, updatable = false),
             })
-    private Set<Course> courses = new HashSet<Course>();
+    private Set<Course> courses;
 
     public CourseList() {}
 
@@ -49,6 +46,9 @@ public class CourseList {
     }
 
     public void addCourse(Course course) {
+        if (this.courses == null) {
+            this.courses = new HashSet<Course>();
+        }
         this.courses.add(course);
     }
 }

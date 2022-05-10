@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @ToString
 public class CourseDtoWithId extends CourseDto {
     private Long id;

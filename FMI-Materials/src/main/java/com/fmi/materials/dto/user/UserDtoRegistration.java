@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @ToString
 public class UserDtoRegistration extends UserDto {
     private String repeatedPassword;

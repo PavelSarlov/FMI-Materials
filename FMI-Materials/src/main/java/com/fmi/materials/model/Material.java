@@ -1,21 +1,18 @@
 package com.fmi.materials.model;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @Entity
 @Table(name = "materials")
 public class Material {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 

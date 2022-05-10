@@ -1,9 +1,7 @@
 package com.fmi.materials.model;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,13 +10,12 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @Entity
 @Table(name = "sections")
 public class Section {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 

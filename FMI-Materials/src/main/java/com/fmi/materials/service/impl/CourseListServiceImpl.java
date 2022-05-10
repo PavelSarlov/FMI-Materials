@@ -98,13 +98,14 @@ public class CourseListServiceImpl implements CourseListService {
                     .orElseThrow(() -> new NoSuchElementException(String.format(INSTANCE_NOT_FOUND, courseId)));
 
             CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(this.getCourseList(courseListId, userId));
+            User user = this.userDtoMapper.convertToEntityWithId(this.userService.findUserById(userId));
+            courseList.setUser(user);
 
             courseList.addCourse(course);
             course.addCourseList(courseList);
 
-            this.courseRepository.save(course);
             courseList = this.courseListRepository.save(courseList);
-            //courseList = this.courseListRepository.save(courseList);
+            this.courseRepository.save(course);
             return this.courseListDtoMapper.convertToDtoWithId(courseList);
         } catch (Exception e) {
             throw e;

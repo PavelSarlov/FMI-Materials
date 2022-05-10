@@ -1,10 +1,8 @@
 package com.fmi.materials.model;
 
 import com.fmi.materials.vo.CourseGroup;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -14,13 +12,12 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @Entity
 @Table(name = "courses")
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -41,29 +38,31 @@ public class Course {
     @Column(name = "course_group")
     private CourseGroup courseGroup;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Section> sections;
 
     @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<CourseList> courseLists = new HashSet<CourseList>();;
+    private Set<CourseList> courseLists;
 
     public Course() {}
 
-    public Course(String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup, List<Section> sections) {
-        this(null, name, description, createdBy, facultyDepartment, courseGroup, sections);
+    public Course(String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup) {
+        this(null, name, description, createdBy, facultyDepartment, courseGroup);
     }
 
-    public Course(Long id, String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup, List<Section> sections) {
+    public Course(Long id, String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.createdBy = createdBy;
         this.facultyDepartment = facultyDepartment;
         this.courseGroup = courseGroup;
-        this.sections = (sections != null ? sections.stream().collect(Collectors.toSet()) : null);
     }
 
     public void addCourseList(CourseList courseList) {
+        if (this.courseLists == null) {
+            this.courseLists = new HashSet<CourseList>();
+        }
         this.courseLists.add(courseList);
     }
 }

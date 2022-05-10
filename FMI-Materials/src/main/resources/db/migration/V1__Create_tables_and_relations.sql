@@ -25,7 +25,7 @@ CREATE TABLE sections (
     course_id INT NOT NULL,
 
     CONSTRAINT PK_sections PRIMARY KEY(id),
-    CONSTRAINT FK_sections__courses FOREIGN KEY(id)
+    CONSTRAINT FK_sections__courses FOREIGN KEY(course_id)
         REFERENCES courses(id)
         ON DELETE CASCADE
 );
@@ -38,7 +38,7 @@ CREATE TABLE materials (
     file_name VARCHAR(50) NOT NULL UNIQUE,
 
     CONSTRAINT PK_materials PRIMARY KEY(id),
-    CONSTRAINT FK_materials__sections FOREIGN KEY(id)
+    CONSTRAINT FK_materials__sections FOREIGN KEY(section_id)
         REFERENCES sections(id)
         ON DELETE CASCADE
 );
@@ -92,5 +92,5 @@ CREATE TABLE courses__user_courses_lists(
 
     CONSTRAINT PK_courses__user_courses_lists PRIMARY KEY(course_id, user_courses_list_id),
     CONSTRAINT FK_courses FOREIGN KEY(course_id) REFERENCES courses(id) ON DELETE CASCADE,
-    CONSTRAINT FK_user_courses_lists FOREIGN KEY(user_courses_list_id) REFERENCES user_courses_lists(id) ON DELETE NO ACTION
+    CONSTRAINT FK_user_courses_lists FOREIGN KEY(user_courses_list_id) REFERENCES user_courses_lists(id) ON DELETE CASCADE
 );

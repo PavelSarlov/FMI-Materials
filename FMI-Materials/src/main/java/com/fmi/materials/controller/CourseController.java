@@ -3,6 +3,7 @@ package com.fmi.materials.controller;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
+import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.vo.CourseGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class CourseController {
         try {
             return new ResponseEntity(
                     this.courseService.updateCourse(courseDto),
-                    HttpStatus.FOUND
+                    HttpStatus.OK
             );
         } catch (Exception e) {
             return new ResponseEntity(
@@ -83,7 +84,63 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/templates")
+    @GetMapping("search")
+    public ResponseEntity getCoursesByName(@RequestParam String name) {
+        try {
+            return new ResponseEntity(
+                    this.courseService.findAllCoursesByName(name),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @GetMapping("{courseId}/sections")
+    public ResponseEntity getCourseSections(@PathVariable Long courseId) {
+        try {
+            return new ResponseEntity(
+                    this.courseService.findAllCourseSections(courseId),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @PostMapping("{courseId}/sections")
+    public ResponseEntity createCourseSection(@PathVariable Long courseId, @RequestBody SectionDto sectionDto) {
+        try {
+            return new ResponseEntity(
+                    this.courseService.createSection(sectionDto, courseId),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @DeleteMapping("sections/{sectionId}")
+    public ResponseEntity createCourseSection(@PathVariable Long sectionId) {
+        try {
+            this.courseService.deleteSection(sectionId);
+            return new ResponseEntity(
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @GetMapping("/template")
     public ResponseEntity getTemplate() {
         return new ResponseEntity(
                 new CourseDtoWithId(
@@ -91,7 +148,7 @@ public class CourseController {
                         "Web Development with Java",
                         "Spring Boot",
                         "Nqkoi Sitam",
-                        new FacultyDepartmentDto("Information Technologies"),
+                        new FacultyDepartmentDto(6L,"Information Technologies"),
                         CourseGroup.CSF,
                         null
                 ),
