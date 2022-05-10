@@ -6,7 +6,9 @@ import com.fmi.materials.model.Section;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Component
 public class MaterialDtoMapper {
@@ -23,7 +25,7 @@ public class MaterialDtoMapper {
     public Material convertToEntity(MultipartFile materialFile, Section section) throws IOException {
         return new Material(
                 materialFile.getContentType(),
-                materialFile.getName(),
+                materialFile.getOriginalFilename(),
                 materialFile.getBytes(),
                 section
         );
@@ -35,5 +37,9 @@ public class MaterialDtoMapper {
                 material.getFileFormat(),
                 material.getFileName()
         );
+    }
+
+    public byte[] convertToData(Material material) {
+        return material.getData();
     }
 }

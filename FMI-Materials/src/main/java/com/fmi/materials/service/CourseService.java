@@ -34,7 +34,7 @@ public interface CourseService {
 
     void deleteMaterial(Long materialId);
 
-    MaterialDto findMaterialById(Long materialId);
+    byte[] findMaterialById(Long materialId);
 
-    MaterialDto findSectionMaterialByName(Long sectionId, String name);
+    byte[] findCourseMaterialByName(Long courseId, String name);
 }

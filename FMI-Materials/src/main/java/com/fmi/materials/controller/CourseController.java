@@ -1,13 +1,16 @@
 package com.fmi.materials.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
+import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.section.SectionDto;
+import com.fmi.materials.model.Material;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.vo.CourseGroup;
 
@@ -91,32 +94,24 @@ public class CourseController {
                 HttpStatus.OK);
     }
 
+    //
+    // Just testing methods below
+    //
+
     @PostMapping("sections/{sectionId}/files")
-    public ResponseEntity createSectionMaterial(@PathVariable Long sectionId, @RequestParam("file") MultipartFile file) {
-        try {
-            return new ResponseEntity(
-                    this.courseService.createMaterial(file, sectionId),
-                    HttpStatus.CREATED
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.BAD_REQUEST
-            );
-        }
+    public ResponseEntity<MaterialDto> createSectionMaterial(@PathVariable Long sectionId, @RequestParam("file") MultipartFile file) throws IOException {
+        return new ResponseEntity<MaterialDto>(
+                this.courseService.createMaterial(file, sectionId),
+                HttpStatus.CREATED
+        );
     }
 
-    @GetMapping("sections/{sectionId}/files/{fileName}")
-    public ResponseEntity getMaterialByName(@PathVariable Long sectionId, @PathVariable String fileName) {
-        try {
-            return new ResponseEntity(
-                    this.courseService.findSectionMaterialByName(sectionId, fileName),
-                    HttpStatus.FOUND
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.NOT_FOUND
-            );
-        }
+    @GetMapping("{courseId}/files/{fileName}")
+    public ResponseEntity<byte[]> getMaterialByName(@PathVariable Long courseId, @PathVariable String fileName) {
+        return new ResponseEntity<byte[]>(
+                this.courseService.findCourseMaterialByName(courseId, fileName),
+                HttpStatus.FOUND
+        );
     }
 
     @GetMapping("/template")

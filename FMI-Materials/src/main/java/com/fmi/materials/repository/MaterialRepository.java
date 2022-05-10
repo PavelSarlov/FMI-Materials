@@ -12,7 +12,9 @@ import java.util.Optional;
 public interface MaterialRepository extends CrudRepository<Material, Long> {
     List<Material> findAll();
 
-    @Query(value = "SELECT * FROM materials" +
-            "WHERE file_name = ?1 AND section_id = ?2", nativeQuery = true)
-    Optional<Material> findByName(String name, Long sectionId);
+    @Query(value = "SELECT m.* FROM materials m\n" +
+            "JOIN sections s ON s.id = m.section_id\n" +
+            "WHERE file_name = ?1 AND course_id = ?2\n" +
+            "LIMIT 1", nativeQuery = true)
+    Optional<Material> findByName(String name, Long courseId);
 }

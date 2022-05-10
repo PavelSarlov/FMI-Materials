@@ -175,14 +175,14 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public MaterialDto findMaterialById(Long materialId) {
-        return this.materialDtoMapper.convertToDto(this.materialRepository.findById(materialId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId))));
+    public byte[] findMaterialById(Long materialId) {
+        return this.materialRepository.findById(materialId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId))).getData();
     }
 
     @Override
-    public MaterialDto findSectionMaterialByName(Long sectionId, String name) {
-        return this.materialDtoMapper.convertToDto(this.materialRepository.findByName(name, sectionId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "name", name))));
+    public byte[] findCourseMaterialByName(Long sectionId, String name) {
+        return this.materialRepository.findByName(name, sectionId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "name", name))).getData();
     }
 }
