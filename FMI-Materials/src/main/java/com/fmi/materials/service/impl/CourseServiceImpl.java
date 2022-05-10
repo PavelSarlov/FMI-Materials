@@ -96,8 +96,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDto findById(Long courseId) {
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.findById(courseId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId))));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId))));
     }
 
     @Override
@@ -130,8 +129,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<SectionDto> findAllCourseSections(Long courseId) {
         return this.courseRepository.findById(courseId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)))
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)))
                 .getSections().stream()
                 .map(this.sectionDtoMapper::convertToDto)
                 .collect(Collectors.toList());
@@ -140,12 +138,17 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public SectionDto createSection(SectionDto sectionDto, Long courseId) {
         Course course = this.courseRepository.findById(courseId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
         Section section = this.sectionDtoMapper.convertToEntity(sectionDto);
         section.setCourse(course);
         section = this.sectionRepository.save(section);
         return this.sectionDtoMapper.convertToDto(section);
+    }
+
+    @Override
+    public SectionDto findSectionById(Long sectionId) {
+        return this.sectionDtoMapper.convertToDto(this.sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId))));
     }
 
     @Override
@@ -159,8 +162,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public MaterialDto createMaterial(MultipartFile materialFile, Long sectionId) throws IOException {
         Section section = this.sectionRepository.findById(sectionId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
         Material material = this.materialDtoMapper.convertToEntity(materialFile, section);
         material = this.materialRepository.save(material);
         return this.materialDtoMapper.convertToDto(material);
@@ -168,9 +170,19 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteMaterial(Long materialId) {
-        if (!this.materialRepository.existsById(materialId)) {
-            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId));
-        }
+        this.findMaterialById(materialId);
         this.materialRepository.deleteById(materialId);
+    }
+
+    @Override
+    public MaterialDto findMaterialById(Long materialId) {
+        return this.materialDtoMapper.convertToDto(this.materialRepository.findById(materialId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId))));
+    }
+
+    @Override
+    public MaterialDto findSectionMaterialByName(Long sectionId, String name) {
+        return this.materialDtoMapper.convertToDto(this.materialRepository.findByName(name, sectionId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "name", name))));
     }
 }

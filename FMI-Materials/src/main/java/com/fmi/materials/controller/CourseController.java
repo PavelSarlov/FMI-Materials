@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping(value = "api/courses")
 public class CourseController {
@@ -87,6 +89,34 @@ public class CourseController {
         return new ResponseEntity<ResponseDto>(
                 new ResponseDtoSuccess(HttpStatus.OK, String.format("Section with id = '%s' deleted successfully", sectionId)),
                 HttpStatus.OK);
+    }
+
+    @PostMapping("sections/{sectionId}/files")
+    public ResponseEntity createSectionMaterial(@PathVariable Long sectionId, @RequestParam("file") MultipartFile file) {
+        try {
+            return new ResponseEntity(
+                    this.courseService.createMaterial(file, sectionId),
+                    HttpStatus.CREATED
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @GetMapping("sections/{sectionId}/files/{fileName}")
+    public ResponseEntity getMaterialByName(@PathVariable Long sectionId, @PathVariable String fileName) {
+        try {
+            return new ResponseEntity(
+                    this.courseService.findSectionMaterialByName(sectionId, fileName),
+                    HttpStatus.FOUND
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.NOT_FOUND
+            );
+        }
     }
 
     @GetMapping("/template")
