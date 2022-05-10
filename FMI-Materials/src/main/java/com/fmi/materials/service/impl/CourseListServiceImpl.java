@@ -92,25 +92,22 @@ public class CourseListServiceImpl implements CourseListService {
     }
 
     @Override
-    public CourseListDto addCourseToList(Long courseId, Long courseListId, Long userId) {
-        Course course = this.courseRepository.findById(courseId)
-                .orElseThrow(() -> new NoSuchElementException(String.format(INSTANCE_NOT_FOUND, courseId)));
-
+    public CourseListDtoWithId addCourseToList(Long courseId, Long courseListId, Long userId) {
         try {
+            Course course = this.courseRepository.findById(courseId)
+                    .orElseThrow(() -> new NoSuchElementException(String.format(INSTANCE_NOT_FOUND, courseId)));
+
             CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(this.getCourseList(courseListId, userId));
-            //course.getCourseLists().add(courseList);
-            //courseList.getCourses().add(course);
 
-            return this.courseListDtoMapper.convertToDto(courseList);
+            courseList.addCourse(course);
+            course.addCourseList(courseList);
+
+            this.courseRepository.save(course);
+            courseList = this.courseListRepository.save(courseList);
+            //courseList = this.courseListRepository.save(courseList);
+            return this.courseListDtoMapper.convertToDtoWithId(courseList);
         } catch (Exception e) {
-            String listName = "List %s";
-            CourseList currentList = new CourseList(String.format(listName, courseListId));
-            ;
-            currentList = this.courseListRepository.save(currentList);
-            //course.getCourseLists().add(currentList);
-            //currentList.getCourses().add(course);
-
-            return this.courseListDtoMapper.convertToDto(currentList);
+            throw e;
         }
     }
 }

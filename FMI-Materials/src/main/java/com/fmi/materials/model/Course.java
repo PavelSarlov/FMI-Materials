@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,7 +15,6 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "courses")
 public class Course {
@@ -45,7 +45,7 @@ public class Course {
     private Set<Section> sections;
 
     @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<CourseList> courseLists;
+    private Set<CourseList> courseLists = new HashSet<CourseList>();;
 
     public Course() {}
 
@@ -61,5 +61,9 @@ public class Course {
         this.facultyDepartment = facultyDepartment;
         this.courseGroup = courseGroup;
         this.sections = (sections != null ? sections.stream().collect(Collectors.toSet()) : null);
+    }
+
+    public void addCourseList(CourseList courseList) {
+        this.courseLists.add(courseList);
     }
 }

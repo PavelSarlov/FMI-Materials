@@ -15,5 +15,5 @@ public interface CourseListService {
 
     List<CourseListDtoWithId> getAllCourseLists(Long userId);
 
-    CourseListDto addCourseToList(Long courseId, Long courseListId, Long userId);
+    CourseListDtoWithId addCourseToList(Long courseId, Long courseListId, Long userId);
 }

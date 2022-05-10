@@ -1,5 +1,6 @@
 package com.fmi.materials.controller;
 
+import com.fmi.materials.dto.CourseCourseListIdDto;
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.dto.user.UserDto;
@@ -120,6 +121,20 @@ public class UserController {
         try {
             return new ResponseEntity(
                     this.courseListService.createCourseList(courseListDto, userId),
+                    HttpStatus.CREATED
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<CourseListDtoWithId> addCourseToList(@PathVariable Long userId, @RequestBody CourseCourseListIdDto courseCourseListIdDto) {
+        try {
+            return new ResponseEntity(
+                    this.courseListService.addCourseToList(courseCourseListIdDto.getCourseId(), courseCourseListIdDto.getCourseListId(), userId),
                     HttpStatus.CREATED
             );
         } catch (Exception e) {
