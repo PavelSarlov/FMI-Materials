@@ -26,10 +26,9 @@ public class SectionDtoMapper {
         return new SectionDto(
                 section.getId(),
                 section.getName(),
-                null,
-                section.getMaterials().stream()
+                section.getMaterials() != null ? section.getMaterials().stream()
                         .map(this.materialDtoMapper::convertToDto)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()) : null
         );
     }
 }

@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @ToString
 public class UserDtoWithId extends UserDto{
     private Long id;

@@ -11,9 +11,11 @@ import lombok.ToString;
 @ToString
 public class FacultyDepartmentDto {
 
+    private Long id;
     private String name;
 
-    public FacultyDepartmentDto(String name) {
+    public FacultyDepartmentDto(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 }

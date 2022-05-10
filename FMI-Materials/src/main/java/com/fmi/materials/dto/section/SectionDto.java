@@ -17,13 +17,11 @@ public class SectionDto {
 
     private Long id;
     private String name;
-    private Course course;
     private List<MaterialDto> materials;
 
-    public SectionDto(Long id, String name, Course course, List<MaterialDto> materialDtos) {
+    public SectionDto(Long id, String name, List<MaterialDto> materialDtos) {
         this.id = id;
         this.name = name;
-        this.course = course;
         this.materials = materialDtos;
     }
 }
