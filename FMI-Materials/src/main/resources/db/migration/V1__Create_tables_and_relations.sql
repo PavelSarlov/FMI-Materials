@@ -92,5 +92,5 @@ CREATE TABLE courses__user_courses_lists(
 
     CONSTRAINT PK_courses__user_courses_lists PRIMARY KEY(course_id, user_courses_list_id),
     CONSTRAINT FK_courses FOREIGN KEY(course_id) REFERENCES courses(id) ON DELETE CASCADE,
-    CONSTRAINT FK_user_courses_lists FOREIGN KEY(user_courses_list_id) REFERENCES user_courses_lists(id) ON DELETE NO ACTION
+    CONSTRAINT FK_user_courses_lists FOREIGN KEY(user_courses_list_id) REFERENCES user_courses_lists(id) ON DELETE CASCADE
 );

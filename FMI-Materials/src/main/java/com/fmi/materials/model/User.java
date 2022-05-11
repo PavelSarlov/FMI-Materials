@@ -26,7 +26,7 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CourseList> courseLists;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

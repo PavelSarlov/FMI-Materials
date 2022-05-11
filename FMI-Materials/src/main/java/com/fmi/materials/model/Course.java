@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,6 +41,9 @@ public class Course {
     @OneToMany(mappedBy = "course", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Section> sections;
 
+    @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<CourseList> courseLists;
+
     public Course() {}
 
     public Course(String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup) {
@@ -53,5 +57,12 @@ public class Course {
         this.createdBy = createdBy;
         this.facultyDepartment = facultyDepartment;
         this.courseGroup = courseGroup;
+    }
+
+    public void addCourseList(CourseList courseList) {
+        if (this.courseLists == null) {
+            this.courseLists = new HashSet<CourseList>();
+        }
+        this.courseLists.add(courseList);
     }
 }
