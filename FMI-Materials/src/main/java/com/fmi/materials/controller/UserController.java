@@ -70,8 +70,7 @@ public class UserController {
         }
     }
 
-    // improve mapping
-    @PostMapping("/add")
+    @PostMapping("/lists")
     public ResponseEntity<CourseListDtoWithId> addCourseToList(@PathVariable Long userId, @RequestBody CourseCourseListIdDto courseCourseListIdDto) {
         try {
             return new ResponseEntity(
