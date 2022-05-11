@@ -28,67 +28,7 @@ public class UserController {
         this.courseListService = courseListService;
     }
 
-    /*@GetMapping("{id}")
-    public ResponseEntity<UserDto> findCourseById(@PathVariable Long id) {
-        try {
-            return new ResponseEntity(
-                    this.userService.findUserById(id),
-                    HttpStatus.FOUND
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.NOT_FOUND
-            );
-        }
-    }*/
-
-    /*@PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDtoRegistration userDto)
-    {
-        try {
-            return new ResponseEntity(
-                    this.userService.createUser(userDto),
-                    HttpStatus.CREATED
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    userDto,
-                    HttpStatus.CONFLICT
-            );
-        }
-    }*/
-
-    /*@DeleteMapping("{id}")
-    public ResponseEntity deleteUserById(@PathVariable Long id) {
-        try {
-            this.userService.deleteUserById(id);
-
-            return new ResponseEntity(
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.NOT_FOUND
-            );
-        }
-    }*/
-
-    /*@PutMapping
-    public ResponseEntity<UserDtoWithId> updateCourse(@RequestBody UserDtoWithId userDtoWithId) {
-        try {
-            return new ResponseEntity(
-                    this.userService.updateUser(userDtoWithId),
-                    HttpStatus.FOUND
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    userDtoWithId,
-                    HttpStatus.NOT_FOUND
-            );
-        }
-    }*/
-
-    @GetMapping
+    @GetMapping("/lists")
     public ResponseEntity<List<CourseListDtoWithId>> courseLists(@PathVariable Long userId) {
         try {
             return new ResponseEntity(
@@ -130,6 +70,7 @@ public class UserController {
         }
     }
 
+    // improve mapping
     @PostMapping("/add")
     public ResponseEntity<CourseListDtoWithId> addCourseToList(@PathVariable Long userId, @RequestBody CourseCourseListIdDto courseCourseListIdDto) {
         try {
@@ -140,6 +81,36 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity(
                     HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @DeleteMapping("/lists/{listId}")
+    public ResponseEntity deleteCourseList(@PathVariable Long userId, @PathVariable Long listId) {
+        try {
+            this.courseListService.deleteCourseList(userId, listId);
+
+            return new ResponseEntity(
+                HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+    }
+
+    @PutMapping("/lists")
+    public ResponseEntity<CourseListDtoWithId> updateCourseList(@RequestBody CourseListDtoWithId courseListDtoWithId) {
+        try {
+            return new ResponseEntity(
+                    this.courseListService.updateCourseList(courseListDtoWithId),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    courseListDtoWithId,
+                    HttpStatus.NOT_FOUND
             );
         }
     }

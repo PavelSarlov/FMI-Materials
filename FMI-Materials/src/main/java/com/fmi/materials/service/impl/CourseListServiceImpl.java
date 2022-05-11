@@ -71,6 +71,15 @@ public class CourseListServiceImpl implements CourseListService {
     }
 
     @Override
+    public void deleteCourseList(Long userId, Long courseListId) {
+        if (this.courseListRepository.findUserCourseList(userId, courseListId) == null) {
+            throw new NoSuchElementException(String.format(INSTANCE_NOT_FOUND, courseListId));
+        }
+
+        this.courseListRepository.deleteById(courseListId);
+    }
+
+    @Override
     public CourseListDtoWithId getCourseList(Long courseListId, Long userId) {
         if (this.userService.findUserById(userId) == null) {
             throw new NoSuchElementException(String.format(INSTANCE_NOT_FOUND, userId));
