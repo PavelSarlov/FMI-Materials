@@ -4,8 +4,8 @@ spring:
     include: "private"
   datasource:
     url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
-    username: "${database.username}"
-    password: "${database.password}"
+    username: "${config.database.username}"
+    password: "${config.database.password}"
     driver-class-name: "org.postgresql.Driver"
   jpa:
     hibernate:
@@ -15,8 +15,8 @@ spring:
         dialect: "org.hibernate.dialect.PostgreSQLDialect"
   flyway:
     url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
-    user: "${database.username}"
-    password: "${database.password}"
+    user: "${config.database.username}"
+    password: "${config.database.password}"
     schemas: "public"
     defaultSchema: "public"
     createSchemas: "true"
