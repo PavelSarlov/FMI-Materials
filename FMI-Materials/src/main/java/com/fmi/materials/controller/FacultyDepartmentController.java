@@ -1,11 +1,21 @@
 package com.fmi.materials.controller;
 
+import java.util.List;
+
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
 import com.fmi.materials.service.FacultyDepartmentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "api/departments")
@@ -14,69 +24,38 @@ public class FacultyDepartmentController {
     private FacultyDepartmentService facultyDepartmentService;
 
     @PostMapping
-    public ResponseEntity createFacultyDepartment(@RequestBody FacultyDepartmentDto facultyDepartmentDto) {
-        try {
-            return new ResponseEntity(
-                    this.facultyDepartmentService.createFacultyDepartment(facultyDepartmentDto),
-                    HttpStatus.CREATED
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    facultyDepartmentDto,
-                    HttpStatus.CONFLICT
-            );
-        }
+    public ResponseEntity<Object> createFacultyDepartment(@RequestBody FacultyDepartmentDto facultyDepartmentDto) {
+        return new ResponseEntity<Object>(
+                this.facultyDepartmentService.createFacultyDepartment(facultyDepartmentDto),
+                HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity findAllFacultyDepartments() {
-        return new ResponseEntity(
+    public ResponseEntity<Object> findAllFacultyDepartments() {
+        return new ResponseEntity<Object>(
                 this.facultyDepartmentService.findAllFacultyDepartments(),
-                HttpStatus.OK
-        );
+                HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity findFacultyDepartmentById(@PathVariable Long id) {
-        try {
-            return new ResponseEntity(
-                    this.facultyDepartmentService.findById(id),
-                    HttpStatus.FOUND
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.NOT_FOUND
-            );
-        }
+    public ResponseEntity<Object> findFacultyDepartmentById(@PathVariable Long id) {
+        return new ResponseEntity<Object>(
+                this.facultyDepartmentService.findById(id),
+                HttpStatus.FOUND);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteFacultyDepartmentById(@PathVariable Long id) {
-        try {
-            this.facultyDepartmentService.deleteFacultyDepartment(id);
+    public ResponseEntity<Object> deleteFacultyDepartmentById(@PathVariable Long id) {
+        this.facultyDepartmentService.deleteFacultyDepartment(id);
 
-            return new ResponseEntity(
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.NOT_FOUND
-            );
-        }
+        return new ResponseEntity<Object>(
+                HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity updateFacultyDepartment(@RequestBody FacultyDepartmentDto facultyDepartmentDto) {
-        try {
-            return new ResponseEntity(
-                    this.facultyDepartmentService.updateFacultyDepartment(facultyDepartmentDto),
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    facultyDepartmentDto,
-                    HttpStatus.NOT_FOUND
-            );
-        }
+    public ResponseEntity<Object> updateFacultyDepartment(@RequestBody FacultyDepartmentDto facultyDepartmentDto) {
+        return new ResponseEntity<Object>(
+                this.facultyDepartmentService.updateFacultyDepartment(facultyDepartmentDto),
+                HttpStatus.OK);
     }
 }

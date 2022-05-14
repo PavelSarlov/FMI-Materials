@@ -1,23 +1,18 @@
 package com.fmi.materials.service.impl;
 
-import com.fmi.materials.dto.courselist.CourseListDto;
+import java.util.NoSuchElementException;
+
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
-import com.fmi.materials.mapper.CourseListDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
-import com.fmi.materials.model.Course;
-import com.fmi.materials.model.CourseList;
 import com.fmi.materials.model.User;
-import com.fmi.materials.repository.CourseRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class UserServiceImpl implements UserService {

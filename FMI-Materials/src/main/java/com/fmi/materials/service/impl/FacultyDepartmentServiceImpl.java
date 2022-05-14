@@ -1,20 +1,21 @@
 package com.fmi.materials.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
+import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.mapper.FacultyDepartmentDtoMapper;
 import com.fmi.materials.model.FacultyDepartment;
 import com.fmi.materials.repository.FacultyDepartmentRepository;
 import com.fmi.materials.service.FacultyDepartmentService;
+import com.fmi.materials.vo.ErrorMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-
 @Service
 public class FacultyDepartmentServiceImpl implements FacultyDepartmentService {
-    private final String NOT_FOUND_MESSAGE = "Department with ID = '%s' not found";
 
     @Autowired
     FacultyDepartmentRepository facultyDepartmentRepository;
@@ -30,15 +31,15 @@ public class FacultyDepartmentServiceImpl implements FacultyDepartmentService {
     @Override
     public void deleteFacultyDepartment(Long facultyDepartmentId) {
         if(!this.facultyDepartmentRepository.existsById(facultyDepartmentId)) {
-            throw new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, facultyDepartmentId));
+            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Faculty department", "id", facultyDepartmentId));
         }
         this.facultyDepartmentRepository.deleteById(facultyDepartmentId);
     }
 
     @Override
     public FacultyDepartmentDto updateFacultyDepartment(FacultyDepartmentDto facultyDepartmentDto) {
-        if(!this.facultyDepartmentRepository.existsById(facultyDepartmentDto.getId())) {
-            throw new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, facultyDepartmentDto.getId()));
+        if (!this.facultyDepartmentRepository.existsById(facultyDepartmentDto.getId())) {
+            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Faculty department", "id", facultyDepartmentDto.getId()));
         }
         FacultyDepartment facultyDepartment = this.facultyDepartmentDtoMapper.convertToEntity(facultyDepartmentDto);
         return this.facultyDepartmentDtoMapper.convertToDto(this.facultyDepartmentRepository.save(facultyDepartment));
@@ -46,8 +47,9 @@ public class FacultyDepartmentServiceImpl implements FacultyDepartmentService {
 
     @Override
     public FacultyDepartmentDto findById(Long facultyDepartmentId) {
-        return this.facultyDepartmentDtoMapper.convertToDto(this.facultyDepartmentRepository.findById(facultyDepartmentId)
-                .orElseThrow(() -> new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, facultyDepartmentId))));
+        return this.facultyDepartmentDtoMapper.convertToDto(this.facultyDepartmentRepository
+                .findById(facultyDepartmentId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Faculty department", "id", facultyDepartmentId))));
     }
 
     @Override

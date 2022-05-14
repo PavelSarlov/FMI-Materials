@@ -1,9 +1,18 @@
 package com.fmi.materials.service.impl;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.section.SectionDto;
+import com.fmi.materials.exception.EntityAlreadyExistsException;
+import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.mapper.CourseDtoMapper;
 import com.fmi.materials.mapper.FacultyDepartmentDtoMapper;
 import com.fmi.materials.mapper.MaterialDtoMapper;
@@ -17,23 +26,14 @@ import com.fmi.materials.repository.MaterialRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.FacultyDepartmentService;
+import com.fmi.materials.vo.ErrorMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 @Service
 public class CourseServiceImpl implements CourseService {
-    private final String ALREADY_EXISTS_MESSAGE = "Course with %s = '%s' already exists";
-    private final String NOT_FOUND_MESSAGE = "%s with ID = '%s' not found";
-
     @Autowired
     private FacultyDepartmentService facultyDepartmentService;
     @Autowired
@@ -52,17 +52,19 @@ public class CourseServiceImpl implements CourseService {
     private MaterialDtoMapper materialDtoMapper;
 
     @Override
-    public CourseDtoWithId createCourse(CourseDto courseDto) {
+    public CourseDto createCourse(CourseDto courseDto) {
 
         List<String> courseNames = this.courseRepository.findAll().stream()
                 .map(c -> c.getName().toLowerCase(Locale.ROOT))
                 .collect(Collectors.toList());
-        if(courseNames.contains(courseDto.getName().toLowerCase(Locale.ROOT))) {
-            throw new NoSuchElementException(String.format(ALREADY_EXISTS_MESSAGE, "name", courseDto.getName()));
+        if (courseNames.contains(courseDto.getName().toLowerCase(Locale.ROOT))) {
+            throw new EntityAlreadyExistsException(
+                    ErrorMessage.ALREADY_EXISTS.getFormattedMessage("Course", "name", courseDto.getName()));
         }
 
         Course course = this.courseDtoMapper.convertToEntity(courseDto);
-        FacultyDepartment facultyDepartment = this.facultyDepartmentDtoMapper.convertToEntity(this.facultyDepartmentService.findById(courseDto.getFacultyDepartmentDto().getId()));
+        FacultyDepartment facultyDepartment = this.facultyDepartmentDtoMapper
+                .convertToEntity(this.facultyDepartmentService.findById(courseDto.getFacultyDepartmentDto().getId()));
         course.setFacultyDepartment(facultyDepartment);
         course = this.courseRepository.save(course);
 
@@ -76,42 +78,43 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(Long courseId) {
-        if(!this.courseRepository.existsById(courseId)) {
-            throw new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, "Course", courseId));
+        if (!this.courseRepository.existsById(courseId)) {
+            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId));
         }
         this.courseRepository.deleteById(courseId);
     }
 
     @Override
-    public CourseDtoWithId updateCourse(CourseDtoWithId courseDto) {
-        if(!this.courseRepository.existsById(courseDto.getId())) {
-            throw new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, "Course", courseDto.getId()));
+    public CourseDto updateCourse(CourseDtoWithId courseDto) {
+        if (!this.courseRepository.existsById(courseDto.getId())) {
+            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseDto.getId()));
         }
         Course course = this.courseDtoMapper.convertToEntityWithId(courseDto);
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.save(course));
     }
 
     @Override
-    public CourseDtoWithId findById(Long courseId) {
+    public CourseDto findById(Long courseId) {
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.findById(courseId)
-                .orElseThrow(() -> new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, "Course", courseId))));
+                .orElseThrow(
+                        () -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId))));
     }
 
     @Override
-    public List<CourseDtoWithId> findAllCourses() {
+    public List<CourseDto> findAllCourses() {
         return this.courseRepository.findAll().stream()
                 .map(this.courseDtoMapper::convertToDtoWithId)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<CourseDtoWithId> findAllCoursesByName(String name) {
+    public List<CourseDto> findAllCoursesByName(String name) {
         List<String> keyWords = Arrays.stream(name.split("[\\p{Punct}\\p{Blank}]"))
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
-        List<CourseDtoWithId> courses = this.courseRepository.findAll().stream()
+        List<CourseDto> courses = this.courseRepository.findAll().stream()
                 .filter(c -> {
-                    for (String w : keyWords){
+                    for (String w : keyWords) {
                         if (!c.getName().toLowerCase(Locale.ROOT).contains(w)) {
                             return false;
                         }
@@ -127,7 +130,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<SectionDto> findAllCourseSections(Long courseId) {
         return this.courseRepository.findById(courseId)
-                .orElseThrow(() -> new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, "Course", courseId)))
+                .orElseThrow(
+                        () -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)))
                 .getSections().stream()
                 .map(this.sectionDtoMapper::convertToDto)
                 .collect(Collectors.toList());
@@ -136,7 +140,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public SectionDto createSection(SectionDto sectionDto, Long courseId) {
         Course course = this.courseRepository.findById(courseId)
-                .orElseThrow(() -> new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, "Course", courseId)));
+                .orElseThrow(
+                        () -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
         Section section = this.sectionDtoMapper.convertToEntity(sectionDto);
         section.setCourse(course);
         section = this.sectionRepository.save(section);
@@ -145,8 +150,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteSection(Long sectionId) {
-        if(!this.sectionRepository.existsById(sectionId)) {
-            throw new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, "Section", sectionId));
+        if (!this.sectionRepository.existsById(sectionId)) {
+            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId));
         }
         this.sectionRepository.deleteById(sectionId);
     }
@@ -154,7 +159,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public MaterialDto createMaterial(MultipartFile materialFile, Long sectionId) throws IOException {
         Section section = this.sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, "Section", sectionId)));
+                .orElseThrow(
+                        () -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
         Material material = this.materialDtoMapper.convertToEntity(materialFile, section);
         material = this.materialRepository.save(material);
         return this.materialDtoMapper.convertToDto(material);
@@ -162,8 +168,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteMaterial(Long materialId) {
-        if(!this.materialRepository.existsById(materialId)) {
-            throw new NoSuchElementException(String.format(NOT_FOUND_MESSAGE, "Material", materialId));
+        if (!this.materialRepository.existsById(materialId)) {
+            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId));
         }
         this.materialRepository.deleteById(materialId);
     }

@@ -1,26 +1,27 @@
 package com.fmi.materials.service;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.section.SectionDto;
+
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
-
 public interface CourseService {
-    CourseDtoWithId createCourse(CourseDto course);
+    CourseDto createCourse(CourseDto course);
 
     void deleteCourse(Long courseId);
 
-    CourseDtoWithId updateCourse(CourseDtoWithId course);
+    CourseDto updateCourse(CourseDtoWithId course);
 
-    CourseDtoWithId findById(Long courseId);
+    CourseDto findById(Long courseId);
 
-    List<CourseDtoWithId> findAllCourses();
+    List<CourseDto> findAllCourses();
 
-    List<CourseDtoWithId> findAllCoursesByName(String name);
+    List<CourseDto> findAllCoursesByName(String name);
 
     List<SectionDto> findAllCourseSections(Long courseId);
 
