@@ -1,5 +1,6 @@
 package com.fmi.materials.service.impl;
 
+import com.fmi.materials.model.CustomUserDetails;
 import com.fmi.materials.model.User;
 import com.fmi.materials.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(email);
         }
-        return new MyUserPrincipal(user);
+        return new CustomUserDetails(user);
     }
 }
