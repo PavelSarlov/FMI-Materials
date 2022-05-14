@@ -6,13 +6,13 @@ import com.fmi.materials.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.NoSuchElementException;
 
-@RestController("fmi-materials/")
+@RestController
+@RequestMapping("api")
 public class AccountController {
     private final String LOGIN_INVALID = "Login Invalid";
 
@@ -23,8 +23,16 @@ public class AccountController {
         this.userService = userService;
     }
 
+    @GetMapping
+    public ResponseEntity<String> fuckYou() {
+        return new  ResponseEntity(
+            "fuck you",
+                HttpStatus.OK
+        );
+    }
+
     @PostMapping("register")
-    public ResponseEntity<UserDto> register(@RequestBody UserDtoRegistration userDtoRegistration) {
+    public ResponseEntity<UserDto> register(@RequestBody @Valid UserDtoRegistration userDtoRegistration) {
         try {
             return new ResponseEntity(
                     this.userService.createUser(userDtoRegistration),
@@ -32,6 +40,7 @@ public class AccountController {
             );
         } catch (Exception e) {
             return new ResponseEntity(
+                    e.getMessage(),
                     HttpStatus.CONFLICT
             );
         }

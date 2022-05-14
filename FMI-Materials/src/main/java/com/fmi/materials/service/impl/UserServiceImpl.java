@@ -13,6 +13,7 @@ import com.fmi.materials.repository.CourseRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,11 +28,13 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private UserDtoMapper userDtoMapper;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserDtoMapper userDtoMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserDtoMapper userDtoMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userDtoMapper = userDtoMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -42,6 +45,8 @@ public class UserServiceImpl implements UserService {
         else if(this.userRepository.findByEmail(userDto.getEmail())!=null) {
             throw new IllegalArgumentException(EMAIL_TAKEN);
         }
+        userDto.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
+        
         User user = this.userDtoMapper.convertToEntity(userDto);
         return this.userDtoMapper.convertToDto(this.userRepository.save(user));
     }

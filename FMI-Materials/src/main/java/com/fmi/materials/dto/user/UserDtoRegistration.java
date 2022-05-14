@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.Pattern;
+
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
