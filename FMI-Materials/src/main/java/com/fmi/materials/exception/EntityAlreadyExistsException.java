@@ -1,6 +1,6 @@
 package com.fmi.materials.exception;
 
-public class EntityAlreadyExistsException extends RuntimeException {
+public class EntityAlreadyExistsException extends CustomException {
 
     public EntityAlreadyExistsException()  {
         super();

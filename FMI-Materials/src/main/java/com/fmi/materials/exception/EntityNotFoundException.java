@@ -1,6 +1,6 @@
 package com.fmi.materials.exception;
 
-public class EntityNotFoundException extends RuntimeException {
+public class EntityNotFoundException extends CustomException {
 
     public EntityNotFoundException()  {
         super();

@@ -15,8 +15,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ExceptionHandlingController extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    protected ResponseEntity<ResponseDto> handleRuntimeException(RuntimeException ex) {
+    @ExceptionHandler(CustomException.class)
+    protected ResponseEntity<ResponseDto> handleCustomException(CustomException ex) {
         ResponseDto response = new ResponseDto(HttpStatus.NOT_FOUND, ex.getMessage());
         System.out.println(response);
         return buildResponseEntity(response);
