@@ -7,6 +7,7 @@ import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
 import com.fmi.materials.dto.material.MaterialDto;
+import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.section.SectionDto;
@@ -15,7 +16,9 @@ import com.fmi.materials.service.CourseService;
 import com.fmi.materials.vo.CourseGroup;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,10 +111,16 @@ public class CourseController {
 
     @GetMapping("{courseId}/files/{fileName}")
     public ResponseEntity<byte[]> getMaterialByName(@PathVariable Long courseId, @PathVariable String fileName) {
+        MaterialDtoWithData material = this.courseService.findCourseMaterialByName(courseId, fileName);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(material.getFileFormat()));
+        headers.add("Content-Disposition", "inline; filename=" + material.getFileName());
+        
         return new ResponseEntity<byte[]>(
-                this.courseService.findCourseMaterialByName(courseId, fileName),
+                material.getData(),
+                headers,
                 HttpStatus.FOUND
-        );
+                );
     }
 
     @GetMapping("/template")

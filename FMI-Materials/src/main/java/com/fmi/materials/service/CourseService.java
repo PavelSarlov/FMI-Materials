@@ -3,6 +3,7 @@ package com.fmi.materials.service;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
+import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.section.SectionDto;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +35,7 @@ public interface CourseService {
 
     void deleteMaterial(Long materialId);
 
-    byte[] findMaterialById(Long materialId);
+    MaterialDtoWithData findMaterialById(Long materialId);
 
-    byte[] findCourseMaterialByName(Long courseId, String name);
+    MaterialDtoWithData findCourseMaterialByName(Long courseId, String name);
 }

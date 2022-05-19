@@ -1,6 +1,7 @@
 package com.fmi.materials.mapper;
 
 import com.fmi.materials.dto.material.MaterialDto;
+import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.model.Material;
 import com.fmi.materials.model.Section;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,12 @@ public class MaterialDtoMapper {
         );
     }
 
-    public byte[] convertToData(Material material) {
-        return material.getData();
+    public MaterialDtoWithData convertToDtoWithData(Material material) {
+        return new MaterialDtoWithData(
+                material.getId(),
+                material.getFileFormat(),
+                material.getFileName(),
+                material.getData()
+        );
     }
 }

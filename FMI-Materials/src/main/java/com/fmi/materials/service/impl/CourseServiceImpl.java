@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
+import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.exception.EntityAlreadyExistsException;
 import com.fmi.materials.exception.EntityNotFoundException;
@@ -175,14 +176,14 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public byte[] findMaterialById(Long materialId) {
-        return this.materialRepository.findById(materialId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId))).getData();
+    public MaterialDtoWithData findMaterialById(Long materialId) {
+        return this.materialDtoMapper.convertToDtoWithData(this.materialRepository.findById(materialId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId))));
     }
 
     @Override
-    public byte[] findCourseMaterialByName(Long sectionId, String name) {
-        return this.materialRepository.findByName(name, sectionId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "name", name))).getData();
+    public MaterialDtoWithData findCourseMaterialByName(Long sectionId, String name) {
+        return this.materialDtoMapper.convertToDtoWithData(this.materialRepository.findByName(name, sectionId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "name", name))));
     }
 }
