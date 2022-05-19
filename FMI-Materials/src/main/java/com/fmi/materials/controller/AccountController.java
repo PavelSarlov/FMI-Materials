@@ -23,14 +23,6 @@ public class AccountController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public ResponseEntity<String> fuckYou() {
-        return new  ResponseEntity(
-            "fuck you",
-                HttpStatus.OK
-        );
-    }
-
     @PostMapping("register")
     public ResponseEntity<UserDto> register(@RequestBody @Valid UserDtoRegistration userDtoRegistration) {
         try {
@@ -46,7 +38,7 @@ public class AccountController {
         }
     }
 
-    @PostMapping("login")
+    /*@PostMapping("login")
     public ResponseEntity<Long> login(@RequestBody UserDto userDto) {
         // won't work
         try {
@@ -73,5 +65,5 @@ public class AccountController {
                     HttpStatus.CONFLICT
             );
         }
-    }
+    }*/
 }
