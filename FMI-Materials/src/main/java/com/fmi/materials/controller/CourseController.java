@@ -1,11 +1,16 @@
 package com.fmi.materials.controller;
 
+import java.util.List;
+
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
+import com.fmi.materials.dto.response.ResponseDto;
+import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.vo.CourseGroup;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,141 +23,83 @@ public class CourseController {
     private CourseService courseService;
 
     @PostMapping
-    public ResponseEntity createCourse(@RequestBody CourseDto courseDto) {
-        try {
-            return new ResponseEntity(
-                    this.courseService.createCourse(courseDto),
-                    HttpStatus.CREATED
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    courseDto,
-                    HttpStatus.CONFLICT
-            );
-        }
+    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto) {
+        return new ResponseEntity<CourseDto>(
+                this.courseService.createCourse(courseDto),
+                HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity findAllCourses() {
-        return new ResponseEntity(
+    public ResponseEntity<List<CourseDto>> findAllCourses() {
+        return new ResponseEntity<List<CourseDto>>(
                 this.courseService.findAllCourses(),
-                HttpStatus.OK
-        );
+                HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity findCourseById(@PathVariable Long id) {
-        try {
-            return new ResponseEntity(
-                    this.courseService.findById(id),
-                    HttpStatus.FOUND
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.NOT_FOUND
-            );
-        }
+    public ResponseEntity<CourseDto> findCourseById(@PathVariable Long id) {
+        return new ResponseEntity<CourseDto>(
+                this.courseService.findById(id),
+                HttpStatus.FOUND);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteCourseById(@PathVariable Long id) {
-        try {
-            this.courseService.deleteCourse(id);
+    public ResponseEntity<ResponseDto> deleteCourseById(@PathVariable Long id) {
+        this.courseService.deleteCourse(id);
 
-            return new ResponseEntity(
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.NOT_FOUND
-            );
-        }
+        return new ResponseEntity<ResponseDto>(
+                new ResponseDtoSuccess(HttpStatus.OK, String.format("Course with id = '%s' deleted successfully", id)),
+                HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity updateCourse(@RequestBody CourseDtoWithId courseDto) {
-        try {
-            return new ResponseEntity(
-                    this.courseService.updateCourse(courseDto),
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    courseDto,
-                    HttpStatus.NOT_FOUND
-            );
-        }
+    public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDtoWithId courseDto) {
+        return new ResponseEntity<CourseDto>(
+                this.courseService.updateCourse(courseDto),
+                HttpStatus.OK);
     }
 
     @GetMapping("search")
-    public ResponseEntity getCoursesByName(@RequestParam String name) {
-        try {
-            return new ResponseEntity(
-                    this.courseService.findAllCoursesByName(name),
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.BAD_REQUEST
-            );
-        }
+    public ResponseEntity<List<CourseDto>> getCoursesByName(@RequestParam String name) {
+        return new ResponseEntity<List<CourseDto>>(
+                this.courseService.findAllCoursesByName(name),
+                HttpStatus.OK);
     }
 
     @GetMapping("{courseId}/sections")
-    public ResponseEntity getCourseSections(@PathVariable Long courseId) {
-        try {
-            return new ResponseEntity(
-                    this.courseService.findAllCourseSections(courseId),
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.BAD_REQUEST
-            );
-        }
+    public ResponseEntity<List<SectionDto>> getCourseSections(@PathVariable Long courseId) {
+        return new ResponseEntity<List<SectionDto>>(
+                this.courseService.findAllCourseSections(courseId),
+                HttpStatus.OK);
     }
 
     @PostMapping("{courseId}/sections")
-    public ResponseEntity createCourseSection(@PathVariable Long courseId, @RequestBody SectionDto sectionDto) {
-        try {
-            return new ResponseEntity(
-                    this.courseService.createSection(sectionDto, courseId),
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.BAD_REQUEST
-            );
-        }
+    public ResponseEntity<SectionDto> createCourseSection(@PathVariable Long courseId,
+            @RequestBody SectionDto sectionDto) {
+        return new ResponseEntity<SectionDto>(
+                this.courseService.createSection(sectionDto, courseId),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("sections/{sectionId}")
-    public ResponseEntity createCourseSection(@PathVariable Long sectionId) {
-        try {
-            this.courseService.deleteSection(sectionId);
-            return new ResponseEntity(
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.BAD_REQUEST
-            );
-        }
+    public ResponseEntity<ResponseDto> deleteCourseSection(@PathVariable Long sectionId) {
+        this.courseService.deleteSection(sectionId);
+        return new ResponseEntity<ResponseDto>(
+                new ResponseDtoSuccess(HttpStatus.OK, String.format("Section with id = '%s' deleted successfully", sectionId)),
+                HttpStatus.OK);
     }
 
     @GetMapping("/template")
-    public ResponseEntity getTemplate() {
-        return new ResponseEntity(
+    public ResponseEntity<Object> getTemplate() {
+        return new ResponseEntity<Object>(
                 new CourseDtoWithId(
                         0L,
                         "Web Development with Java",
                         "Spring Boot",
                         "Nqkoi Sitam",
-                        new FacultyDepartmentDto(6L,"Information Technologies"),
+                        new FacultyDepartmentDto(6L, "Information Technologies"),
                         CourseGroup.CSF,
-                        null
-                ),
-                HttpStatus.OK
-        );
+                        null),
+                HttpStatus.OK);
     }
 }
