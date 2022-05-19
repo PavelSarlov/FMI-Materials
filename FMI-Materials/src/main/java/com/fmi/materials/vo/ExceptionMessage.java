@@ -1,13 +1,14 @@
 package com.fmi.materials.vo;
 
-public enum ErrorMessage {
-    ALREADY_EXISTS("%s with %s = '%s' already exists"), 
+public enum ExceptionMessage {
+    ALREADY_EXISTS("%s with %s = '%s' already exists"),
     LOGIN_INVALID("Login invalid"),
-    NOT_FOUND("%s with %s = '%s' not found");
+    NOT_FOUND("%s with %s = '%s' not found"),
+    PASSWORDS_NOT_EQUAL("The inputted passwords are not equal.");
 
     private String format;
 
-    private ErrorMessage(String format) {
+    private ExceptionMessage(String format) {
         this.format = format;
     }
 

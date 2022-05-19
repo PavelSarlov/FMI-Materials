@@ -9,7 +9,7 @@ import com.fmi.materials.mapper.FacultyDepartmentDtoMapper;
 import com.fmi.materials.model.FacultyDepartment;
 import com.fmi.materials.repository.FacultyDepartmentRepository;
 import com.fmi.materials.service.FacultyDepartmentService;
-import com.fmi.materials.vo.ErrorMessage;
+import com.fmi.materials.vo.ExceptionMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class FacultyDepartmentServiceImpl implements FacultyDepartmentService {
     @Override
     public void deleteFacultyDepartment(Long facultyDepartmentId) {
         if(!this.facultyDepartmentRepository.existsById(facultyDepartmentId)) {
-            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Faculty department", "id", facultyDepartmentId));
+            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Faculty department", "id", facultyDepartmentId));
         }
         this.facultyDepartmentRepository.deleteById(facultyDepartmentId);
     }
@@ -39,7 +39,7 @@ public class FacultyDepartmentServiceImpl implements FacultyDepartmentService {
     @Override
     public FacultyDepartmentDto updateFacultyDepartment(FacultyDepartmentDto facultyDepartmentDto) {
         if (!this.facultyDepartmentRepository.existsById(facultyDepartmentDto.getId())) {
-            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Faculty department", "id", facultyDepartmentDto.getId()));
+            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Faculty department", "id", facultyDepartmentDto.getId()));
         }
         FacultyDepartment facultyDepartment = this.facultyDepartmentDtoMapper.convertToEntity(facultyDepartmentDto);
         return this.facultyDepartmentDtoMapper.convertToDto(this.facultyDepartmentRepository.save(facultyDepartment));
@@ -49,7 +49,7 @@ public class FacultyDepartmentServiceImpl implements FacultyDepartmentService {
     public FacultyDepartmentDto findById(Long facultyDepartmentId) {
         return this.facultyDepartmentDtoMapper.convertToDto(this.facultyDepartmentRepository
                 .findById(facultyDepartmentId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Faculty department", "id", facultyDepartmentId))));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Faculty department", "id", facultyDepartmentId))));
     }
 
     @Override

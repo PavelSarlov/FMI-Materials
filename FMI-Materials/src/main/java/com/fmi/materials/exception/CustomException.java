@@ -1,6 +1,12 @@
  package com.fmi.materials.exception;
 
-public class CustomException extends RuntimeException {
+ import lombok.Getter;
+ import org.springframework.http.HttpStatus;
+
+ @Getter
+ public class CustomException extends RuntimeException {
+
+    protected HttpStatus status = HttpStatus.BAD_REQUEST;
 
     public CustomException()  {
         super();
@@ -16,7 +22,7 @@ public class CustomException extends RuntimeException {
 
     public CustomException(Throwable cause) {
         super(cause);
-    } 
+    }
 }
 
 

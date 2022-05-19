@@ -1,7 +1,7 @@
 package com.fmi.materials.controller;
 
 import com.fmi.materials.dto.response.ResponseDto;
-import com.fmi.materials.exception.EntityNotFoundException;
+import com.fmi.materials.exception.CustomException;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -17,8 +17,7 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ResponseDto> handleCustomException(CustomException ex) {
-        ResponseDto response = new ResponseDto(HttpStatus.NOT_FOUND, ex.getMessage());
-        System.out.println(response);
+        ResponseDto response = new ResponseDto(ex.getStatusCode(), ex.getMessage());
         return buildResponseEntity(response);
     }
 

@@ -26,7 +26,7 @@ import com.fmi.materials.repository.MaterialRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.FacultyDepartmentService;
-import com.fmi.materials.vo.ErrorMessage;
+import com.fmi.materials.vo.ExceptionMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,7 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
         if (courseNames.contains(courseDto.getName().toLowerCase(Locale.ROOT))) {
             throw new EntityAlreadyExistsException(
-                    ErrorMessage.ALREADY_EXISTS.getFormattedMessage("Course", "name", courseDto.getName()));
+                    ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Course", "name", courseDto.getName()));
         }
 
         Course course = this.courseDtoMapper.convertToEntity(courseDto);
@@ -79,7 +79,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteCourse(Long courseId) {
         if (!this.courseRepository.existsById(courseId)) {
-            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId));
+            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId));
         }
         this.courseRepository.deleteById(courseId);
     }
@@ -87,7 +87,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDto updateCourse(CourseDtoWithId courseDto) {
         if (!this.courseRepository.existsById(courseDto.getId())) {
-            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseDto.getId()));
+            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseDto.getId()));
         }
         Course course = this.courseDtoMapper.convertToEntityWithId(courseDto);
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.save(course));
@@ -97,7 +97,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseDto findById(Long courseId) {
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.findById(courseId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId))));
+                        () -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId))));
     }
 
     @Override
@@ -131,7 +131,7 @@ public class CourseServiceImpl implements CourseService {
     public List<SectionDto> findAllCourseSections(Long courseId) {
         return this.courseRepository.findById(courseId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)))
+                        () -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)))
                 .getSections().stream()
                 .map(this.sectionDtoMapper::convertToDto)
                 .collect(Collectors.toList());
@@ -141,7 +141,7 @@ public class CourseServiceImpl implements CourseService {
     public SectionDto createSection(SectionDto sectionDto, Long courseId) {
         Course course = this.courseRepository.findById(courseId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
+                        () -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
         Section section = this.sectionDtoMapper.convertToEntity(sectionDto);
         section.setCourse(course);
         section = this.sectionRepository.save(section);
@@ -151,7 +151,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteSection(Long sectionId) {
         if (!this.sectionRepository.existsById(sectionId)) {
-            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId));
+            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId));
         }
         this.sectionRepository.deleteById(sectionId);
     }
@@ -160,7 +160,7 @@ public class CourseServiceImpl implements CourseService {
     public MaterialDto createMaterial(MultipartFile materialFile, Long sectionId) throws IOException {
         Section section = this.sectionRepository.findById(sectionId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
+                        () -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
         Material material = this.materialDtoMapper.convertToEntity(materialFile, section);
         material = this.materialRepository.save(material);
         return this.materialDtoMapper.convertToDto(material);
@@ -169,7 +169,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteMaterial(Long materialId) {
         if (!this.materialRepository.existsById(materialId)) {
-            throw new EntityNotFoundException(ErrorMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId));
+            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId));
         }
         this.materialRepository.deleteById(materialId);
     }
