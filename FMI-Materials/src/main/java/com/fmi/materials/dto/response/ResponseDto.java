@@ -1,22 +1,17 @@
 package com.fmi.materials.dto.response;
 
-import java.time.LocalDateTime;
-
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
 public class ResponseDto {
     private LocalDateTime timestamp;
     private int status;
-    private String error;
 
-    public ResponseDto(HttpStatus status, String error) {
+    public ResponseDto(HttpStatus status) {
         this.timestamp = LocalDateTime.now();
         this.status = status.value();
-        this.error = error;
     }
 }

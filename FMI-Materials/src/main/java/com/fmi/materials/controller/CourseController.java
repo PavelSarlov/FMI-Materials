@@ -5,6 +5,8 @@ import java.util.List;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
+import com.fmi.materials.dto.response.ResponseDto;
+import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.vo.CourseGroup;
@@ -12,15 +14,7 @@ import com.fmi.materials.vo.CourseGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "api/courses")
@@ -29,67 +23,69 @@ public class CourseController {
     private CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<Object> createCourse(@RequestBody CourseDto courseDto) {
-        return new ResponseEntity<Object>(
+    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto) {
+        return new ResponseEntity<CourseDto>(
                 this.courseService.createCourse(courseDto),
                 HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<Object> findAllCourses() {
-        return new ResponseEntity<Object>(
+    public ResponseEntity<List<CourseDto>> findAllCourses() {
+        return new ResponseEntity<List<CourseDto>>(
                 this.courseService.findAllCourses(),
                 HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Object> findCourseById(@PathVariable Long id) {
-        return new ResponseEntity<Object>(
+    public ResponseEntity<CourseDto> findCourseById(@PathVariable Long id) {
+        return new ResponseEntity<CourseDto>(
                 this.courseService.findById(id),
                 HttpStatus.FOUND);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Object> deleteCourseById(@PathVariable Long id) {
+    public ResponseEntity<ResponseDto> deleteCourseById(@PathVariable Long id) {
         this.courseService.deleteCourse(id);
 
-        return new ResponseEntity<Object>(
+        return new ResponseEntity<ResponseDto>(
+                new ResponseDtoSuccess(HttpStatus.OK, String.format("Course with id = '%s' deleted successfully", id)),
                 HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<Object> updateCourse(@RequestBody CourseDtoWithId courseDto) {
-        return new ResponseEntity<Object>(
+    public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDtoWithId courseDto) {
+        return new ResponseEntity<CourseDto>(
                 this.courseService.updateCourse(courseDto),
                 HttpStatus.OK);
     }
 
     @GetMapping("search")
-    public ResponseEntity<Object> getCoursesByName(@RequestParam String name) {
-        return new ResponseEntity<Object>(
+    public ResponseEntity<List<CourseDto>> getCoursesByName(@RequestParam String name) {
+        return new ResponseEntity<List<CourseDto>>(
                 this.courseService.findAllCoursesByName(name),
                 HttpStatus.OK);
     }
 
     @GetMapping("{courseId}/sections")
-    public ResponseEntity<Object> getCourseSections(@PathVariable Long courseId) {
-        return new ResponseEntity<Object>(
+    public ResponseEntity<List<SectionDto>> getCourseSections(@PathVariable Long courseId) {
+        return new ResponseEntity<List<SectionDto>>(
                 this.courseService.findAllCourseSections(courseId),
                 HttpStatus.OK);
     }
 
     @PostMapping("{courseId}/sections")
-    public ResponseEntity<Object> createCourseSection(@PathVariable Long courseId,
+    public ResponseEntity<SectionDto> createCourseSection(@PathVariable Long courseId,
             @RequestBody SectionDto sectionDto) {
-        return new ResponseEntity<Object>(
+        return new ResponseEntity<SectionDto>(
                 this.courseService.createSection(sectionDto, courseId),
                 HttpStatus.OK);
     }
 
     @DeleteMapping("sections/{sectionId}")
-    public ResponseEntity<Object> createCourseSection(@PathVariable Long sectionId) {
+    public ResponseEntity<ResponseDto> deleteCourseSection(@PathVariable Long sectionId) {
         this.courseService.deleteSection(sectionId);
-        return new ResponseEntity<Object>(
+        return new ResponseEntity<ResponseDto>(
+                new ResponseDtoSuccess(HttpStatus.OK, String.format("Section with id = '%s' deleted successfully", sectionId)),
                 HttpStatus.OK);
     }
 

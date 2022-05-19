@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("api")
@@ -25,17 +24,10 @@ public class AccountController {
 
     @PostMapping("register")
     public ResponseEntity<UserDto> register(@RequestBody @Valid UserDtoRegistration userDtoRegistration) {
-        try {
-            return new ResponseEntity(
-                    this.userService.createUser(userDtoRegistration),
-                    HttpStatus.CREATED
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    e.getMessage(),
-                    HttpStatus.CONFLICT
-            );
-        }
+        return new ResponseEntity<UserDto>(
+                this.userService.createUser(userDtoRegistration),
+                HttpStatus.CREATED
+        );
     }
 
     /*@PostMapping("login")

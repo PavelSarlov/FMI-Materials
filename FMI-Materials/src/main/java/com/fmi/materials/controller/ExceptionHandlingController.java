@@ -1,6 +1,7 @@
 package com.fmi.materials.controller;
 
 import com.fmi.materials.dto.response.ResponseDto;
+import com.fmi.materials.dto.response.ResponseDtoError;
 import com.fmi.materials.exception.CustomException;
 
 import org.springframework.core.Ordered;
@@ -17,7 +18,7 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ResponseDto> handleCustomException(CustomException ex) {
-        ResponseDto response = new ResponseDto(ex.getStatusCode(), ex.getMessage());
+        ResponseDto response = new ResponseDtoError(ex.getStatus(), ex.getMessage());
         return buildResponseEntity(response);
     }
 
