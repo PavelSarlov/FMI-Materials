@@ -1,11 +1,14 @@
 package com.fmi.materials.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.exception.EntityAlreadyExistsException;
 import com.fmi.materials.exception.EntityNotFoundException;
+import com.fmi.materials.mapper.CourseDtoMapper;
 import com.fmi.materials.mapper.CourseListDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
 import com.fmi.materials.model.Course;
@@ -28,6 +31,7 @@ public class CourseListServiceImpl implements CourseListService {
     private UserService userService;
     private CourseListDtoMapper courseListDtoMapper;
     private UserDtoMapper userDtoMapper;
+    private CourseDtoMapper courseDtoMapper;
 
     @Autowired
     public CourseListServiceImpl(
@@ -35,13 +39,15 @@ public class CourseListServiceImpl implements CourseListService {
             CourseRepository courseRepository,
             UserService userService,
             CourseListDtoMapper courseListDtoMapper,
-            UserDtoMapper userDtoMapper
+            UserDtoMapper userDtoMapper,
+            CourseDtoMapper courseDtoMapper
     ) {
         this.courseListRepository = courseListRepository;
         this.courseRepository = courseRepository;
         this.userService = userService;
         this.courseListDtoMapper = courseListDtoMapper;
         this.userDtoMapper = userDtoMapper;
+        this.courseDtoMapper = courseDtoMapper;
     }
 
     @Override
@@ -72,11 +78,9 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public void deleteCourseList(Long userId, Long courseListId) {
-        if (this.courseListRepository.findUserCourseList(userId, courseListId) == null) {
-            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId));
+        if (this.getCourseList(courseListId, userId) != null) {
+            this.courseListRepository.deleteById(courseListId);
         }
-
-        this.courseListRepository.deleteById(courseListId);
     }
 
     @Override
@@ -119,5 +123,34 @@ public class CourseListServiceImpl implements CourseListService {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    @Override
+    public void deleteCourseFromCourseList(Long userId, Long courseListId, Long courseId) {
+        try {
+            CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(this.getCourseList(courseListId, userId));
+            User user = this.userDtoMapper.convertToEntityWithId(this.userService.findUserById(userId));
+            courseList.setUser(user);
+
+            Course course = this.courseRepository.findById(courseId)
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
+
+            courseList.removeCourse(course);
+            course.removeCourseList(courseList);
+
+            this.courseRepository.save(course);
+            this.courseListRepository.save(courseList);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public List<CourseDtoWithId> getFavouriteCourses(Long userId) {
+        User user = this.userDtoMapper.convertToEntityWithId(this.userService.findUserById(userId));
+
+        return user.getFavouriteCourses().stream()
+                .map(this.courseDtoMapper::convertToDtoWithId)
+                .collect(Collectors.toList());
     }
 }

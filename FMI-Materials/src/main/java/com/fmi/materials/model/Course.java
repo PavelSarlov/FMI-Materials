@@ -44,6 +44,9 @@ public class Course {
     @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CourseList> courseLists;
 
+    @ManyToMany(mappedBy = "favouriteCourses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<User> users;
+
     public Course() {}
 
     public Course(String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup) {
@@ -64,5 +67,12 @@ public class Course {
             this.courseLists = new HashSet<CourseList>();
         }
         this.courseLists.add(courseList);
+    }
+
+    public void removeCourseList(CourseList courseList) {
+        if (this.courseLists == null) {
+            return;
+        }
+        this.courseLists.remove(courseList);
     }
 }

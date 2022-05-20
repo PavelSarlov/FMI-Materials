@@ -51,4 +51,11 @@ public class CourseList {
         }
         this.courses.add(course);
     }
+
+    public void removeCourse(Course course) {
+        if (this.courses == null) {
+            return;
+        }
+        this.courses.remove(course);
+    }
 }

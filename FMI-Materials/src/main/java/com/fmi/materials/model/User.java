@@ -39,6 +39,16 @@ public class User {
             })
     private Set<UserRole> roles;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_favourite_courses",
+            joinColumns = {
+                    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false, updatable = false)
+            })
+    private Set<Course> favouriteCourses;
+
     public User() {}
 
     public User(String name, String passwordHash, String email) {

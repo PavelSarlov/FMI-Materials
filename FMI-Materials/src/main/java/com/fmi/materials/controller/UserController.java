@@ -26,7 +26,7 @@ public class UserController {
         this.courseListService = courseListService;
     }
 
-    @GetMapping("/lists")
+    @GetMapping("lists")
     public ResponseEntity<List<CourseListDtoWithId>> getCourseLists(@PathVariable Long userId) {
         return new ResponseEntity<List<CourseListDtoWithId>>(
                 this.courseListService.getAllCourseLists(userId),
@@ -34,12 +34,17 @@ public class UserController {
         );
     }
 
-    @GetMapping("/lists/{courseListId}")
+    @GetMapping("lists/{courseListId}")
     public ResponseEntity<CourseListDto> getCourseListById(@PathVariable Long userId, @PathVariable Long courseListId) {
         return new ResponseEntity<CourseListDto>(
                 this.courseListService.getCourseList(courseListId, userId),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("favourite-courses")
+    public ResponseEntity<CourseListDto> getFavouriteCourses(@PathVariable Long userId) {
+        return null;
     }
 
     @PostMapping
@@ -50,7 +55,7 @@ public class UserController {
         );
     }
 
-    @PostMapping("/lists")
+    @PostMapping("lists")
     public ResponseEntity<CourseListDto> addCourseToList(@PathVariable Long userId, @RequestBody CourseCourseListIdDto courseCourseListIdDto) {
         return new ResponseEntity<CourseListDto>(
                 this.courseListService.addCourseToList(courseCourseListIdDto.getCourseId(), courseCourseListIdDto.getCourseListId(), userId),
@@ -58,7 +63,7 @@ public class UserController {
         );
     }
 
-    @DeleteMapping("/lists/{listId}")
+    @DeleteMapping("lists/{listId}")
     public ResponseEntity<ResponseDto> deleteCourseList(@PathVariable Long userId, @PathVariable Long listId) {
         this.courseListService.deleteCourseList(userId, listId);
 
@@ -68,7 +73,17 @@ public class UserController {
         );
     }
 
-    @PutMapping("/lists")
+    @DeleteMapping("lists/{listId}/courses/{courseId}")
+    public ResponseEntity<ResponseDto> deleteCourseFromCourseList(@PathVariable Long userId, @PathVariable Long listId, @PathVariable Long courseId) {
+        this.courseListService.deleteCourseFromCourseList(userId, listId, courseId);
+
+        return new ResponseEntity<ResponseDto>(
+                new ResponseDtoSuccess(HttpStatus.OK, String.format("Course with id = '%s' from list with id = '%s' deleted successfully", courseId, listId)),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("lists")
     public ResponseEntity<CourseListDto> updateCourseList(@RequestBody CourseListDtoWithId courseListDtoWithId) {
         return new ResponseEntity<CourseListDto>(
                 this.courseListService.updateCourseList(courseListDtoWithId),
