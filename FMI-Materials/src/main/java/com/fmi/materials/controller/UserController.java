@@ -1,11 +1,13 @@
 package com.fmi.materials.controller;
 
 import com.fmi.materials.dto.CourseCourseListIdDto;
+import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.service.CourseListService;
+import com.fmi.materials.service.FavouriteCoursesService;
 import com.fmi.materials.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,13 +19,13 @@ import java.util.List;
 @RestController
 @RequestMapping("api/users/{userId}")
 public class UserController {
-    private UserService userService;
     private CourseListService courseListService;
+    private FavouriteCoursesService favouriteCoursesService;
 
     @Autowired
-    public UserController(UserService userService, CourseListService courseListService) {
-        this.userService = userService;
+    public UserController(CourseListService courseListService, FavouriteCoursesService favouriteCoursesService) {
         this.courseListService = courseListService;
+        this.favouriteCoursesService = favouriteCoursesService;
     }
 
     @GetMapping("lists")
@@ -35,31 +37,42 @@ public class UserController {
     }
 
     @GetMapping("lists/{courseListId}")
-    public ResponseEntity<CourseListDto> getCourseListById(@PathVariable Long userId, @PathVariable Long courseListId) {
-        return new ResponseEntity<CourseListDto>(
+    public ResponseEntity<CourseListDtoWithId> getCourseListById(@PathVariable Long userId, @PathVariable Long courseListId) {
+        return new ResponseEntity<CourseListDtoWithId>(
                 this.courseListService.getCourseList(courseListId, userId),
                 HttpStatus.OK
         );
     }
 
     @GetMapping("favourite-courses")
-    public ResponseEntity<CourseListDto> getFavouriteCourses(@PathVariable Long userId) {
-        return null;
+    public ResponseEntity<List<CourseDtoWithId>> getFavouriteCourses(@PathVariable Long userId) {
+        return new ResponseEntity<List<CourseDtoWithId>>(
+                this.favouriteCoursesService.getFavouriteCourses(userId),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping
-    public ResponseEntity<CourseListDto> createCourseList(@PathVariable Long userId, @RequestBody CourseListDto courseListDto) {
-        return new ResponseEntity<CourseListDto>(
+    public ResponseEntity<CourseListDtoWithId> createCourseList(@PathVariable Long userId, @RequestBody CourseListDto courseListDto) {
+        return new ResponseEntity<CourseListDtoWithId>(
                 this.courseListService.createCourseList(courseListDto, userId),
                 HttpStatus.CREATED
         );
     }
 
     @PostMapping("lists")
-    public ResponseEntity<CourseListDto> addCourseToList(@PathVariable Long userId, @RequestBody CourseCourseListIdDto courseCourseListIdDto) {
-        return new ResponseEntity<CourseListDto>(
+    public ResponseEntity<CourseListDtoWithId> addCourseToList(@PathVariable Long userId, @RequestBody CourseCourseListIdDto courseCourseListIdDto) {
+        return new ResponseEntity<CourseListDtoWithId>(
                 this.courseListService.addCourseToList(courseCourseListIdDto.getCourseId(), courseCourseListIdDto.getCourseListId(), userId),
                 HttpStatus.CREATED
+        );
+    }
+
+    @PostMapping("favourite-courses")
+    public ResponseEntity<List<CourseDtoWithId>> addCourseToFavourite(@PathVariable Long userId, @PathVariable Long courseId) {
+        return new ResponseEntity<List<CourseDtoWithId>>(
+                this.favouriteCoursesService.addCourse(userId, courseId),
+                HttpStatus.OK
         );
     }
 
@@ -83,9 +96,19 @@ public class UserController {
         );
     }
 
+    @DeleteMapping("favourite-courses/{courseId}")
+    public ResponseEntity<ResponseDto> deleteCourseFromFavourite(@PathVariable Long userId, @PathVariable Long courseId) {
+        this.favouriteCoursesService.deleteFavouriteCourse(userId, courseId);
+
+        return new ResponseEntity<ResponseDto>(
+                new ResponseDtoSuccess(HttpStatus.OK, String.format("Course with id = '%s' from favourite courses deleted successfully", courseId)),
+                HttpStatus.OK
+        );
+    }
+
     @PutMapping("lists")
-    public ResponseEntity<CourseListDto> updateCourseList(@PathVariable Long userId, @RequestBody CourseListDtoWithId courseListDtoWithId) {
-        return new ResponseEntity<CourseListDto>(
+    public ResponseEntity<CourseListDtoWithId> updateCourseList(@PathVariable Long userId, @RequestBody CourseListDtoWithId courseListDtoWithId) {
+        return new ResponseEntity<CourseListDtoWithId>(
                 this.courseListService.updateCourseList(userId, courseListDtoWithId),
                 HttpStatus.OK
         );

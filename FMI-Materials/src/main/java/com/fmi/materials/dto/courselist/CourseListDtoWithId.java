@@ -16,8 +16,8 @@ import java.util.List;
 public class CourseListDtoWithId extends CourseListDto {
     private Long id;
 
-    public CourseListDtoWithId(Long id, String listName, UserDtoWithId user, List<CourseDtoWithId> courses) {
-        super(listName, user, courses);
+    public CourseListDtoWithId(Long id, String listName, /*UserDtoWithId user,*/ List<CourseDtoWithId> courses) {
+        super(listName, /*user,*/ courses);
         this.id = id;
     }
 }

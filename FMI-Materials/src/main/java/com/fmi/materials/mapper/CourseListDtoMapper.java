@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class CourseListDtoMapper {
-    @Autowired
-    private UserDtoMapper userDtoMapper;
+    /*@Autowired
+    private UserDtoMapper userDtoMapper;*/
 
     @Autowired
     private CourseDtoMapper courseDtoMapper;
@@ -28,7 +28,7 @@ public class CourseListDtoMapper {
     public CourseListDto convertToDto(CourseList courseList) {
 
         return new CourseListDto(courseList.getListName(),
-                this.userDtoMapper.convertToDtoWithId(courseList.getUser()),
+                /*this.userDtoMapper.convertToDtoWithId(courseList.getUser()),*/
                 courseList.getCourses() != null ? courseList.getCourses().stream()
                         .map(this.courseDtoMapper::convertToDtoWithId)
                         .collect(Collectors.toList()) : null);
@@ -37,7 +37,7 @@ public class CourseListDtoMapper {
     public CourseListDtoWithId convertToDtoWithId(CourseList courseList) {
         return new CourseListDtoWithId(courseList.getId(),
                 courseList.getListName(),
-                this.userDtoMapper.convertToDtoWithId(courseList.getUser()),
+                /*this.userDtoMapper.convertToDtoWithId(courseList.getUser()),*/
                 courseList.getCourses() != null ? courseList.getCourses().stream()
                         .map(this.courseDtoMapper::convertToDtoWithId)
                         .collect(Collectors.toList()) : null);

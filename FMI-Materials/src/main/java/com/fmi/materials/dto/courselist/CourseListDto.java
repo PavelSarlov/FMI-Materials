@@ -16,15 +16,15 @@ import java.util.List;
 @ToString
 public class CourseListDto {
     private String listName;
-    private UserDtoWithId user;
+    //private UserDtoWithId user;
     private List<CourseDtoWithId> courses;
 
     public CourseListDto() {
     }
 
-    public CourseListDto(String listName, UserDtoWithId user, List<CourseDtoWithId> courses) {
+    public CourseListDto(String listName, /*UserDtoWithId user,*/ List<CourseDtoWithId> courses) {
         this.listName = listName;
-        this.user = user;
+        //this.user = user;
         this.courses = courses;
     }
 }
