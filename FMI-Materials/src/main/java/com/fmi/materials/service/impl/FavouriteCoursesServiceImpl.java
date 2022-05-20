@@ -1,15 +1,14 @@
 package com.fmi.materials.service.impl;
 
 import com.fmi.materials.dto.course.CourseDtoWithId;
+import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.exception.InvalidArgumentException;
 import com.fmi.materials.mapper.CourseDtoMapper;
-import com.fmi.materials.mapper.CourseListDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
 import com.fmi.materials.model.Course;
 import com.fmi.materials.model.CustomUserDetails;
 import com.fmi.materials.model.User;
-import com.fmi.materials.repository.CourseListRepository;
 import com.fmi.materials.repository.CourseRepository;
 import com.fmi.materials.service.FavouriteCoursesService;
 import com.fmi.materials.service.UserService;
@@ -62,7 +61,7 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
 
             User user = this.userDtoMapper.convertToEntityWithId(this.userService.findUserById(userId));
             Course course = this.courseRepository.findById(courseId)
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
 
             user.removeCourse(course);
             course.removeUser(user);
@@ -87,13 +86,14 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
 
             User user = this.userDtoMapper.convertToEntityWithId(this.userService.findUserById(userId));
             Course course = this.courseRepository.findById(courseId)
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
 
             user.addCourse(course);
             course.addUser(user);
 
             this.courseRepository.save(course);
-            this.userService.updateUser(this.userDtoMapper.convertToDtoWithId(user));
+            UserDto userDto = this.userService.updateUser(this.userDtoMapper.convertToDtoWithId(user));
+            return userDto.getFavouriteCourses();
         } catch (Exception e) {
             throw e;
         }

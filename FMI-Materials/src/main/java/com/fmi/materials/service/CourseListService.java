@@ -11,7 +11,7 @@ import java.util.List;
 public interface CourseListService {
     CourseListDtoWithId createCourseList(CourseListDto courseListDto, Long userId);
 
-    CourseListDtoWithId updateCourseList(CourseListDtoWithId courseListDtoWithId);
+    CourseListDtoWithId updateCourseList(Long userId, CourseListDtoWithId courseListDtoWithId);
 
     void deleteCourseList(Long userId, Long courseListId);
 

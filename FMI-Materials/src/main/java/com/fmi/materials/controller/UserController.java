@@ -84,9 +84,9 @@ public class UserController {
     }
 
     @PutMapping("lists")
-    public ResponseEntity<CourseListDto> updateCourseList(@RequestBody CourseListDtoWithId courseListDtoWithId) {
+    public ResponseEntity<CourseListDto> updateCourseList(@PathVariable Long userId, @RequestBody CourseListDtoWithId courseListDtoWithId) {
         return new ResponseEntity<CourseListDto>(
-                this.courseListService.updateCourseList(courseListDtoWithId),
+                this.courseListService.updateCourseList(userId, courseListDtoWithId),
                 HttpStatus.OK
         );
     }
