@@ -144,13 +144,4 @@ public class CourseListServiceImpl implements CourseListService {
             throw e;
         }
     }
-
-    @Override
-    public List<CourseDtoWithId> getFavouriteCourses(Long userId) {
-        User user = this.userDtoMapper.convertToEntityWithId(this.userService.findUserById(userId));
-
-        return user.getFavouriteCourses().stream()
-                .map(this.courseDtoMapper::convertToDtoWithId)
-                .collect(Collectors.toList());
-    }
 }

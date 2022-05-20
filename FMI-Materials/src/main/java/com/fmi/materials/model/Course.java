@@ -75,4 +75,18 @@ public class Course {
         }
         this.courseLists.remove(courseList);
     }
+
+    public void addUser(User user) {
+        if (this.users == null) {
+            this.users = new HashSet<User>();
+        }
+        this.users.add(user);
+    }
+
+    public void removeUser(User user) {
+        if (this.users == null) {
+            return;
+        }
+        this.users.remove(user);
+    }
 }

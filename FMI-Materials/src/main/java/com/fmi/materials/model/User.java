@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -60,5 +61,19 @@ public class User {
         this.name = name;
         this.passwordHash = passwordHash;
         this.email = email;
+    }
+
+    public void addCourse(Course course) {
+        if (this.favouriteCourses == null) {
+            this.favouriteCourses = new HashSet<Course>();
+        }
+        this.favouriteCourses.add(course);
+    }
+
+    public void removeCourse(Course course) {
+        if (this.favouriteCourses == null) {
+            return;
+        }
+        this.favouriteCourses.remove(course);
     }
 }

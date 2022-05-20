@@ -22,6 +22,4 @@ public interface CourseListService {
     CourseListDtoWithId addCourseToList(Long courseId, Long courseListId, Long userId);
 
     void deleteCourseFromCourseList(Long userId, Long courseListId, Long courseId);
-
-    List<CourseDtoWithId> getFavouriteCourses(Long userId);
 }
