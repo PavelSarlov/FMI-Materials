@@ -4,7 +4,8 @@ public enum ExceptionMessage {
     ALREADY_EXISTS("%s with %s = '%s' already exists"),
     LOGIN_INVALID("Login invalid"),
     NOT_FOUND("%s with %s = '%s' not found"),
-    PASSWORDS_NOT_EQUAL("The inputted passwords are not equal.");
+    PASSWORDS_NOT_EQUAL("The inputted passwords are not equal."),
+    INVALID_OPERATION("Invalid user request.");
 
     private String format;
 

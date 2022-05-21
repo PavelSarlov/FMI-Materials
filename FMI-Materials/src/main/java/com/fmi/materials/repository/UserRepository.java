@@ -14,6 +14,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     User findByEmail(String email);
 
-    @Query(value = "SELECT users.id FROM users WHERE users.name = ?1 and users.email = ?2 and users.passwordHash = ?3", nativeQuery = true)
+    @Query(value = "SELECT users.id FROM users " +
+            "WHERE users.name = ?1 and users.email = ?2 and users.passwordHash = ?3", nativeQuery = true)
     Long findUserByNameAndEmailAndPassword(String name, String email, String password);
 }
