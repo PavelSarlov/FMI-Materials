@@ -2,6 +2,7 @@ package com.fmi.materials.dto.user;
 
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
+import com.fmi.materials.model.UserRole;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

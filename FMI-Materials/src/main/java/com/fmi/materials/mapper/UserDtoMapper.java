@@ -50,10 +50,17 @@ public class UserDtoMapper {
     }
 
     public User convertToEntity(UserDto userDto) {
-        return new User(userDto.getName(), userDto.getPassword(), userDto.getEmail());
+        return new User(userDto.getName(),
+                userDto.getPassword(),
+                userDto.getEmail(),
+                userDto.getCourseLists().stream().map(this.courseListDtoMapper::convertToEntityWithId).collect(Collectors.toList()),
+                userDto.getFavouriteCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet())
+        );
     }
 
     public User convertToEntityWithId(UserDtoWithId userDto) {
-        return new User(userDto.getId(), userDto.getName(), userDto.getPassword(), userDto.getEmail());
+        return new User(userDto.getId(), userDto.getName(), userDto.getPassword(), userDto.getEmail(),
+                userDto.getCourseLists().stream().map(this.courseListDtoMapper::convertToEntityWithId).collect(Collectors.toList()),
+                userDto.getFavouriteCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()));
     }
 }

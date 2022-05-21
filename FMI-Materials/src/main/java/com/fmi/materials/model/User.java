@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseList> courseLists;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -56,11 +57,24 @@ public class User {
         this(null, name, passwordHash, email);
     }
 
+    public User(String name, String passwordHash, String email, List<CourseList> courseLists, Set<Course> favouriteCourses) {
+        this(null, name, passwordHash, email, courseLists, favouriteCourses);
+    }
+
     public User(Long id, String name, String passwordHash, String email) {
         this.id = id;
         this.name = name;
         this.passwordHash = passwordHash;
         this.email = email;
+    }
+
+    public User(Long id, String name, String passwordHash, String email, List<CourseList> courseLists, Set<Course> favouriteCourses) {
+        this.id = id;
+        this.name = name;
+        this.passwordHash = passwordHash;
+        this.email = email;
+        this.courseLists = courseLists;
+        this.favouriteCourses = favouriteCourses;
     }
 
     public void addCourse(Course course) {
@@ -75,5 +89,19 @@ public class User {
             return;
         }
         this.favouriteCourses.remove(course);
+    }
+
+    public void addCourseList(CourseList courseList) {
+        if (this.courseLists == null) {
+            this.courseLists = new ArrayList<CourseList>();
+        }
+        this.courseLists.add(courseList);
+    }
+
+    public void removeCourseList(CourseList courseList) {
+        if (this.courseLists == null) {
+            return;
+        }
+        this.courseLists.remove(courseList);
     }
 }

@@ -20,7 +20,7 @@ public class CourseList {
     @Column(name = "list_name")
     private String listName;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -36,13 +36,14 @@ public class CourseList {
 
     public CourseList() {}
 
-    public CourseList(String listName) {
-        this(null, listName);
+    public CourseList(String listName, Set<Course> courses) {
+        this(null, listName, courses);
     }
 
-    public CourseList(Long id, String listName) {
+    public CourseList(Long id, String listName, Set<Course> courses) {
         this.id = id;
         this.listName = listName;
+        this.courses = courses;
     }
 
     public void addCourse(Course course) {

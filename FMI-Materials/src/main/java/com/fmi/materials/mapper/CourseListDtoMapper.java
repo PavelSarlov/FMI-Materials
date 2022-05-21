@@ -18,11 +18,13 @@ public class CourseListDtoMapper {
     private CourseDtoMapper courseDtoMapper;
 
     public CourseList convertToEntity(CourseListDto courseListDto) {
-        return new CourseList(courseListDto.getListName());
+        return new CourseList(courseListDto.getListName(),
+                courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()));
     }
 
     public CourseList convertToEntityWithId(CourseListDtoWithId courseListDto) {
-        return new CourseList(courseListDto.getId(), courseListDto.getListName());
+        return new CourseList(courseListDto.getId(), courseListDto.getListName(),
+                courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()));
     }
 
     public CourseListDto convertToDto(CourseList courseList) {

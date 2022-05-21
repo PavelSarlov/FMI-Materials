@@ -2,6 +2,7 @@ package com.fmi.materials.dto.user;
 
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
+import com.fmi.materials.model.UserRole;
 import com.sun.istack.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter

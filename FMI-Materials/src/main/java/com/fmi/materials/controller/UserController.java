@@ -68,7 +68,7 @@ public class UserController {
         );
     }
 
-    @PostMapping("favourite-courses")
+    @PostMapping("favourite-courses/{courseId}")
     public ResponseEntity<List<CourseDtoWithId>> addCourseToFavourite(@PathVariable Long userId, @PathVariable Long courseId) {
         return new ResponseEntity<List<CourseDtoWithId>>(
                 this.favouriteCoursesService.addCourse(userId, courseId),

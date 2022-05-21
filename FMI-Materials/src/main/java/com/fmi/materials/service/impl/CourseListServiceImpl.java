@@ -18,6 +18,7 @@ import com.fmi.materials.model.CustomUserDetails;
 import com.fmi.materials.model.User;
 import com.fmi.materials.repository.CourseListRepository;
 import com.fmi.materials.repository.CourseRepository;
+import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.CourseListService;
 import com.fmi.materials.service.UserService;
 import com.fmi.materials.vo.ExceptionMessage;
@@ -32,7 +33,7 @@ public class CourseListServiceImpl implements CourseListService {
 
     private CourseListRepository courseListRepository;
     private CourseRepository courseRepository;
-    private UserService userService;
+    private UserRepository userRepository;
     private CourseListDtoMapper courseListDtoMapper;
     private UserDtoMapper userDtoMapper;
     private CourseDtoMapper courseDtoMapper;
@@ -41,14 +42,14 @@ public class CourseListServiceImpl implements CourseListService {
     public CourseListServiceImpl(
             CourseListRepository courseListRepository,
             CourseRepository courseRepository,
-            UserService userService,
+            UserRepository userRepository,
             CourseListDtoMapper courseListDtoMapper,
             UserDtoMapper userDtoMapper,
             CourseDtoMapper courseDtoMapper
     ) {
         this.courseListRepository = courseListRepository;
         this.courseRepository = courseRepository;
-        this.userService = userService;
+        this.userRepository = userRepository;
         this.courseListDtoMapper = courseListDtoMapper;
         this.userDtoMapper = userDtoMapper;
         this.courseDtoMapper = courseDtoMapper;
@@ -65,6 +66,16 @@ public class CourseListServiceImpl implements CourseListService {
         return true;
     }
 
+    private CourseList getCourseListFromRepository(Long courseListId, Long userId) {
+        this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
+
+        CourseList courseList = this.courseListRepository.findUserCourseList(userId, courseListId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
+
+        return courseList;
+    }
+
     @Override
     public CourseListDtoWithId createCourseList(CourseListDto courseListDto, Long userId) {
         if (this.courseListRepository.findByListName(courseListDto.getListName()) != null) {
@@ -75,7 +86,8 @@ public class CourseListServiceImpl implements CourseListService {
                 throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
             }
 
-            User user = this.userDtoMapper.convertToEntityWithId(this.userService.findUserById(userId));
+            User user = this.userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
             CourseList courseList = this.courseListDtoMapper.convertToEntity(courseListDto);
             courseList.setUser(user);
 
@@ -112,21 +124,13 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public CourseListDtoWithId getCourseList(Long courseListId, Long userId) {
-        if (this.userService.findUserById(userId) == null) {
-            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId));
-        }
-
-        CourseList courseList = this.courseListRepository.findUserCourseList(userId, courseListId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
-
-        return this.courseListDtoMapper.convertToDtoWithId(courseList);
+        return this.courseListDtoMapper.convertToDtoWithId(this.getCourseListFromRepository(courseListId, userId));
     }
 
     @Override
     public List<CourseListDtoWithId> getAllCourseLists(Long userId) {
-        if (this.userService.findUserById(userId) == null) {
-            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId));
-        }
+        this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
 
         return this.courseListDtoMapper.convertToDtoList(this.courseListRepository.findUserCourseLists(userId));
     }
@@ -142,7 +146,8 @@ public class CourseListServiceImpl implements CourseListService {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
 
             CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(this.getCourseList(courseListId, userId));
-            User user = this.userDtoMapper.convertToEntityWithId(this.userService.findUserById(userId));
+            User user = this.userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
             courseList.setUser(user);
 
             courseList.addCourse(course);
@@ -163,10 +168,7 @@ public class CourseListServiceImpl implements CourseListService {
                 throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
             }
 
-            CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(this.getCourseList(courseListId, userId));
-            User user = this.userDtoMapper.convertToEntityWithId(this.userService.findUserById(userId));
-            courseList.setUser(user);
-
+            CourseList courseList = this.getCourseListFromRepository(courseListId, userId);
             Course course = this.courseRepository.findById(courseId)
                     .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
 
