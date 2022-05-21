@@ -30,7 +30,7 @@ public class Section {
     private Set<Material> materials;
 
     @OneToMany(mappedBy = "section", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Request> requests;
+    private List<MaterialRequest> materialRequests;
 
     public Section() {}
 

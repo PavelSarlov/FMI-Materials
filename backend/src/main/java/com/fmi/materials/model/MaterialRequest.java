@@ -8,8 +8,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "requests")
-public class Request {
+@Table(name = "material_requests")
+public class MaterialRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -24,9 +24,6 @@ public class Request {
     @Column(name = "data")
     private byte[] data;
 
-    @Column(name = "section_id")
-    private String sectionId;
-
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
@@ -35,19 +32,18 @@ public class Request {
     @JoinColumn(name = "section_id")
     private Section section;
 
-    public Request() {
+    public MaterialRequest() {
     }
 
-    public Request(String fileFormat, String fileName, byte[] data, String sectionId, User user, Section section) {
-        this(null, fileFormat, fileName, data, sectionId, user, section);
+    public MaterialRequest(String fileFormat, String fileName, byte[] data, User user, Section section) {
+        this(null, fileFormat, fileName, data, user, section);
     }
 
-    public Request(Long id, String fileFormat, String fileName, byte[] data, String sectionId, User user, Section section) {
+    public MaterialRequest(Long id, String fileFormat, String fileName, byte[] data, User user, Section section) {
         this.id = id;
         this.fileFormat =fileFormat;
         this.fileName = fileName;
         this.data = data;
-        this.sectionId = sectionId;
         this.user = user;
         this.section = section;
     }

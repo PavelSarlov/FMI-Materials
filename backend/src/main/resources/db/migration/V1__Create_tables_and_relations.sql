@@ -19,24 +19,6 @@ CREATE TABLE courses(
         ON DELETE SET NULL
 );
 
-CREATE TABLE requests (
-    id SERIAL,
-    file_format VARCHAR(50) NOT NULL,
-    file_name VARCHAR(50) NOT NULL UNIQUE,
-    data BYTEA NOT NULL,
-    user_id INT NOT NULL,
-    section_id INT NOT NULL,
-
-    CONSTRAINT PK_requests PRIMARY KEY(id),
-    CONSTRAINT FK_requests_users FOREIGN KEY(user_id)
-            REFERENCES users(id)
-            ON DELETE CASCADE,
-    CONSTRAINT FK_requests_sections FOREIGN KEY(section_id_id)
-                REFERENCES sections(id)
-                ON DELETE CASCADE,
-    UNIQUE (section_id, file_name)
-);
-
 CREATE TABLE sections (
     id SERIAL,
     name VARCHAR(50) NOT NULL,
@@ -112,3 +94,22 @@ CREATE TABLE courses__user_courses_lists(
     CONSTRAINT FK_courses FOREIGN KEY(course_id) REFERENCES courses(id) ON DELETE CASCADE,
     CONSTRAINT FK_user_courses_lists FOREIGN KEY(user_courses_list_id) REFERENCES user_courses_lists(id) ON DELETE CASCADE
 );
+
+CREATE TABLE material_requests (
+    id SERIAL,
+    file_format VARCHAR(50) NOT NULL,
+    file_name VARCHAR(50) NOT NULL,
+    data BYTEA NOT NULL,
+    user_id INT NOT NULL,
+    section_id INT NOT NULL,
+
+    CONSTRAINT PK_material_requests PRIMARY KEY(id),
+    CONSTRAINT FK_material_requests__users FOREIGN KEY(user_id)
+            REFERENCES users(id)
+            ON DELETE CASCADE,
+    CONSTRAINT FK_material_requests__sections FOREIGN KEY(section_id)
+                REFERENCES sections(id)
+                ON DELETE CASCADE,
+    UNIQUE (section_id, file_name)
+);
+
