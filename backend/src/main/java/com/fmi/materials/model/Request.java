@@ -15,35 +15,40 @@ public class Request {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "file_format")
+    private String fileFormat;
+
     @Column(name = "file_name")
     private String fileName;
 
     @Column(name = "data")
     private byte[] data;
 
-    @Column(name = "section_name")
-    private String sectionName;
-
     @Column(name = "section_id")
-    private String courseId;
+    private String sectionId;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "section_id")
+    private Section section;
+
     public Request() {
     }
 
-    public Request(String fileName, byte[] data, String sectionName, String courseId, User user) {
-        this(null, fileName, data, sectionName, courseId, user);
+    public Request(String fileFormat, String fileName, byte[] data, String sectionId, User user, Section section) {
+        this(null, fileFormat, fileName, data, sectionId, user, section);
     }
 
-    public Request(Long id, String fileName, byte[] data, String sectionName, String courseId, User user) {
+    public Request(Long id, String fileFormat, String fileName, byte[] data, String sectionId, User user, Section section) {
         this.id = id;
+        this.fileFormat =fileFormat;
         this.fileName = fileName;
         this.data = data;
-        this.sectionName = sectionName;
-        this.courseId = courseId;
+        this.sectionId = sectionId;
         this.user = user;
+        this.section = section;
     }
 }

@@ -21,16 +21,19 @@ CREATE TABLE courses(
 
 CREATE TABLE requests (
     id SERIAL,
+    file_format VARCHAR(50) NOT NULL,
     file_name VARCHAR(50) NOT NULL UNIQUE,
     data BYTEA NOT NULL,
-    course_id INT NOT NULL,
     user_id INT NOT NULL,
-    section_name VARCHAR(50) NOT NULL
+    section_id INT NOT NULL,
 
     CONSTRAINT PK_requests PRIMARY KEY(id),
     CONSTRAINT FK_requests_users FOREIGN KEY(user_id)
             REFERENCES users(id)
             ON DELETE CASCADE
+    CONSTRAINT FK_requests_sections FOREIGN KEY(section_id_id)
+                REFERENCES sections(id)
+                ON DELETE CASCADE
 );
 
 CREATE TABLE sections (
