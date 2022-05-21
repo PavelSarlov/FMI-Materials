@@ -29,10 +29,12 @@ import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.FacultyDepartmentService;
 import com.fmi.materials.vo.ExceptionMessage;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 public class CourseServiceImpl implements CourseService {
     @Autowired
@@ -67,6 +69,8 @@ public class CourseServiceImpl implements CourseService {
         FacultyDepartment facultyDepartment = this.facultyDepartmentDtoMapper
                 .convertToEntity(this.facultyDepartmentService.findById(courseDto.getFacultyDepartmentDto().getId()));
         course.setFacultyDepartment(facultyDepartment);
+
+        log.info(String.format("Creating Course with id = '%s'", course.getId()));
         course = this.courseRepository.save(course);
 
         Section defaultSection = new Section("Home", course, null);
@@ -82,6 +86,8 @@ public class CourseServiceImpl implements CourseService {
         if (!this.courseRepository.existsById(courseId)) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId));
         }
+
+        log.info(String.format("Deleting Course with id = '%s'", courseId));
         this.courseRepository.deleteById(courseId);
     }
 
@@ -91,6 +97,8 @@ public class CourseServiceImpl implements CourseService {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseDto.getId()));
         }
         Course course = this.courseDtoMapper.convertToEntityWithId(courseDto);
+
+        log.info(String.format("Updating Course with id = '%s'", course.getId()));
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.save(course));
     }
 

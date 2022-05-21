@@ -8,5 +8,3 @@ config:
     password_hash:
       iterations: 10
       algorithm: "bcrypt"
-  logger:
-    level: "TRACE"
