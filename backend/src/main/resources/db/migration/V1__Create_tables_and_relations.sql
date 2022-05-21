@@ -19,6 +19,20 @@ CREATE TABLE courses(
         ON DELETE SET NULL
 );
 
+CREATE TABLE requests (
+    id SERIAL,
+    file_name VARCHAR(50) NOT NULL UNIQUE,
+    data BYTEA NOT NULL,
+    course_id INT NOT NULL,
+    user_id INT NOT NULL,
+    section_name VARCHAR(50) NOT NULL
+
+    CONSTRAINT PK_requests PRIMARY KEY(id),
+    CONSTRAINT FK_requests_users FOREIGN KEY(user_id)
+            REFERENCES users(id)
+            ON DELETE CASCADE
+);
+
 CREATE TABLE sections (
     id SERIAL,
     name VARCHAR(50) NOT NULL,
