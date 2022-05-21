@@ -30,10 +30,11 @@ CREATE TABLE requests (
     CONSTRAINT PK_requests PRIMARY KEY(id),
     CONSTRAINT FK_requests_users FOREIGN KEY(user_id)
             REFERENCES users(id)
-            ON DELETE CASCADE
+            ON DELETE CASCADE,
     CONSTRAINT FK_requests_sections FOREIGN KEY(section_id_id)
                 REFERENCES sections(id)
-                ON DELETE CASCADE
+                ON DELETE CASCADE,
+    UNIQUE (section_id, file_name)
 );
 
 CREATE TABLE sections (
