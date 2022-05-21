@@ -59,56 +59,48 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
 
     @Override
     public void deleteFavouriteCourse(Long userId, Long courseId) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
-            Long loggedUserId = userDetails.getId();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
+        Long loggedUserId = userDetails.getId();
 
-            if(loggedUserId != userId) {
-                throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-            }
-
-            User user = this.userRepository.findById(userId)
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
-            Course course = this.courseRepository.findById(courseId)
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
-
-            user.removeCourse(course);
-            course.removeUser(user);
-
-            this.courseRepository.save(course);
-            this.userRepository.save(user);
-        } catch (Exception e) {
-            throw e;
+        if(loggedUserId != userId) {
+            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
         }
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
+        Course course = this.courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
+
+        user.removeCourse(course);
+        course.removeUser(user);
+
+        this.courseRepository.save(course);
+        this.userRepository.save(user);
     }
 
     @Override
     public List<CourseDtoWithId> addCourse(Long userId, Long courseId) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
-            Long loggedUserId = userDetails.getId();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
+        Long loggedUserId = userDetails.getId();
 
-            if(loggedUserId != userId) {
-                throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-            }
-
-            User user = this.userRepository.findById(userId)
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
-            Course course = this.courseRepository.findById(courseId)
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
-
-            user.addCourse(course);
-            course.addUser(user);
-
-            this.courseRepository.save(course);
-            this.userRepository.save(user);
-            return user.getFavouriteCourses().stream()
-                    .map(this.courseDtoMapper::convertToDtoWithId)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw e;
+        if(loggedUserId != userId) {
+            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
         }
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
+        Course course = this.courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
+
+        user.addCourse(course);
+        course.addUser(user);
+
+        this.courseRepository.save(course);
+        this.userRepository.save(user);
+        return user.getFavouriteCourses().stream()
+                .map(this.courseDtoMapper::convertToDtoWithId)
+                .collect(Collectors.toList());
     }
 }

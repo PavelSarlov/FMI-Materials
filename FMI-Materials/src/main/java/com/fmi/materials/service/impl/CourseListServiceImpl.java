@@ -81,20 +81,16 @@ public class CourseListServiceImpl implements CourseListService {
         if (this.courseListRepository.findByListName(courseListDto.getListName()) != null) {
             throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("CourseList", "name", courseListDto.getListName()));
         }
-        try {
-            if (!authenticateCurrentUser(userId)) {
-                throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-            }
-
-            User user = this.userRepository.findById(userId)
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
-            CourseList courseList = this.courseListDtoMapper.convertToEntity(courseListDto);
-            courseList.setUser(user);
-
-            return this.courseListDtoMapper.convertToDtoWithId(this.courseListRepository.save(courseList));
-        } catch (Exception e) {
-            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId));
+        if (!authenticateCurrentUser(userId)) {
+            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
         }
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
+        CourseList courseList = this.courseListDtoMapper.convertToEntity(courseListDto);
+        courseList.setUser(user);
+
+        return this.courseListDtoMapper.convertToDtoWithId(this.courseListRepository.save(courseList));
     }
 
     @Override
@@ -137,48 +133,40 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public CourseListDtoWithId addCourseToList(Long courseId, Long courseListId, Long userId) {
-        try {
-            if (!authenticateCurrentUser(userId)) {
-                throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-            }
-
-            Course course = this.courseRepository.findById(courseId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
-
-            CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(this.getCourseList(courseListId, userId));
-            User user = this.userRepository.findById(userId)
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
-            courseList.setUser(user);
-
-            courseList.addCourse(course);
-            course.addCourseList(courseList);
-
-            courseList = this.courseListRepository.save(courseList);
-            this.courseRepository.save(course);
-            return this.courseListDtoMapper.convertToDtoWithId(courseList);
-        } catch (Exception e) {
-            throw e;
+        if (!authenticateCurrentUser(userId)) {
+            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
         }
+
+        Course course = this.courseRepository.findById(courseId)
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
+
+        CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(this.getCourseList(courseListId, userId));
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
+        courseList.setUser(user);
+
+        courseList.addCourse(course);
+        course.addCourseList(courseList);
+
+        courseList = this.courseListRepository.save(courseList);
+        this.courseRepository.save(course);
+        return this.courseListDtoMapper.convertToDtoWithId(courseList);
     }
 
     @Override
     public void deleteCourseFromCourseList(Long userId, Long courseListId, Long courseId) {
-        try {
-            if (!authenticateCurrentUser(userId)) {
-                throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-            }
-
-            CourseList courseList = this.getCourseListFromRepository(courseListId, userId);
-            Course course = this.courseRepository.findById(courseId)
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
-
-            courseList.removeCourse(course);
-            course.removeCourseList(courseList);
-
-            this.courseRepository.save(course);
-            this.courseListRepository.save(courseList);
-        } catch (Exception e) {
-            throw e;
+        if (!authenticateCurrentUser(userId)) {
+            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
         }
+
+        CourseList courseList = this.getCourseListFromRepository(courseListId, userId);
+        Course course = this.courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
+
+        courseList.removeCourse(course);
+        course.removeCourseList(courseList);
+
+        this.courseRepository.save(course);
+        this.courseListRepository.save(courseList);
     }
 }
