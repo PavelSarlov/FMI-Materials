@@ -30,6 +30,7 @@ import com.fmi.materials.service.FacultyDepartmentService;
 import com.fmi.materials.vo.ExceptionMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -101,8 +102,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDto> findAllCourses() {
-        return this.courseRepository.findAll().stream()
+    public List<CourseDto> findAllCourses(Pageable pageable) {
+        return this.courseRepository.findAll(pageable).stream()
                 .map(this.courseDtoMapper::convertToDtoWithId)
                 .collect(Collectors.toList());
     }
