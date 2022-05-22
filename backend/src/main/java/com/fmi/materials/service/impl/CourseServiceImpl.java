@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.fmi.materials.dto.PagedResultDto;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
@@ -23,6 +24,7 @@ import com.fmi.materials.model.FacultyDepartment;
 import com.fmi.materials.model.Material;
 import com.fmi.materials.model.Section;
 import com.fmi.materials.repository.CourseRepository;
+import com.fmi.materials.specification.CourseSpecification;
 import com.fmi.materials.repository.MaterialRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.service.CourseService;
@@ -30,6 +32,7 @@ import com.fmi.materials.service.FacultyDepartmentService;
 import com.fmi.materials.vo.ExceptionMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -102,30 +105,28 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDto> findAllCourses(Pageable pageable) {
-        return this.courseRepository.findAll(pageable).stream()
-                .map(this.courseDtoMapper::convertToDtoWithId)
+    public PagedResultDto<CourseDto> findCourses(String filter, String filterValue, Pageable pageable) {
+        List<String> keyWords = Arrays.stream(filterValue.split("[\\p{Punct}\\p{Blank}]"))
+//                .map(String::toLowerCase)
+//                .map(s -> '%' + s + '%')
                 .collect(Collectors.toList());
-    }
+        CourseSpecification spec = new CourseSpecification(filter, keyWords);
 
-    @Override
-    public List<CourseDto> findAllCoursesByName(String name) {
-        List<String> keyWords = Arrays.stream(name.split("[\\p{Punct}\\p{Blank}]"))
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
-        List<CourseDto> courses = this.courseRepository.findAll().stream()
-                .filter(c -> {
-                    for (String w : keyWords) {
-                        if (!c.getName().toLowerCase(Locale.ROOT).contains(w)) {
-                            return false;
-                        }
-                    }
-                    return true;
-                })
-                .map(this.courseDtoMapper::convertToDtoWithId)
-                .collect(Collectors.toList());
-
-        return courses;
+        Page<Course> page = this.courseRepository.findAll(spec, pageable);
+        return PagedResultDto.<CourseDto>builder()
+                .items(page.getContent().stream()
+                        .map(c -> {
+                            CourseDto cd = courseDtoMapper.convertToDtoWithId(c);
+                            cd.setSectionDtos(null);
+                            return cd;
+                        })
+                        .collect(Collectors.toList()))
+                .currentPage(page.getNumber() + 1)
+                .totalPages(page.getTotalPages())
+                .totalItems(page.getTotalElements())
+                .first(!page.isFirst())
+                .last(!page.isLast())
+                .build();
     }
 
     @Override

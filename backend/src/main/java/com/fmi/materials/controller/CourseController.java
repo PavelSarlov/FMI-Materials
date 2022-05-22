@@ -3,6 +3,7 @@ package com.fmi.materials.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.fmi.materials.dto.PagedResultDto;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
@@ -48,18 +49,6 @@ public class CourseController {
                 HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CourseDto>> findAllCourses(@RequestParam int page, @RequestParam int size,  @RequestParam(required = false) String sortBy, @RequestParam(required = false) Boolean desc) {
-
-        Sort sort = Sort.by((sortBy != null ? sortBy : "name"));
-        if(desc != null && desc) sort = sort.descending();
-        Pageable pageable = PageRequest.of(page-1, size, sort);
-
-        return new ResponseEntity<List<CourseDto>>(
-                this.courseService.findAllCourses(pageable),
-                HttpStatus.OK);
-    }
-
     @GetMapping("{id}")
     public ResponseEntity<CourseDto> findCourseById(@PathVariable Long id) {
         return new ResponseEntity<CourseDto>(
@@ -83,10 +72,15 @@ public class CourseController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("search")
-    public ResponseEntity<List<CourseDto>> getCoursesByName(@RequestParam String name) {
-        return new ResponseEntity<List<CourseDto>>(
-                this.courseService.findAllCoursesByName(name),
+    @GetMapping
+    public ResponseEntity<Object> findCourses(@RequestParam(defaultValue = "name") String filter, @RequestParam(defaultValue = "") String filterValue, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String sortBy, @RequestParam(required = false) Boolean desc) {
+
+        Sort sort = Sort.by((sortBy != null ? sortBy : "name"));
+        if(desc != null && desc) sort = sort.descending();
+        Pageable pageable = PageRequest.of(page-1, size, sort);
+
+        return new ResponseEntity<Object>(
+                this.courseService.findCourses(filter, filterValue, pageable),
                 HttpStatus.OK);
     }
 

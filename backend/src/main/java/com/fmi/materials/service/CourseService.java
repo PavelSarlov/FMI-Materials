@@ -3,6 +3,7 @@ package com.fmi.materials.service;
 import java.io.IOException;
 import java.util.List;
 
+import com.fmi.materials.dto.PagedResultDto;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
@@ -21,9 +22,7 @@ public interface CourseService {
 
     CourseDto findById(Long courseId);
 
-    List<CourseDto> findAllCourses(Pageable pageable);
-
-    List<CourseDto> findAllCoursesByName(String name);
+    PagedResultDto<CourseDto> findCourses(String filter, String filterValue, Pageable pageable);
 
     List<SectionDto> findAllCourseSections(Long courseId);
 
