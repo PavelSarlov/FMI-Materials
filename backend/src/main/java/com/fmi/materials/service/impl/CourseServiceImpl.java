@@ -107,8 +107,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public PagedResultDto<CourseDto> findCourses(String filter, String filterValue, Pageable pageable) {
         List<String> keyWords = Arrays.stream(filterValue.split("[\\p{Punct}\\p{Blank}]"))
-//                .map(String::toLowerCase)
-//                .map(s -> '%' + s + '%')
                 .collect(Collectors.toList());
         CourseSpecification spec = new CourseSpecification(filter, keyWords);
 
