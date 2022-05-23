@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,5 +44,19 @@ public class Section {
         this.name = name;
         this.course = course;
         this.materials =  (materials != null ? materials.stream().collect(Collectors.toSet()) : null);
+    }
+
+    public void addMaterialRequest(MaterialRequest materialRequest) {
+        if (this.materialRequests == null) {
+            this.materialRequests = new ArrayList<MaterialRequest>();
+        }
+        this.materialRequests.add(materialRequest);
+    }
+
+    public void removeMaterialRequest(MaterialRequest materialRequest) {
+        if (this.materialRequests == null) {
+            return;
+        }
+        this.materialRequests.remove(materialRequest);
     }
 }

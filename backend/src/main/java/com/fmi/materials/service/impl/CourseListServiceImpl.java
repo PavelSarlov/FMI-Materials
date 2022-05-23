@@ -74,9 +74,9 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public CourseListDtoWithId createCourseList(CourseListDto courseListDto, Long userId) {
-        if (this.courseListRepository.findByListName(courseListDto.getListName()) != null) {
-            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("CourseList", "name", courseListDto.getListName()));
-        }
+        this.courseListRepository.findByListName(courseListDto.getListName())
+                .orElseThrow(() -> new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("CourseList", "name", courseListDto.getListName())));
+
         if (!authenticateCurrentUser(userId)) {
             throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
         }
