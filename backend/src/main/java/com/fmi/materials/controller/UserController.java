@@ -4,6 +4,8 @@ import com.fmi.materials.dto.CourseCourseListIdDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
+import com.fmi.materials.dto.material.MaterialDto;
+import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.service.CourseListService;
@@ -13,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -21,11 +25,15 @@ import java.util.List;
 public class UserController {
     private CourseListService courseListService;
     private FavouriteCoursesService favouriteCoursesService;
+    private UserService userService;
 
     @Autowired
-    public UserController(CourseListService courseListService, FavouriteCoursesService favouriteCoursesService) {
+    public UserController(CourseListService courseListService,
+                          FavouriteCoursesService favouriteCoursesService,
+                          UserService userService) {
         this.courseListService = courseListService;
         this.favouriteCoursesService = favouriteCoursesService;
+        this.userService = userService;
     }
 
     @GetMapping("lists")
@@ -73,6 +81,14 @@ public class UserController {
         return new ResponseEntity<List<CourseDtoWithId>>(
                 this.favouriteCoursesService.addCourse(userId, courseId),
                 HttpStatus.OK
+        );
+    }
+
+    @PostMapping("material-request/{sectionId}")
+    public ResponseEntity<MaterialRequestDto> addMaterialRequest(@RequestParam("file") MultipartFile file, @PathVariable Long sectionId, @PathVariable Long userId) throws IOException {
+        return new ResponseEntity<MaterialRequestDto>(
+                this.userService.createMaterialRequest(file, sectionId, userId),
+                HttpStatus.CREATED
         );
     }
 

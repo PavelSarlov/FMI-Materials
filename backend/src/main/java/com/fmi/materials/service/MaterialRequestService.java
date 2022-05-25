@@ -14,5 +14,5 @@ public interface MaterialRequestService {
 
     MaterialDtoWithData getMaterialFromMaterialRequest(Long userId, Long materialRequestId);
 
-    void ProcessRequest(Long userId, Long materialRequestId, Boolean status) throws IOException;
+    void processRequest(Long userId, Long materialRequestId, Boolean status) throws IOException;
 }

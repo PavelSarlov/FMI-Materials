@@ -105,7 +105,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     }
 
     @Override
-    public void ProcessRequest(Long userId, Long materialRequestId, Boolean status) throws IOException {
+    public void processRequest(Long userId, Long materialRequestId, Boolean status) throws IOException {
         if (!authenticateCurrentUser(userId)) {
             throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
         }
