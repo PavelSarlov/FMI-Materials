@@ -27,6 +27,12 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
         return buildResponseEntity(response);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    protected ResponseEntity<ResponseDto> handleRuntimeException(RuntimeException ex) {
+        ResponseDto response = new ResponseDtoError(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
+        return buildResponseEntity(response);
+    }
+
     private ResponseEntity<ResponseDto> buildResponseEntity(ResponseDto responseDto) {
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.valueOf(responseDto.getStatus()));
     }

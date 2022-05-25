@@ -29,6 +29,9 @@ public class Section {
     @OneToMany(mappedBy = "section", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Material> materials;
 
+    @OneToMany(mappedBy = "section", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MaterialRequest> materialRequests;
+
     public Section() {}
 
     public Section(String name, Course course, List<Material> materials) {
