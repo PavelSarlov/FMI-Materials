@@ -1,9 +1,5 @@
 package com.fmi.materials.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.exception.EntityAlreadyExistsException;
@@ -20,13 +16,13 @@ import com.fmi.materials.repository.CourseListRepository;
 import com.fmi.materials.repository.CourseRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.CourseListService;
-import com.fmi.materials.service.UserService;
 import com.fmi.materials.vo.ExceptionMessage;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CourseListServiceImpl implements CourseListService {
