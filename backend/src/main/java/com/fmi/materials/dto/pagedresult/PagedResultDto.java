@@ -1,4 +1,4 @@
-package com.fmi.materials.dto;
+package com.fmi.materials.dto.pagedresult;
 
 import lombok.Builder;
 import lombok.Data;

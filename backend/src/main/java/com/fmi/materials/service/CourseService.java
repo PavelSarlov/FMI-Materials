@@ -3,7 +3,7 @@ package com.fmi.materials.service;
 import java.io.IOException;
 import java.util.List;
 
-import com.fmi.materials.dto.PagedResultDto;
+import com.fmi.materials.dto.pagedresult.PagedResultDto;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
@@ -11,7 +11,6 @@ import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.section.SectionDto;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface CourseService {
     CourseDto createCourse(CourseDto course);

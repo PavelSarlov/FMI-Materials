@@ -1,6 +1,6 @@
 package com.fmi.materials.service.impl;
 
-import com.fmi.materials.dto.PagedResultDto;
+import com.fmi.materials.dto.pagedresult.PagedResultDto;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;

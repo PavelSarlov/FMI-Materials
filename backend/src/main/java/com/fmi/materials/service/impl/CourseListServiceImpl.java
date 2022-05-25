@@ -4,7 +4,6 @@ import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.exception.EntityAlreadyExistsException;
 import com.fmi.materials.exception.EntityNotFoundException;
-import com.fmi.materials.exception.InvalidArgumentException;
 import com.fmi.materials.mapper.CourseDtoMapper;
 import com.fmi.materials.mapper.CourseListDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
@@ -21,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseListServiceImpl implements CourseListService {
@@ -61,14 +61,19 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public CourseListDtoWithId createCourseList(CourseListDto courseListDto, Long userId) {
-        this.courseListRepository.findByListName(courseListDto.getListName())
-                .orElseThrow(() -> new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("CourseList", "name", courseListDto.getListName())));
-
         Authentication.authenticateCurrentUser(userId);
+
+        if (this.courseListRepository.findByListName(userId, courseListDto.getListName()).isPresent()) {
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("CourseList", "name", courseListDto.getListName()));
+        }
 
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
         CourseList courseList = this.courseListDtoMapper.convertToEntity(courseListDto);
+        courseList.setCourses(courseListDto.getCourses().stream()
+                .map(c -> this.courseRepository.findById(c.getId())
+                        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", c.getId()))))
+                .collect(Collectors.toSet()));
         courseList.setUser(user);
 
         return this.courseListDtoMapper.convertToDtoWithId(this.courseListRepository.save(courseList));
@@ -113,7 +118,7 @@ public class CourseListServiceImpl implements CourseListService {
         Authentication.authenticateCurrentUser(userId);
 
         Course course = this.courseRepository.findById(courseId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
 
         CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(this.getCourseList(courseListId, userId));
         User user = this.userRepository.findById(userId)

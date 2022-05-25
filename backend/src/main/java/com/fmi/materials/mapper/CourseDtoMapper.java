@@ -2,13 +2,10 @@ package com.fmi.materials.mapper;
 
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
-import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.model.Course;
-import com.fmi.materials.model.Section;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,7 +21,7 @@ public class CourseDtoMapper {
                 courseDto.getName(),
                 courseDto.getDescription(),
                 courseDto.getCreatedBy(),
-                this.facultyDepartmentDtoMapper.convertToEntity(courseDto.getFacultyDepartmentDto()),
+                courseDto.getFacultyDepartmentDto() != null ? this.facultyDepartmentDtoMapper.convertToEntity(courseDto.getFacultyDepartmentDto()) : null,
                 courseDto.getCourseGroup()
         );
     }
@@ -35,7 +32,7 @@ public class CourseDtoMapper {
                 courseDto.getName(),
                 courseDto.getDescription(),
                 courseDto.getCreatedBy(),
-                this.facultyDepartmentDtoMapper.convertToEntity(courseDto.getFacultyDepartmentDto()),
+                courseDto.getFacultyDepartmentDto() != null ? this.facultyDepartmentDtoMapper.convertToEntity(courseDto.getFacultyDepartmentDto()) : null,
                 courseDto.getCourseGroup()
         );
     }
@@ -45,7 +42,7 @@ public class CourseDtoMapper {
                 course.getName(),
                 course.getDescription(),
                 course.getCreatedBy(),
-                this.facultyDepartmentDtoMapper.convertToDto(course.getFacultyDepartment()),
+                course.getFacultyDepartment() != null ? this.facultyDepartmentDtoMapper.convertToDto(course.getFacultyDepartment()) : null,
                 course.getCourseGroup(),
                 course.getSections() == null ? course.getSections().stream()
                         .map(this.sectionDtoMapper::convertToDto)
@@ -60,7 +57,7 @@ public class CourseDtoMapper {
                 course.getName(),
                 course.getDescription(),
                 course.getCreatedBy(),
-                this.facultyDepartmentDtoMapper.convertToDto(course.getFacultyDepartment()),
+                course.getFacultyDepartment() != null ? this.facultyDepartmentDtoMapper.convertToDto(course.getFacultyDepartment()) : null,
                 course.getCourseGroup(),
                 course.getSections() != null ? course.getSections().stream()
                         .map(this.sectionDtoMapper::convertToDto)

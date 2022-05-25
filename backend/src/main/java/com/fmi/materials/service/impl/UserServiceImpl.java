@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         if(!userDto.getPassword().equals(userDto.getRepeatedPassword())) {
             throw new InvalidArgumentException(ExceptionMessage.PASSWORDS_NOT_EQUAL.getFormattedMessage());
         }
-        else if(this.userRepository.findByEmail(userDto.getEmail())!=null) {
+        else if(this.userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("User", "email", userDto.getEmail()));
         }
         userDto.setPassword(this.passwordEncoder.encode(userDto.getPassword()));

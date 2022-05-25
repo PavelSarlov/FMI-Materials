@@ -1,10 +1,8 @@
 package com.fmi.materials.controller;
 
-import com.fmi.materials.dto.CourseCourseListIdDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
-import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
@@ -60,7 +58,7 @@ public class UserController {
         );
     }
 
-    @PostMapping
+    @PostMapping("lists")
     public ResponseEntity<CourseListDtoWithId> createCourseList(@PathVariable Long userId, @RequestBody CourseListDto courseListDto) {
         return new ResponseEntity<CourseListDtoWithId>(
                 this.courseListService.createCourseList(courseListDto, userId),
@@ -68,10 +66,10 @@ public class UserController {
         );
     }
 
-    @PostMapping("lists")
-    public ResponseEntity<CourseListDtoWithId> addCourseToList(@PathVariable Long userId, @RequestBody CourseCourseListIdDto courseCourseListIdDto) {
+    @PostMapping("lists/{courseListId}/{courseId}")
+    public ResponseEntity<CourseListDtoWithId> addCourseToList(@PathVariable Long userId, @PathVariable Long courseListId, @PathVariable Long courseId) {
         return new ResponseEntity<CourseListDtoWithId>(
-                this.courseListService.addCourseToList(courseCourseListIdDto.getCourseId(), courseCourseListIdDto.getCourseListId(), userId),
+                this.courseListService.addCourseToList(courseId, courseListId, userId),
                 HttpStatus.CREATED
         );
     }

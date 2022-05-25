@@ -20,7 +20,7 @@ public class MaterialDtoMapper {
         );
     }
 
-    public Material convertToEntity(String fileFormat, String fileName, byte[] data, Section section) throws IOException {
+    public Material convertToEntity(String fileFormat, String fileName, byte[] data, Section section) {
         return new Material(
                 fileFormat,
                 fileName,

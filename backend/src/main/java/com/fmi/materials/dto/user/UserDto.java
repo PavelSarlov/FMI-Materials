@@ -1,7 +1,5 @@
 package com.fmi.materials.dto.user;
 
-import com.fmi.materials.dto.course.CourseDtoWithId;
-import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.model.UserRole;
 import com.sun.istack.NotNull;
 import lombok.EqualsAndHashCode;
@@ -13,7 +11,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -32,15 +29,12 @@ public class UserDto {
     private String password;
     @Email(message = "The email is not a valid one.")
     private String email;
+    private List<String> roles;
 
-    private List<CourseListDtoWithId> courseLists;
-    private List<CourseDtoWithId> favouriteCourses;
-
-    public UserDto(String name, String password, String email, List<CourseListDtoWithId> courseLists, List<CourseDtoWithId> favouriteCourses) {
+    public UserDto(String name, String password, String email, List<String> roles) {
         this.name = name;
         this.password = password;
         this.email = email;
-        this.courseLists = courseLists;
-        this.favouriteCourses = favouriteCourses;
+        this.roles = roles;
     }
 }
