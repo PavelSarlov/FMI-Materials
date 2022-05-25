@@ -1,17 +1,20 @@
 package com.fmi.materials.controller;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
+import com.fmi.materials.dto.response.ResponseDto;
+import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.service.MaterialRequestService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/admin/{adminId}")
@@ -24,7 +27,7 @@ public class AdminController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MaterialRequestDto>> gatAllMaterialRequests(@PathVariable Long adminId) {
+    public ResponseEntity<List<MaterialRequestDto>> getAllMaterialRequests(@PathVariable Long adminId) {
         return new ResponseEntity<List<MaterialRequestDto>>(
                 this.materialRequestService.getAllUserMaterialRequests(adminId),
                 HttpStatus.OK
@@ -32,7 +35,7 @@ public class AdminController {
     }
 
     @GetMapping("material-request/{requestId}")
-    public ResponseEntity<MaterialRequestDto> gatMaterialRequests(@PathVariable Long adminId, @PathVariable Long requestId) {
+    public ResponseEntity<MaterialRequestDto> getMaterialRequests(@PathVariable Long adminId, @PathVariable Long requestId) {
         return new ResponseEntity<MaterialRequestDto>(
                 this.materialRequestService.getMaterialRequest(adminId, requestId),
                 HttpStatus.OK
@@ -54,9 +57,11 @@ public class AdminController {
     }
 
     @PostMapping("material-request/{requestId}")
-    public ResponseEntity processRequest(@RequestBody Boolean status, @PathVariable Long adminId, @PathVariable Long requestId) throws IOException {
+    public ResponseEntity<ResponseDto> processRequest(@RequestBody Boolean status, @PathVariable Long adminId, @PathVariable Long requestId) throws IOException {
         this.materialRequestService.processRequest(adminId, requestId, status);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<ResponseDto>(
+                new ResponseDtoSuccess(HttpStatus.OK, "Request processed successfully"),
+                HttpStatus.OK);
     }
 }
