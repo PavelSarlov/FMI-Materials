@@ -1,6 +1,5 @@
 package com.fmi.materials.service.impl;
 
-import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
@@ -10,16 +9,16 @@ import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.exception.InvalidArgumentException;
 import com.fmi.materials.mapper.MaterialRequestDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
-import com.fmi.materials.model.*;
+import com.fmi.materials.model.MaterialRequest;
+import com.fmi.materials.model.Section;
+import com.fmi.materials.model.User;
 import com.fmi.materials.repository.MaterialRequestRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.UserService;
 import com.fmi.materials.vo.ExceptionMessage;
-
+import com.fmi.materials.util.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,17 +47,6 @@ public class UserServiceImpl implements UserService {
         this.sectionRepository = sectionRepository;
         this.materialRequestRepository = materialRequestRepository;
         this.materialRequestDtoMapper = materialRequestDtoMapper;
-    }
-
-    private Boolean authenticateCurrentUser(Long userId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
-        Long loggedUserId = userDetails.getId();
-
-        if(loggedUserId != userId) {
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -118,9 +106,8 @@ public class UserServiceImpl implements UserService {
         Section section = this.sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
 
-        if (!authenticateCurrentUser(userId)) {
-            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-        }
+        Authentication.authenticateCurrentUser(userId);
+
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
 
