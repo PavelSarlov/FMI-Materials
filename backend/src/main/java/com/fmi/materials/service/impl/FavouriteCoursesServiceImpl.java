@@ -1,23 +1,20 @@
 package com.fmi.materials.service.impl;
 
 import com.fmi.materials.dto.course.CourseDtoWithId;
-import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.exception.InvalidArgumentException;
 import com.fmi.materials.mapper.CourseDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
 import com.fmi.materials.model.Course;
-import com.fmi.materials.model.CourseList;
 import com.fmi.materials.model.CustomUserDetails;
 import com.fmi.materials.model.User;
 import com.fmi.materials.repository.CourseListRepository;
 import com.fmi.materials.repository.CourseRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.FavouriteCoursesService;
-import com.fmi.materials.service.UserService;
+import com.fmi.materials.util.Authentication;
 import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -59,13 +56,7 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
 
     @Override
     public void deleteFavouriteCourse(Long userId, Long courseId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
-        Long loggedUserId = userDetails.getId();
-
-        if(loggedUserId != userId) {
-            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-        }
+        Authentication.authenticateCurrentUser(userId);
 
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
@@ -81,13 +72,7 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
 
     @Override
     public List<CourseDtoWithId> addCourse(Long userId, Long courseId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
-        Long loggedUserId = userDetails.getId();
-
-        if(loggedUserId != userId) {
-            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-        }
+        Authentication.authenticateCurrentUser(userId);
 
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
