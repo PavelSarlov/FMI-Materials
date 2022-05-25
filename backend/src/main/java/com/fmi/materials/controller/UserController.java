@@ -82,7 +82,7 @@ public class UserController {
         );
     }
 
-    @PostMapping("material-request/{sectionId}")
+    @PostMapping("material-requests/{sectionId}")
     public ResponseEntity<MaterialRequestDto> addMaterialRequest(@RequestParam("file") MultipartFile file, @PathVariable Long sectionId, @PathVariable Long userId) throws IOException {
         return new ResponseEntity<MaterialRequestDto>(
                 this.userService.createMaterialRequest(file, sectionId, userId),

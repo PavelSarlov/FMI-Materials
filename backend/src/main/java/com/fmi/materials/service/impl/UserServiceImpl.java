@@ -103,10 +103,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MaterialRequestDto createMaterialRequest(MultipartFile materialFile, Long sectionId, Long userId) throws IOException {
+        Authentication.authenticateCurrentUser(userId);
+
         Section section = this.sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
-
-        Authentication.authenticateCurrentUser(userId);
 
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));

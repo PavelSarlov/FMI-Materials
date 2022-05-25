@@ -2,11 +2,9 @@ package com.fmi.materials.service.impl;
 
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.exception.EntityNotFoundException;
-import com.fmi.materials.exception.InvalidArgumentException;
 import com.fmi.materials.mapper.CourseDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
 import com.fmi.materials.model.Course;
-import com.fmi.materials.model.CustomUserDetails;
 import com.fmi.materials.model.User;
 import com.fmi.materials.repository.CourseListRepository;
 import com.fmi.materials.repository.CourseRepository;
@@ -15,7 +13,6 @@ import com.fmi.materials.service.FavouriteCoursesService;
 import com.fmi.materials.util.Authentication;
 import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

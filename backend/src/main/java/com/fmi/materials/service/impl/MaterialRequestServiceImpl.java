@@ -3,7 +3,6 @@ package com.fmi.materials.service.impl;
 import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.exception.EntityNotFoundException;
-import com.fmi.materials.exception.InvalidArgumentException;
 import com.fmi.materials.mapper.MaterialDtoMapper;
 import com.fmi.materials.mapper.MaterialRequestDtoMapper;
 import com.fmi.materials.model.*;
@@ -56,11 +55,19 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     }
 
     @Override
-    public MaterialRequestDto getMaterialRequest(Long userId, Long materialRequestId) {
+    public List<MaterialRequestDto> getAllAdminMaterialRequests(Long adminId) {
+        Authentication.authenticateCurrentUser(adminId);
+
+        return this.materialRequestRepository.findAllByAdminId(adminId).stream()
+                .map(this.materialRequestDtoMapper::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public MaterialRequestDto getMaterialRequestById(Long userId, Long materialRequestId) {
         Authentication.authenticateCurrentUser(userId);
 
-        return this.materialRequestDtoMapper.convertToDto(
-                this.materialRequestRepository.findByIdAndUserId(materialRequestId, userId)
+        return this.materialRequestDtoMapper.convertToDto(this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
                         .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId))));
     }
 
@@ -68,7 +75,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     public MaterialDtoWithData getMaterialFromMaterialRequest(Long userId, Long materialRequestId) {
         Authentication.authenticateCurrentUser(userId);
 
-        MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndUserId(materialRequestId, userId)
+        MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
         Material material = new Material(materialRequest.getFileFormat(), materialRequest.getFileName(), materialRequest.getData(), null);
@@ -79,10 +86,10 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     public void processRequest(Long userId, Long materialRequestId, Boolean status) throws IOException {
         Authentication.authenticateCurrentUser(userId);
 
-        MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndUserId(materialRequestId, userId)
+        MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
-        if (status == true) {
+        if (status) {
             this.courseService.createMaterial(materialRequest.getFileFormat(), materialRequest.getFileName(), materialRequest.getData(), materialRequest.getSection().getId());
         }
 

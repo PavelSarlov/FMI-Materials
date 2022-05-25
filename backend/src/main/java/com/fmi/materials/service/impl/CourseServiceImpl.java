@@ -64,8 +64,7 @@ public class CourseServiceImpl implements CourseService {
                 .map(c -> c.getName().toLowerCase(Locale.ROOT))
                 .collect(Collectors.toList());
         if (courseNames.contains(courseDto.getName().toLowerCase(Locale.ROOT))) {
-            throw new EntityAlreadyExistsException(
-                    ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Course", "name", courseDto.getName()));
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Course", "name", courseDto.getName()));
         }
 
         Course course = this.courseDtoMapper.convertToEntity(courseDto);

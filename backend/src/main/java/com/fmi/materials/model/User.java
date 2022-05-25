@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -29,10 +27,10 @@ public class User {
     private String email;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CourseList> courseLists;
+    private Set<CourseList> courseLists;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MaterialRequest> materialRequests;
+    private Set<MaterialRequest> materialRequests;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "users__user_roles",
@@ -60,7 +58,7 @@ public class User {
         this(null, name, passwordHash, email);
     }
 
-    public User(String name, String passwordHash, String email, List<CourseList> courseLists, Set<Course> favouriteCourses) {
+    public User(String name, String passwordHash, String email, Set<CourseList> courseLists, Set<Course> favouriteCourses) {
         this(null, name, passwordHash, email, courseLists, favouriteCourses);
     }
 
@@ -71,7 +69,7 @@ public class User {
         this.email = email;
     }
 
-    public User(Long id, String name, String passwordHash, String email, List<CourseList> courseLists, Set<Course> favouriteCourses) {
+    public User(Long id, String name, String passwordHash, String email, Set<CourseList> courseLists, Set<Course> favouriteCourses) {
         this.id = id;
         this.name = name;
         this.passwordHash = passwordHash;
@@ -96,7 +94,7 @@ public class User {
 
     public void addCourseList(CourseList courseList) {
         if (this.courseLists == null) {
-            this.courseLists = new ArrayList<CourseList>();
+            this.courseLists = new HashSet<CourseList>();
         }
         this.courseLists.add(courseList);
     }
@@ -110,7 +108,7 @@ public class User {
 
     public void addMaterialRequest(MaterialRequest materialRequest) {
         if (this.materialRequests == null) {
-            this.materialRequests = new ArrayList<MaterialRequest>();
+            this.materialRequests = new HashSet<MaterialRequest>();
         }
         this.materialRequests.add(materialRequest);
     }

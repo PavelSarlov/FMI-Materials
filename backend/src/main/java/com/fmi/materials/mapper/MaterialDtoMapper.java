@@ -6,8 +6,6 @@ import com.fmi.materials.model.Material;
 import com.fmi.materials.model.Section;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Component
 public class MaterialDtoMapper {
     public Material convertToEntity(MaterialDto materialDto) {

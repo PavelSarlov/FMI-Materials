@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,7 +31,7 @@ public class Section {
     private Set<Material> materials;
 
     @OneToMany(mappedBy = "section", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MaterialRequest> materialRequests;
+    private Set<MaterialRequest> materialRequests;
 
     public Section() {}
 
@@ -48,7 +48,7 @@ public class Section {
 
     public void addMaterialRequest(MaterialRequest materialRequest) {
         if (this.materialRequests == null) {
-            this.materialRequests = new ArrayList<MaterialRequest>();
+            this.materialRequests = new HashSet<MaterialRequest>();
         }
         this.materialRequests.add(materialRequest);
     }
