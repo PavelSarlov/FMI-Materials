@@ -44,7 +44,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/courses?filter=name&filterValue=web&size=1&page=2",
+							"raw": "{{host}}:{{port}}/api/courses",
 							"host": [
 								"{{host}}"
 							],
@@ -56,19 +56,23 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "name"
+									"value": "name",
+									"disabled": true
 								},
 								{
 									"key": "filterValue",
-									"value": "web"
+									"value": "web",
+									"disabled": true
 								},
 								{
 									"key": "size",
-									"value": "1"
+									"value": "1",
+									"disabled": true
 								},
 								{
 									"key": "page",
-									"value": "2"
+									"value": "2",
+									"disabled": true
 								}
 							]
 						}
@@ -163,7 +167,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": {{course_id}},\r\n    \"name\": \"Web Development with C#\",\r\n    \"description\": \"MVC\",\r\n    \"createdBy\": \"Admin Adminchev\",\r\n    \"facultyDepartmentDto\": {\r\n        \"id\": 12\r\n    },\r\n    \"courseGroup\": {\r\n        \"name\": \"Computer Science Fundamentals\",\r\n        \"id\": \"CSF\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"name\": \"asd Development with Java\",\r\n    \"description\": \"WDWJ, Spring Boot, MVC\",\r\n    \"createdBy\": \"Admin Adminchev\",\r\n    \"facultyDepartmentDto\": {\r\n        \"id\": 13,\r\n        \"name\": \"Software Technologies\"\r\n    },\r\n    \"courseGroup\": {\r\n        \"name\": \"Computer Science Fundamentals\",\r\n        \"id\": \"CSF\"\r\n    },\r\n    \"sectionDtos\": null,\r\n    \"id\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -356,6 +360,468 @@
 								"api",
 								"departments",
 								"{{faculty_department_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"nqkoi@si.tam\",\r\n    \"name\": \"Nqkoi Sitam\",\r\n    \"password\": \"Nqk01s174m\",\r\n    \"repeatedPassword\": \"Nqk01s174m\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/register",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/logout",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "GetCourseLists",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "johndoe",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "john@doe.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCourseListById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "johndoe",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "john@doe.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/{{course_list_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"{{course_list_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetFavouriteCourses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/favourite-courses",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"favourite-courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateCourseList",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "johndoe",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "john@doe.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"listName\": \"someOtherList\",\r\n    \"courses\": [\r\n        {\r\n            \"id\": 1\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddCourseToList",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/1/2",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"1",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddFavouriteCourse",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "johndoe",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "john@doe.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/favourite-courses/2",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"favourite-courses",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddMaterialRequest",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "johndoe",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "john@doe.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/D:/Random/stuff/random.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/material-requests/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"material-requests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admins",
+			"item": [
+				{
+					"name": "GetAllMaterialRequests",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@admin.bg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"admin",
+								"{{admin_id}}",
+								"material-requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetMaterialRequestById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@admin.bg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"admin",
+								"{{admin_id}}",
+								"material-requests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetMaterialFromMaterialRequest",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@admin.bg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests/1/material",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"admin",
+								"{{admin_id}}",
+								"material-requests",
+								"1",
+								"material"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ProcessRequest",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@admin.bg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests/1?status=true",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"admin",
+								"{{admin_id}}",
+								"material-requests",
+								"1"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "true"
+								}
 							]
 						}
 					},
