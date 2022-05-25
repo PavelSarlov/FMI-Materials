@@ -1,11 +1,12 @@
 package com.fmi.materials.service;
 
+import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
-import com.fmi.materials.model.CourseList;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
 
 public interface UserService {
     UserDto createUser(UserDtoRegistration userDto);
@@ -17,4 +18,6 @@ public interface UserService {
     UserDtoWithId findUserById(Long id);
 
     Long existsUser(UserDto userDto);
+
+    MaterialRequestDto createMaterialRequest(MultipartFile multipartFile, Long sectionId, Long userId) throws IOException;
 }

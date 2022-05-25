@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface CourseListRepository extends CrudRepository<CourseList, Long> {
-    CourseList findByListName(String name);
+    Optional<CourseList> findByListName(String name);
 
     @Query(value = "SELECT * FROM user_courses_lists cl " +
             "WHERE cl.user_id = ?1 AND cl.id = ?2", nativeQuery = true)

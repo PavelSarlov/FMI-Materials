@@ -107,4 +107,18 @@ public class User {
         }
         this.courseLists.remove(courseList);
     }
+
+    public void addMaterialRequest(MaterialRequest materialRequest) {
+        if (this.materialRequests == null) {
+            this.materialRequests = new ArrayList<MaterialRequest>();
+        }
+        this.materialRequests.add(materialRequest);
+    }
+
+    public void removeMaterialRequest(MaterialRequest materialRequest) {
+        if (this.materialRequests == null) {
+            return;
+        }
+        this.materialRequests.remove(materialRequest);
+    }
 }

@@ -5,11 +5,8 @@ import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.model.Material;
 import com.fmi.materials.model.Section;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 @Component
 public class MaterialDtoMapper {
