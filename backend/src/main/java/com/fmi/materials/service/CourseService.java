@@ -32,7 +32,7 @@ public interface CourseService {
 
     void deleteSection(Long sectionId);
 
-    MaterialDto createMaterial(MultipartFile materialDto, Long sectionId) throws IOException;
+    MaterialDto createMaterial(String fileFormat, String fileName, byte[] data, Long sectionId) throws IOException;
 
     void deleteMaterial(Long materialId);
 

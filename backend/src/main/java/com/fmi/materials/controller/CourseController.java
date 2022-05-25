@@ -3,7 +3,6 @@ package com.fmi.materials.controller;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
-import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
@@ -19,9 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(maxAge = 3600)
@@ -94,18 +91,6 @@ public class CourseController {
         return new ResponseEntity<ResponseDto>(
                 new ResponseDtoSuccess(HttpStatus.OK, String.format("Section with id = '%s' deleted successfully", sectionId)),
                 HttpStatus.OK);
-    }
-
-    //
-    // Just testing methods below
-    //
-
-    @PostMapping("sections/{sectionId}/files")
-    public ResponseEntity<MaterialDto> createSectionMaterial(@PathVariable Long sectionId, @RequestParam("file") MultipartFile file) throws IOException {
-        return new ResponseEntity<MaterialDto>(
-                this.courseService.createMaterial(file, sectionId),
-                HttpStatus.CREATED
-        );
     }
 
     @GetMapping("{courseId}/files/{fileName}")

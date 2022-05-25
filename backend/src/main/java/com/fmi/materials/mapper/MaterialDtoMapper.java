@@ -23,11 +23,11 @@ public class MaterialDtoMapper {
         );
     }
 
-    public Material convertToEntity(MultipartFile materialFile, Section section) throws IOException {
+    public Material convertToEntity(String fileFormat, String fileName, byte[] data, Section section) throws IOException {
         return new Material(
-                materialFile.getContentType(),
-                materialFile.getOriginalFilename(),
-                materialFile.getBytes(),
+                fileFormat,
+                fileName,
+                data,
                 section
         );
     }

@@ -1,12 +1,5 @@
 package com.fmi.materials.service.impl;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.fmi.materials.dto.PagedResultDto;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
@@ -24,18 +17,23 @@ import com.fmi.materials.model.FacultyDepartment;
 import com.fmi.materials.model.Material;
 import com.fmi.materials.model.Section;
 import com.fmi.materials.repository.CourseRepository;
-import com.fmi.materials.specification.CourseSpecification;
 import com.fmi.materials.repository.MaterialRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.FacultyDepartmentService;
+import com.fmi.materials.specification.CourseSpecification;
 import com.fmi.materials.vo.ExceptionMessage;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -161,10 +159,10 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public MaterialDto createMaterial(MultipartFile materialFile, Long sectionId) throws IOException {
+    public MaterialDto createMaterial(String fileFormat, String fileName, byte[] data, Long sectionId) throws IOException {
         Section section = this.sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
-        Material material = this.materialDtoMapper.convertToEntity(materialFile, section);
+        Material material = this.materialDtoMapper.convertToEntity(fileFormat, fileName, data, section);
         material = this.materialRepository.save(material);
         return this.materialDtoMapper.convertToDto(material);
     }
