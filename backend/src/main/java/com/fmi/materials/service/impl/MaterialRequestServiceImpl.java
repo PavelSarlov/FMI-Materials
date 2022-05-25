@@ -2,7 +2,6 @@ package com.fmi.materials.service.impl;
 
 import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
-import com.fmi.materials.dto.materialrequest.MaterialRequestDtoWithData;
 import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.exception.InvalidArgumentException;
 import com.fmi.materials.mapper.MaterialDtoMapper;
@@ -13,17 +12,13 @@ import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.MaterialRequestService;
+import com.fmi.materials.util.Authentication;
 import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +36,8 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
                                       MaterialDtoMapper materialDtoMapper,
                                       SectionRepository sectionRepository,
                                       UserRepository userRepository,
-                                      CourseService courseService) {
+                                      CourseService courseService
+    ) {
         this.materialRequestRepository = materialRequestRepository;
         this.materialRequestDtoMapper = materialRequestDtoMapper;
         this.materialDtoMapper = materialDtoMapper;
@@ -50,30 +46,9 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
         this.courseService = courseService;
     }
 
-    private Boolean authenticateCurrentUser(Long userId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
-        Long loggedUserId = userDetails.getId();
-
-        if(loggedUserId != userId) {
-            return false;
-        }
-        return true;
-    }
-
-    private void addMaterial(MaterialRequest materialRequest) throws IOException {
-        MultipartFile multipartFile = new MockMultipartFile(materialRequest.getFileName(),
-                materialRequest.getFileName(),
-                materialRequest.getFileFormat(),
-                materialRequest.getData());
-        this.courseService.createMaterial(multipartFile, materialRequest.getSection().getId());
-    }
-
     @Override
     public List<MaterialRequestDto> getAllUserMaterialRequests(Long userId) {
-        if (!authenticateCurrentUser(userId)) {
-            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-        }
+        Authentication.authenticateCurrentUser(userId);
 
         return this.materialRequestRepository.findAllByUserId(userId).stream()
                 .map(this.materialRequestDtoMapper::convertToDto)
@@ -82,9 +57,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
 
     @Override
     public MaterialRequestDto getMaterialRequest(Long userId, Long materialRequestId) {
-        if (!authenticateCurrentUser(userId)) {
-            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-        }
+        Authentication.authenticateCurrentUser(userId);
 
         return this.materialRequestDtoMapper.convertToDto(
                 this.materialRequestRepository.findByIdAndUserId(materialRequestId, userId)
@@ -93,9 +66,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
 
     @Override
     public MaterialDtoWithData getMaterialFromMaterialRequest(Long userId, Long materialRequestId) {
-        if (!authenticateCurrentUser(userId)) {
-            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-        }
+        Authentication.authenticateCurrentUser(userId);
 
         MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndUserId(materialRequestId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
@@ -106,15 +77,13 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
 
     @Override
     public void processRequest(Long userId, Long materialRequestId, Boolean status) throws IOException {
-        if (!authenticateCurrentUser(userId)) {
-            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
-        }
+        Authentication.authenticateCurrentUser(userId);
 
         MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndUserId(materialRequestId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
         if (status == true) {
-            this.addMaterial(materialRequest);
+            this.courseService.createMaterial(materialRequest.getFileFormat(), materialRequest.getFileName(), materialRequest.getData(), materialRequest.getSection().getId());
         }
 
         User user = this.userRepository.findById(userId)
