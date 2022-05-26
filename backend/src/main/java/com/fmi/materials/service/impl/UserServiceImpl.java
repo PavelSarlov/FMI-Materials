@@ -25,9 +25,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Service
@@ -143,8 +147,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDto logoutUser() {
-        SecurityContextHolder.getContext().setAuthentication(null);
+    public ResponseDto logoutUser(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        SecurityContextHolder.clearContext();
+
+        if (request.getSession() != null) {
+            request.getSession().invalidate();
+        }
+
+        for (Cookie cookie : request.getCookies()) {
+            cookie.setMaxAge(0);
+        }
 
         return new ResponseDtoSuccess(
                 HttpStatus.OK,

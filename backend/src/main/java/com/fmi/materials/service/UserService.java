@@ -7,6 +7,8 @@ import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public interface UserService {
@@ -26,5 +28,5 @@ public interface UserService {
 
     UserDtoWithId loginUser(UserDto userDto);
 
-    ResponseDto logoutUser();
+    ResponseDto logoutUser(HttpServletRequest request, HttpServletResponse response);
 }

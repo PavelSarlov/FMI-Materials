@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -39,13 +39,9 @@ public class AccountController {
     }
 
     @GetMapping("logout")
-    public ResponseEntity<ResponseDto> logout(HttpServletResponse resp) {
-        Cookie session = new Cookie("JSESSIONID", null);
-        session.setMaxAge(0);
-        resp.addCookie(session);
-
+    public ResponseEntity<ResponseDto> logout(HttpServletRequest request, HttpServletResponse response) {
         return new ResponseEntity<ResponseDto>(
-                this.userService.logoutUser(),
+                this.userService.logoutUser(request, response),
                 HttpStatus.OK);
     }
 }
