@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDto loginUser(UserDto userDto) {
+    public UserDtoWithId loginUser(UserDto userDto) {
         User user = this.userRepository.findByEmail(userDto.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", userDto.getEmail())));
 
@@ -139,10 +139,7 @@ public class UserServiceImpl implements UserService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new ResponseDtoSuccess(
-                HttpStatus.OK,
-                "Login successful"
-        );
+        return this.userDtoMapper.convertToDtoWithId(user);
     }
 
     @Override

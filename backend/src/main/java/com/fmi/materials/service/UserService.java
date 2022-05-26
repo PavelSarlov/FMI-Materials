@@ -24,7 +24,7 @@ public interface UserService {
 
     MaterialRequestDto createMaterialRequest(MultipartFile multipartFile, Long sectionId, Long userId) throws IOException;
 
-    ResponseDto loginUser(UserDto userDto);
+    UserDtoWithId loginUser(UserDto userDto);
 
     ResponseDto logoutUser();
 }

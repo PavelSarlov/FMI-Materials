@@ -4,7 +4,6 @@ import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
 import com.fmi.materials.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -17,9 +16,9 @@ public class UserDtoMapper {
                 user.getName(),
                 user.getPasswordHash(),
                 user.getEmail(),
-                user.getRoles().stream()
+                user.getRoles() != null ? user.getRoles().stream()
                         .map(r -> r.getName())
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()) : null
                 );
     }
 
@@ -29,9 +28,9 @@ public class UserDtoMapper {
                 user.getName(),
                 user.getPasswordHash(),
                 user.getEmail(),
-                user.getRoles().stream()
+                user.getRoles() != null ? user.getRoles().stream()
                         .map(r -> r.getName())
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()) : null
                 );
     }
 

@@ -37,7 +37,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MaterialRequest> materialRequests;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users__user_roles",
             joinColumns = {
                     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
@@ -127,7 +127,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.getRoles().stream()
+        return this.roles.stream()
             .map(r -> new SimpleGrantedAuthority(r.getName()))
             .collect(Collectors.toList());
     }
