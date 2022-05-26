@@ -11,10 +11,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class UserDtoMapper {
-    @Autowired
-    private CourseListDtoMapper courseListDtoMapper;
-    @Autowired
-    private CourseDtoMapper courseDtoMapper;
 
     public UserDto convertToDto(User user) {
         return new UserDto(

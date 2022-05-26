@@ -1,6 +1,5 @@
 package com.fmi.materials.dto.courselist;
 
-import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

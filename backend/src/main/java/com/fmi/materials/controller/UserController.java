@@ -127,4 +127,12 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+
+    @PatchMapping("list/{listId}")
+    public ResponseEntity<CourseListDtoWithId> updateCourseListName(@PathVariable Long userId, @PathVariable Long listId, @RequestBody String courseListName) {
+        return new ResponseEntity<CourseListDtoWithId>(
+                this.courseListService.changeCourseListName(userId, listId, courseListName),
+                HttpStatus.OK
+        );
+    }
 }

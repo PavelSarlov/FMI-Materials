@@ -82,8 +82,25 @@ public class CourseListServiceImpl implements CourseListService {
         if (!this.courseListRepository.existsById(courseListDtoWithId.getId())) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListDtoWithId.getId()));
         }
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
 
         CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(courseListDtoWithId);
+        courseList.setUser(user);
+        return this.courseListDtoMapper.convertToDtoWithId(this.courseListRepository.save(courseList));
+    }
+
+    @Override
+    public CourseListDtoWithId changeCourseListName(Long userId, Long courseListId, String courseListName) {
+        Authentication.authenticateCurrentUser(userId);
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
+
+        CourseList courseList = this.courseListRepository.findById(courseListId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListId)));
+        courseList.setUser(user);
+        courseList.setListName(courseListName);
         return this.courseListDtoMapper.convertToDtoWithId(this.courseListRepository.save(courseList));
     }
 

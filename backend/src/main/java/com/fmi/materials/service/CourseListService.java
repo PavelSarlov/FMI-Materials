@@ -10,6 +10,8 @@ public interface CourseListService {
 
     CourseListDtoWithId updateCourseList(Long userId, CourseListDtoWithId courseListDtoWithId);
 
+    CourseListDtoWithId changeCourseListName(Long userId, Long courseListId, String courseListName);
+
     void deleteCourseList(Long userId, Long courseListId);
 
     CourseListDtoWithId getCourseList(Long courseListId, Long userId);
