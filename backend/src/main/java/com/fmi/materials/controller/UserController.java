@@ -100,7 +100,7 @@ public class UserController {
         );
     }
 
-    @DeleteMapping("lists/{listId}/courses/{courseId}")
+    @DeleteMapping("lists/{listId}/{courseId}")
     public ResponseEntity<ResponseDto> deleteCourseFromCourseList(@PathVariable Long userId, @PathVariable Long listId, @PathVariable Long courseId) {
         this.courseListService.deleteCourseFromCourseList(userId, listId, courseId);
 
