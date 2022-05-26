@@ -1,6 +1,7 @@
 package com.fmi.materials.service;
 
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
+import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
@@ -17,7 +18,13 @@ public interface UserService {
 
     UserDtoWithId findUserById(Long id);
 
+    UserDtoWithId findUserByEmail(String email);
+
     Long existsUser(UserDto userDto);
 
     MaterialRequestDto createMaterialRequest(MultipartFile multipartFile, Long sectionId, Long userId) throws IOException;
+
+    ResponseDto loginUser(UserDto userDto);
+
+    ResponseDto logoutUser();
 }

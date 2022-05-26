@@ -4,11 +4,11 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class ResponseDtoError extends ResponseDto {
+public class ResponseDtoError<T> extends ResponseDto {
 
-    private String error;
+    private T error;
 
-    public ResponseDtoError(HttpStatus status, String error) {
+    public ResponseDtoError(HttpStatus status, T error) {
         super(status);
         this.error = error;
     }

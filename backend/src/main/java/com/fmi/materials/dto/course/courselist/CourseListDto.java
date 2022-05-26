@@ -1,4 +1,4 @@
-package com.fmi.materials.dto.courselist;
+package com.fmi.materials.dto.course.courselist;
 
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import lombok.EqualsAndHashCode;

@@ -1,7 +1,7 @@
 package com.fmi.materials.service;
 
-import com.fmi.materials.dto.courselist.CourseListDto;
-import com.fmi.materials.dto.courselist.CourseListDtoWithId;
+import com.fmi.materials.dto.course.courselist.CourseListDto;
+import com.fmi.materials.dto.course.courselist.CourseListDtoWithId;
 
 import java.util.List;
 

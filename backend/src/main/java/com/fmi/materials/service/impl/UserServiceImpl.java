@@ -1,6 +1,8 @@
 package com.fmi.materials.service.impl;
 
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
+import com.fmi.materials.dto.response.ResponseDto;
+import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
@@ -16,9 +18,12 @@ import com.fmi.materials.repository.MaterialRequestRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.UserService;
-import com.fmi.materials.vo.ExceptionMessage;
 import com.fmi.materials.util.Authentication;
+import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,21 +56,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDtoRegistration userDto) {
-        if(!userDto.getPassword().equals(userDto.getRepeatedPassword())) {
+        if (!userDto.getPassword().equals(userDto.getRepeatedPassword())) {
             throw new InvalidArgumentException(ExceptionMessage.PASSWORDS_NOT_EQUAL.getFormattedMessage());
-        }
-        else if(this.userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+        } else if (this.userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("User", "email", userDto.getEmail()));
         }
         userDto.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
-        
+
         User user = this.userDtoMapper.convertToEntity(userDto);
         return this.userDtoMapper.convertToDto(this.userRepository.save(user));
     }
 
     @Override
     public void deleteUserById(Long id) {
-        if(!this.userRepository.existsById(id)) {
+        if (!this.userRepository.existsById(id)) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", id));
         }
 
@@ -74,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDtoWithId userDtoWithId) {
-        if(!this.userRepository.existsById(userDtoWithId.getId())) {
+        if (!this.userRepository.existsById(userDtoWithId.getId())) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userDtoWithId.getId()));
         }
 
@@ -90,13 +94,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDtoWithId findUserByEmail(String email) {
+        User user = this.userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", email)));
+        return this.userDtoMapper.convertToDtoWithId(user);
+    }
+
+    @Override
     public Long existsUser(UserDto userDto) {
         // won't work
         Long userId = this.userRepository.findUserByNameAndEmailAndPassword(userDto.getName(), userDto.getEmail(), userDto.getPassword());
         if (userId > 0) {
             return userId;
-        }
-        else {
+        } else {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId));
         }
     }
@@ -114,5 +124,34 @@ public class UserServiceImpl implements UserService {
         MaterialRequest materialRequest = this.materialRequestDtoMapper.convertToEntity(materialFile, user, section);
         materialRequest = this.materialRequestRepository.save(materialRequest);
         return this.materialRequestDtoMapper.convertToDto(materialRequest);
+    }
+
+    @Override
+    public ResponseDto loginUser(UserDto userDto) {
+        User user = this.userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", userDto.getEmail())));
+
+        if (!this.passwordEncoder.matches(userDto.getPassword(), user.getPasswordHash())) {
+            throw new InvalidArgumentException(ExceptionMessage.LOGIN_INVALID.getFormattedMessage());
+        }
+
+        org.springframework.security.core.Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPasswordHash(), user.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return new ResponseDtoSuccess(
+                HttpStatus.OK,
+                "Login successful"
+        );
+    }
+
+    @Override
+    public ResponseDto logoutUser() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+
+        return new ResponseDtoSuccess(
+                HttpStatus.OK,
+                "Logout successful"
+        );
     }
 }
