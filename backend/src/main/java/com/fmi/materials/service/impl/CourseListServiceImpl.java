@@ -70,10 +70,6 @@ public class CourseListServiceImpl implements CourseListService {
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
         CourseList courseList = this.courseListDtoMapper.convertToEntity(courseListDto);
-        courseList.setCourses(courseListDto.getCourses().stream()
-                .map(c -> this.courseRepository.findById(c.getId())
-                        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", c.getId()))))
-                .collect(Collectors.toSet()));
         courseList.setUser(user);
 
         return this.courseListDtoMapper.convertToDtoWithId(this.courseListRepository.save(courseList));

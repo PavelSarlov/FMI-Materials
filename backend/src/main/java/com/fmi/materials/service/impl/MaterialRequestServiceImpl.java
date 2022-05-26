@@ -93,16 +93,6 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
             this.courseService.createMaterial(materialRequest.getFileFormat(), materialRequest.getFileName(), materialRequest.getData(), materialRequest.getSection().getId());
         }
 
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
-        Long sectionId = materialRequest.getSection().getId();
-        Section section = this.sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
-
-        user.removeMaterialRequest(materialRequest);
-        section.removeMaterialRequest(materialRequest);
-
-        this.userRepository.save(user);
-        this.sectionRepository.save(section);
+        this.materialRequestRepository.deleteById(materialRequestId);
     }
 }

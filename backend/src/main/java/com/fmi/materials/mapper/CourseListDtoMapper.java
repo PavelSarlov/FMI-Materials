@@ -17,14 +17,14 @@ public class CourseListDtoMapper {
     public CourseList convertToEntity(CourseListDto courseListDto) {
         return new CourseList(
                 courseListDto.getListName(),
-                courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet())
+                courseListDto.getCourses() != null ? courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()) : null
         );
     }
 
     public CourseList convertToEntityWithId(CourseListDtoWithId courseListDto) {
         return new CourseList(
                 courseListDto.getId(), courseListDto.getListName(),
-                courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet())
+                courseListDto.getCourses() != null ? courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()) : null
         );
     }
 
