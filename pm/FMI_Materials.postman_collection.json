@@ -538,7 +538,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"listName\": \"someOtherList\",\r\n    \"courses\": [\r\n        {\r\n            \"id\": 1\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"listName\": \"someOtherList\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -567,7 +567,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/1/2",
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/2/1",
 							"host": [
 								"{{host}}"
 							],
@@ -577,8 +577,8 @@
 								"users",
 								"{{user_id}}",
 								"lists",
-								"1",
-								"2"
+								"2",
+								"1"
 							]
 						}
 					},
@@ -605,7 +605,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/favourite-courses/2",
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/favourite-courses/1",
 							"host": [
 								"{{host}}"
 							],
@@ -615,7 +615,7 @@
 								"users",
 								"{{user_id}}",
 								"favourite-courses",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -647,7 +647,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/D:/Random/stuff/random.txt"
+									"src": "/D:/stuff/stuff/random.txt"
 								}
 							]
 						},
@@ -663,6 +663,200 @@
 								"{{user_id}}",
 								"material-requests",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCourseList",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCourseFromCourseList",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "johndoe",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "john@doe.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/2/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"2",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCourseFromFavourites",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "johndoe",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "john@doe.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/favourite-courses/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"favourite-courses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateCourseList",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "johndoe",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "john@doe.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"listName\": \"changedListName\",\r\n    \"id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateCourseListName",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "johndoe",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "john@doe.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"listName\": \"asd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/2?listName=asd",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"2"
+							],
+							"query": [
+								{
+									"key": "listName",
+									"value": "asd"
+								}
 							]
 						}
 					},
@@ -805,7 +999,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests/1?status=true",
+							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests/2?status=true",
 							"host": [
 								"{{host}}"
 							],
@@ -815,7 +1009,7 @@
 								"admin",
 								"{{admin_id}}",
 								"material-requests",
-								"1"
+								"2"
 							],
 							"query": [
 								{
