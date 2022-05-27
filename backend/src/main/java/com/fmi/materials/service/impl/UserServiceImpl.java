@@ -18,11 +18,10 @@ import com.fmi.materials.repository.MaterialRequestRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.UserService;
-import com.fmi.materials.util.Authentication;
+import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -117,7 +116,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MaterialRequestDto createMaterialRequest(MultipartFile materialFile, Long sectionId, Long userId) throws IOException {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         Section section = this.sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
@@ -139,18 +138,11 @@ public class UserServiceImpl implements UserService {
             throw new InvalidArgumentException(ExceptionMessage.LOGIN_INVALID.getFormattedMessage());
         }
 
-        org.springframework.security.core.Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPasswordHash(), user.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
         return this.userDtoMapper.convertToDtoWithId(user);
     }
 
     @Override
     public ResponseDto logoutUser(HttpServletRequest request, HttpServletResponse response) {
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        SecurityContextHolder.clearContext();
-
         if (request.getSession() != null) {
             request.getSession().invalidate();
         }
@@ -158,6 +150,10 @@ public class UserServiceImpl implements UserService {
         for (Cookie cookie : request.getCookies()) {
             cookie.setMaxAge(0);
         }
+
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        SecurityContextHolder.getContext().setAuthentication(null);
+        SecurityContextHolder.clearContext();
 
         return new ResponseDtoSuccess(
                 HttpStatus.OK,
