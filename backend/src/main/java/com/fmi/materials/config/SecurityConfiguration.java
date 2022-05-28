@@ -2,6 +2,7 @@ package com.fmi.materials.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,6 +32,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/courses/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/api/courses/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PUT,"/api/courses/**").hasAuthority("ADMIN")
+                .antMatchers("/api/departments/**").hasAuthority("ADMIN")
                 .antMatchers("/api/admins/**").hasAuthority("ADMIN")
                 .antMatchers("/api/users/**").hasAnyAuthority("ADMIN", "USER")
                 .antMatchers("/api/auth/**").permitAll()
