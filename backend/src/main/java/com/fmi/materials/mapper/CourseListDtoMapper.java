@@ -1,7 +1,7 @@
 package com.fmi.materials.mapper;
 
-import com.fmi.materials.dto.course.courselist.CourseListDto;
-import com.fmi.materials.dto.course.courselist.CourseListDtoWithId;
+import com.fmi.materials.dto.courselist.CourseListDto;
+import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.model.CourseList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

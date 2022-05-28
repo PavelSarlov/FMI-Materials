@@ -1,16 +1,16 @@
 package com.fmi.materials.controller;
 
-import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -31,17 +31,10 @@ public class AccountController {
                 HttpStatus.CREATED);
     }
 
-    @PostMapping("login")
-    public ResponseEntity<UserDto> login(@RequestBody @Valid UserDto userDto) {
+    @PostMapping("authenticate")
+    public ResponseEntity<UserDto> authenticate(@RequestBody @Valid UserDto userDto) {
         return new ResponseEntity<UserDto>(
-                this.userService.loginUser(userDto),
-                HttpStatus.OK);
-    }
-
-    @GetMapping("logout")
-    public ResponseEntity<ResponseDto> logout(HttpServletRequest request, HttpServletResponse response) {
-        return new ResponseEntity<ResponseDto>(
-                this.userService.logoutUser(request, response),
+                this.userService.authenticateUser(userDto),
                 HttpStatus.OK);
     }
 }

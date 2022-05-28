@@ -1,14 +1,11 @@
 package com.fmi.materials.service;
 
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
-import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public interface UserService {
@@ -26,7 +23,5 @@ public interface UserService {
 
     MaterialRequestDto createMaterialRequest(MultipartFile multipartFile, Long sectionId, Long userId) throws IOException;
 
-    UserDtoWithId loginUser(UserDto userDto);
-
-    ResponseDto logoutUser(HttpServletRequest request, HttpServletResponse response);
+    UserDtoWithId authenticateUser(UserDto userDto);
 }

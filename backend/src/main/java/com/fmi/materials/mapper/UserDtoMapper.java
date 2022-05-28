@@ -14,7 +14,7 @@ public class UserDtoMapper {
     public UserDto convertToDto(User user) {
         return new UserDto(
                 user.getName(),
-                user.getPasswordHash(),
+                null,
                 user.getEmail(),
                 user.getRoles() != null ? user.getRoles().stream()
                         .map(r -> r.getName())
@@ -26,7 +26,7 @@ public class UserDtoMapper {
         return new UserDtoWithId(
                 user.getId(),
                 user.getName(),
-                user.getPasswordHash(),
+                null,
                 user.getEmail(),
                 user.getRoles() != null ? user.getRoles().stream()
                         .map(r -> r.getName())

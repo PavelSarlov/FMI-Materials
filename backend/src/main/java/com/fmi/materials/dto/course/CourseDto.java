@@ -1,5 +1,6 @@
 package com.fmi.materials.dto.course;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
 import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.vo.CourseGroup;
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CourseDto {
 
     private String name;

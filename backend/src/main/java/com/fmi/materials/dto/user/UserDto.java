@@ -1,5 +1,6 @@
 package com.fmi.materials.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sun.istack.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
     @NotNull
     @Size(min=4, max = 50, message = "Username should be between 4 and 50 characters.")

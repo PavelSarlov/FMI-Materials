@@ -1,8 +1,8 @@
 package com.fmi.materials.controller;
 
 import com.fmi.materials.dto.course.CourseDtoWithId;
-import com.fmi.materials.dto.course.courselist.CourseListDto;
-import com.fmi.materials.dto.course.courselist.CourseListDtoWithId;
+import com.fmi.materials.dto.courselist.CourseListDto;
+import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;

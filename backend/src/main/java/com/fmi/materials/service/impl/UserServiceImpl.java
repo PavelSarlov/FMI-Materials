@@ -1,8 +1,6 @@
 package com.fmi.materials.service.impl;
 
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
-import com.fmi.materials.dto.response.ResponseDto;
-import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
@@ -21,16 +19,10 @@ import com.fmi.materials.service.UserService;
 import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Service
@@ -132,7 +124,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDtoWithId loginUser(UserDto userDto) {
+    public UserDtoWithId authenticateUser(UserDto userDto) {
         User user = this.userRepository.findByEmail(userDto.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", userDto.getEmail())));
 
@@ -141,25 +133,5 @@ public class UserServiceImpl implements UserService {
         }
 
         return this.userDtoMapper.convertToDtoWithId(user);
-    }
-
-    @Override
-    public ResponseDto logoutUser(HttpServletRequest request, HttpServletResponse response) {
-        if (request.getSession() != null) {
-            request.getSession().invalidate();
-        }
-
-        for (Cookie cookie : request.getCookies()) {
-            cookie.setMaxAge(0);
-        }
-
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        SecurityContextHolder.getContext().setAuthentication(null);
-        SecurityContextHolder.clearContext();
-
-        return new ResponseDtoSuccess(
-                HttpStatus.OK,
-                "Logout successful"
-        );
     }
 }
