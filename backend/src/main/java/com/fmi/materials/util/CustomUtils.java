@@ -15,9 +15,9 @@ public class CustomUtils {
 
         try {
             User user = (User) authentication.getPrincipal();
-            assert user.getId() == userId;
+            if (user.getId() != userId) throw new Exception();
         } catch (Exception e) {
-            throw new InvalidArgumentException(ExceptionMessage.INVALID_OPERATION.getFormattedMessage());
+            throw new InvalidArgumentException(ExceptionMessage.UNAUTHORIZED.getFormattedMessage());
         }
     }
 

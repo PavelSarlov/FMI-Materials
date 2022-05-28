@@ -25,4 +25,8 @@ public interface MaterialRequestRepository extends CrudRepository<MaterialReques
             "JOIN users u ON u.name = c.created_by\n" +
             "WHERE u.id = ?1", nativeQuery = true)
     List<MaterialRequest> findAllByAdminId(Long adminId);
+
+    @Query(value = "SELECT * FROM material_requests mr\n" +
+            "WHERE section_id = ?1 AND file_name = ?2", nativeQuery = true)
+    Optional<MaterialRequest> findBySectionAndFileName(Long sectionId, String fileName);
 }

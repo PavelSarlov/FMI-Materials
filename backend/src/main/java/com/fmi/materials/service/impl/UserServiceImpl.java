@@ -125,8 +125,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
 
         MaterialRequest materialRequest = this.materialRequestDtoMapper.convertToEntity(materialFile, user, section);
-        materialRequest = this.materialRequestRepository.save(materialRequest);
-        return this.materialRequestDtoMapper.convertToDto(materialRequest);
+        if (this.materialRequestRepository.findBySectionAndFileName(section.getId(), materialRequest.getFileName()).isPresent()) {
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Material request", "filename", materialRequest.getFileName()));
+        }
+        return this.materialRequestDtoMapper.convertToDto(this.materialRequestRepository.save(materialRequest));
     }
 
     @Override
