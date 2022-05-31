@@ -35,12 +35,13 @@ CREATE TABLE materials (
     file_format VARCHAR(50) NOT NULL,
     data BYTEA NOT NULL,
     section_id INT NOT NULL,
-    file_name VARCHAR(50) NOT NULL UNIQUE,
+    file_name VARCHAR(50) NOT NULL,
 
     CONSTRAINT PK_materials PRIMARY KEY(id),
     CONSTRAINT FK_materials__sections FOREIGN KEY(section_id)
         REFERENCES sections(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    UNIQUE (section_id, file_name)
 );
 
 CREATE TABLE user_roles(

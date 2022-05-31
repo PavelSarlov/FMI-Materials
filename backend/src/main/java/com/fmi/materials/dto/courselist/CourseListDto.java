@@ -1,5 +1,6 @@
 package com.fmi.materials.dto.courselist;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CourseListDto {
     private String listName;
     private List<CourseDtoWithId> courses;

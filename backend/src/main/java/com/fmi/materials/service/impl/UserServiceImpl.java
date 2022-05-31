@@ -16,8 +16,8 @@ import com.fmi.materials.repository.MaterialRequestRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.UserService;
+import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
-import com.fmi.materials.util.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,21 +51,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDtoRegistration userDto) {
-        if(!userDto.getPassword().equals(userDto.getRepeatedPassword())) {
+        if (!userDto.getPassword().equals(userDto.getRepeatedPassword())) {
             throw new InvalidArgumentException(ExceptionMessage.PASSWORDS_NOT_EQUAL.getFormattedMessage());
-        }
-        else if(this.userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+        } else if (this.userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("User", "email", userDto.getEmail()));
         }
         userDto.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
-        
+
         User user = this.userDtoMapper.convertToEntity(userDto);
         return this.userDtoMapper.convertToDto(this.userRepository.save(user));
     }
 
     @Override
     public void deleteUserById(Long id) {
-        if(!this.userRepository.existsById(id)) {
+        if (!this.userRepository.existsById(id)) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", id));
         }
 
@@ -74,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDtoWithId userDtoWithId) {
-        if(!this.userRepository.existsById(userDtoWithId.getId())) {
+        if (!this.userRepository.existsById(userDtoWithId.getId())) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userDtoWithId.getId()));
         }
 
@@ -90,20 +89,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDtoWithId findUserByEmail(String email) {
+        User user = this.userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", email)));
+        return this.userDtoMapper.convertToDtoWithId(user);
+    }
+
+    @Override
     public Long existsUser(UserDto userDto) {
         // won't work
         Long userId = this.userRepository.findUserByNameAndEmailAndPassword(userDto.getName(), userDto.getEmail(), userDto.getPassword());
         if (userId > 0) {
             return userId;
-        }
-        else {
+        } else {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId));
         }
     }
 
     @Override
     public MaterialRequestDto createMaterialRequest(MultipartFile materialFile, Long sectionId, Long userId) throws IOException {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         Section section = this.sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
@@ -112,7 +117,21 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
 
         MaterialRequest materialRequest = this.materialRequestDtoMapper.convertToEntity(materialFile, user, section);
-        materialRequest = this.materialRequestRepository.save(materialRequest);
-        return this.materialRequestDtoMapper.convertToDto(materialRequest);
+        if (this.materialRequestRepository.findBySectionAndFileName(section.getId(), materialRequest.getFileName()).isPresent()) {
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Material request", "filename", materialRequest.getFileName()));
+        }
+        return this.materialRequestDtoMapper.convertToDto(this.materialRequestRepository.save(materialRequest));
+    }
+
+    @Override
+    public UserDtoWithId authenticateUser(UserDto userDto) {
+        User user = this.userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", userDto.getEmail())));
+
+        if (!this.passwordEncoder.matches(userDto.getPassword(), user.getPasswordHash())) {
+            throw new InvalidArgumentException(ExceptionMessage.LOGIN_INVALID.getFormattedMessage());
+        }
+
+        return this.userDtoMapper.convertToDtoWithId(user);
     }
 }

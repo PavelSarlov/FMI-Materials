@@ -17,7 +17,11 @@ public interface UserService {
 
     UserDtoWithId findUserById(Long id);
 
+    UserDtoWithId findUserByEmail(String email);
+
     Long existsUser(UserDto userDto);
 
     MaterialRequestDto createMaterialRequest(MultipartFile multipartFile, Long sectionId, Long userId) throws IOException;
+
+    UserDtoWithId authenticateUser(UserDto userDto);
 }

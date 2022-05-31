@@ -41,6 +41,9 @@
 				{
 					"name": "FindCourses",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -82,6 +85,9 @@
 				{
 					"name": "TemplateCourse",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -122,6 +128,9 @@
 				{
 					"name": "GetCourseById",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -161,6 +170,57 @@
 					"response": []
 				},
 				{
+					"name": "CreateSection",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"SomeSection\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/courses/{{course_id}}/sections",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"courses",
+								"{{course_id}}",
+								"sections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteSection",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/courses/sections/{{section_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"courses",
+								"sections",
+								"{{section_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "UpdateCourse",
 					"request": {
 						"method": "PUT",
@@ -190,7 +250,7 @@
 					"response": []
 				},
 				{
-					"name": "UploadFile",
+					"name": "CreateMaterial",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -200,12 +260,12 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": []
+									"src": "/D:/Random/stuff/random.txt"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{host}}:{{port}}/api/courses/sections/{{sectionId}}/files",
+							"raw": "{{host}}:{{port}}/api/courses/sections/{{section_id}}/materials",
 							"host": [
 								"{{host}}"
 							],
@@ -214,20 +274,20 @@
 								"api",
 								"courses",
 								"sections",
-								"{{sectionId}}",
-								"files"
+								"{{section_id}}",
+								"materials"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "GetFileByName",
+					"name": "GetMaterialByName",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/courses/{{course_id}}/files/{{file_name}}",
+							"raw": "{{host}}:{{port}}/api/courses/sections/{{section_id}}/materials/{{file_name}}",
 							"host": [
 								"{{host}}"
 							],
@@ -235,13 +295,71 @@
 							"path": [
 								"api",
 								"courses",
-								"{{course_id}}",
-								"files",
+								"sections",
+								"{{section_id}}",
+								"materials",
 								"{{file_name}}"
 							]
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "DeleteMaterial",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/courses/sections/materials/{{material_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"courses",
+								"sections",
+								"materials",
+								"{{material_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{admin_password}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{admin_username}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -365,6 +483,41 @@
 					},
 					"response": []
 				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{admin_password}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{admin_username}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
@@ -385,13 +538,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:{{port}}/api/register",
+							"raw": "{{host}}:{{port}}/api/auth/register",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
 								"api",
+								"auth",
 								"register"
 							]
 						}
@@ -399,23 +553,59 @@
 					"response": []
 				},
 				{
-					"name": "Logout",
+					"name": "Authenticate",
 					"request": {
-						"method": "GET",
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{admin_username}}\",\r\n    \"password\": \"{{admin_password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{host}}:{{port}}/api/logout",
+							"raw": "{{host}}:{{port}}/api/auth/authenticate",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"logout"
+								"auth",
+								"authenticate"
 							]
 						}
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -425,21 +615,6 @@
 				{
 					"name": "GetCourseLists",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "johndoe",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "john@doe.com",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -461,21 +636,6 @@
 				{
 					"name": "GetCourseListById",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "johndoe",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "john@doe.com",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -519,21 +679,6 @@
 				{
 					"name": "CreateCourseList",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "johndoe",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "john@doe.com",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -587,21 +732,6 @@
 				{
 					"name": "AddFavouriteCourse",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "johndoe",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "john@doe.com",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -624,21 +754,6 @@
 				{
 					"name": "AddMaterialRequest",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "johndoe",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "john@doe.com",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -647,7 +762,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/D:/stuff/stuff/random.txt"
+									"src": "/D:/Random/stuff/random.txt"
 								}
 							]
 						},
@@ -693,21 +808,6 @@
 				{
 					"name": "DeleteCourseFromCourseList",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "johndoe",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "john@doe.com",
-									"type": "string"
-								}
-							]
-						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -731,21 +831,6 @@
 				{
 					"name": "DeleteCourseFromFavourites",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "johndoe",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "john@doe.com",
-									"type": "string"
-								}
-							]
-						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -768,21 +853,6 @@
 				{
 					"name": "UpdateCourseList",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "johndoe",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "john@doe.com",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -813,21 +883,6 @@
 				{
 					"name": "UpdateCourseListName",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "johndoe",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "john@doe.com",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -862,6 +917,41 @@
 					},
 					"response": []
 				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{password}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{username}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
@@ -870,32 +960,17 @@
 				{
 					"name": "GetAllMaterialRequests",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "admin@admin.bg",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests",
+							"raw": "{{host}}:{{port}}/api/admins/{{admin_id}}/material-requests",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"admin",
+								"admins",
 								"{{admin_id}}",
 								"material-requests"
 							]
@@ -906,32 +981,17 @@
 				{
 					"name": "GetMaterialRequestById",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "admin@admin.bg",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests/1",
+							"raw": "{{host}}:{{port}}/api/admins/{{admin_id}}/material-requests/1",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"admin",
+								"admins",
 								"{{admin_id}}",
 								"material-requests",
 								"1"
@@ -943,32 +1003,17 @@
 				{
 					"name": "GetMaterialFromMaterialRequest",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "admin@admin.bg",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests/1/material",
+							"raw": "{{host}}:{{port}}/api/admins/{{admin_id}}/material-requests/1/material",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"admin",
+								"admins",
 								"{{admin_id}}",
 								"material-requests",
 								"1",
@@ -981,32 +1026,17 @@
 				{
 					"name": "ProcessRequest",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "admin@admin.bg",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/admin/{{admin_id}}/material-requests/2?status=true",
+							"raw": "{{host}}:{{port}}/api/admins/{{admin_id}}/material-requests/2?status=true",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"admin",
+								"admins",
 								"{{admin_id}}",
 								"material-requests",
 								"2"
@@ -1020,6 +1050,41 @@
 						}
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "username",
+						"value": "{{admin_username}}",
+						"type": "string"
+					},
+					{
+						"key": "password",
+						"value": "{{admin_password}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		}

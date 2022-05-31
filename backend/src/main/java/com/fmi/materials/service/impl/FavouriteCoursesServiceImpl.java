@@ -10,7 +10,7 @@ import com.fmi.materials.repository.CourseListRepository;
 import com.fmi.materials.repository.CourseRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.FavouriteCoursesService;
-import com.fmi.materials.util.Authentication;
+import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +53,7 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
 
     @Override
     public void deleteFavouriteCourse(Long userId, Long courseId) {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
@@ -69,7 +69,7 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
 
     @Override
     public List<CourseDtoWithId> addCourse(Long userId, Long courseId) {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));

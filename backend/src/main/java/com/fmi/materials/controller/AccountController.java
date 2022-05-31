@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/auth")
 public class AccountController {
-    private final String LOGIN_INVALID = "Login Invalid";
 
     private UserService userService;
 
@@ -29,36 +28,13 @@ public class AccountController {
     public ResponseEntity<UserDto> register(@RequestBody @Valid UserDtoRegistration userDtoRegistration) {
         return new ResponseEntity<UserDto>(
                 this.userService.createUser(userDtoRegistration),
-                HttpStatus.CREATED
-        );
+                HttpStatus.CREATED);
     }
 
-    /*@PostMapping("login")
-    public ResponseEntity<Long> login(@RequestBody UserDto userDto) {
-        // won't work
-        try {
-            Long id = this.userService.existsUser(userDto);
-            if (id > 0) {
-                return new ResponseEntity(
-                        this.userService.existsUser(userDto),
-                        HttpStatus.CREATED
-                );
-            }
-            else {
-                return new ResponseEntity(
-                        LOGIN_INVALID,
-                        HttpStatus.BAD_REQUEST
-                );
-            }
-        } catch (NoSuchElementException noEl) {
-            return new ResponseEntity(
-                    noEl.getMessage(),
-                    HttpStatus.BAD_REQUEST
-            );
-        } catch (Exception e) {
-            return new ResponseEntity(
-                    HttpStatus.CONFLICT
-            );
-        }
-    }*/
+    @PostMapping("authenticate")
+    public ResponseEntity<UserDto> authenticate(@RequestBody @Valid UserDto userDto) {
+        return new ResponseEntity<UserDto>(
+                this.userService.authenticateUser(userDto),
+                HttpStatus.OK);
+    }
 }

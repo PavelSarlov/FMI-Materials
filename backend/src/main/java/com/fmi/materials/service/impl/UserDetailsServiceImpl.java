@@ -1,8 +1,7 @@
 package com.fmi.materials.service.impl;
 
-import com.fmi.materials.model.CustomUserDetails;
-import com.fmi.materials.model.User;
 import com.fmi.materials.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,11 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // let's see if we can cheat it ;>
-        User user = userRepository.findByEmail(email).get();
-        if (user == null) {
-            throw new UsernameNotFoundException(email);
-        }
-        return new CustomUserDetails(user);
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException(email));
     }
 }

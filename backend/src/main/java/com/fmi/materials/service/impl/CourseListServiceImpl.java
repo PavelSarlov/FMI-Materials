@@ -14,13 +14,12 @@ import com.fmi.materials.repository.CourseListRepository;
 import com.fmi.materials.repository.CourseRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.CourseListService;
-import com.fmi.materials.util.Authentication;
+import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CourseListServiceImpl implements CourseListService {
@@ -61,7 +60,7 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public CourseListDtoWithId createCourseList(CourseListDto courseListDto, Long userId) {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         if (this.courseListRepository.findByListName(userId, courseListDto.getListName()).isPresent()) {
             throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("CourseList", "name", courseListDto.getListName()));
@@ -77,7 +76,7 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public CourseListDtoWithId updateCourseList(Long userId, CourseListDtoWithId courseListDtoWithId) {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         if (!this.courseListRepository.existsById(courseListDtoWithId.getId())) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("CourseList", "id", courseListDtoWithId.getId()));
@@ -92,7 +91,7 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public CourseListDtoWithId changeCourseListName(Long userId, Long courseListId, String courseListName) {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
@@ -106,7 +105,7 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public void deleteCourseList(Long userId, Long courseListId) {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         if (this.getCourseList(courseListId, userId) != null) {
             this.courseListRepository.deleteById(courseListId);
@@ -128,7 +127,7 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public CourseListDtoWithId addCourseToList(Long courseId, Long courseListId, Long userId) {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         Course course = this.courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
@@ -148,7 +147,7 @@ public class CourseListServiceImpl implements CourseListService {
 
     @Override
     public void deleteCourseFromCourseList(Long userId, Long courseListId, Long courseId) {
-        Authentication.authenticateCurrentUser(userId);
+        CustomUtils.authenticateCurrentUser(userId);
 
         CourseList courseList = this.getCourseListFromRepository(courseListId, userId);
         Course course = this.courseRepository.findById(courseId)

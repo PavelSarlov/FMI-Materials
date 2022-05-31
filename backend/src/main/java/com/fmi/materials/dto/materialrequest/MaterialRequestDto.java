@@ -1,5 +1,6 @@
 package com.fmi.materials.dto.materialrequest;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fmi.materials.dto.section.SectionDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MaterialRequestDto {
     private Long id;
     private String fileFormat;
