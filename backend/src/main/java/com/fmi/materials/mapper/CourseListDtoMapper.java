@@ -11,38 +11,41 @@ import java.util.stream.Collectors;
 
 @Component
 public class CourseListDtoMapper {
-    /*@Autowired
-    private UserDtoMapper userDtoMapper;*/
-
     @Autowired
     private CourseDtoMapper courseDtoMapper;
 
     public CourseList convertToEntity(CourseListDto courseListDto) {
-        return new CourseList(courseListDto.getListName(),
-                courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()));
+        return new CourseList(
+                courseListDto.getListName(),
+                courseListDto.getCourses() != null ? courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()) : null
+        );
     }
 
     public CourseList convertToEntityWithId(CourseListDtoWithId courseListDto) {
-        return new CourseList(courseListDto.getId(), courseListDto.getListName(),
-                courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()));
+        return new CourseList(
+                courseListDto.getId(), courseListDto.getListName(),
+                courseListDto.getCourses() != null ? courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()) : null
+        );
     }
 
     public CourseListDto convertToDto(CourseList courseList) {
 
-        return new CourseListDto(courseList.getListName(),
-                /*this.userDtoMapper.convertToDtoWithId(courseList.getUser()),*/
+        return new CourseListDto(
+                courseList.getListName(),
                 courseList.getCourses() != null ? courseList.getCourses().stream()
                         .map(this.courseDtoMapper::convertToDtoWithId)
-                        .collect(Collectors.toList()) : null);
+                        .collect(Collectors.toList()) : null
+        );
     }
 
     public CourseListDtoWithId convertToDtoWithId(CourseList courseList) {
-        return new CourseListDtoWithId(courseList.getId(),
+        return new CourseListDtoWithId(
+                courseList.getId(),
                 courseList.getListName(),
-                /*this.userDtoMapper.convertToDtoWithId(courseList.getUser()),*/
                 courseList.getCourses() != null ? courseList.getCourses().stream()
                         .map(this.courseDtoMapper::convertToDtoWithId)
-                        .collect(Collectors.toList()) : null);
+                        .collect(Collectors.toList()) : null
+        );
     }
 
     public List<CourseListDtoWithId> convertToDtoList(List<CourseList> courseLists) {

@@ -10,13 +10,15 @@ import java.util.Optional;
 
 @Repository
 public interface CourseListRepository extends CrudRepository<CourseList, Long> {
-    Optional<CourseList> findByListName(String name);
+    @Query(value = "SELECT * FROM user_courses_lists cl\n" +
+            "WHERE cl.user_id = ?1 AND cl.list_name LIKE ?2", nativeQuery = true)
+    Optional<CourseList> findByListName(Long userId, String name);
 
-    @Query(value = "SELECT * FROM user_courses_lists cl " +
+    @Query(value = "SELECT * FROM user_courses_lists cl\n" +
             "WHERE cl.user_id = ?1 AND cl.id = ?2", nativeQuery = true)
     Optional<CourseList> findUserCourseList(Long userId, Long courseId);
 
-    @Query(value = "SELECT * FROM user_courses_lists cl " +
+    @Query(value = "SELECT * FROM user_courses_lists cl\n" +
             "WHERE cl.user_id = ?1", nativeQuery = true)
     List<CourseList> findUserCourseLists(Long id);
 }

@@ -1,22 +1,21 @@
 package com.fmi.materials.service;
 
-import java.io.IOException;
-import java.util.List;
-
-import com.fmi.materials.dto.PagedResultDto;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.material.MaterialDtoWithData;
+import com.fmi.materials.dto.pagedresult.PagedResultDto;
+import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.section.SectionDto;
-
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 public interface CourseService {
     CourseDto createCourse(CourseDto course);
 
-    void deleteCourse(Long courseId);
+    ResponseDto deleteCourse(Long courseId);
 
     CourseDto updateCourse(CourseDtoWithId course);
 
@@ -30,11 +29,11 @@ public interface CourseService {
 
     SectionDto findSectionById(Long sectionId);
 
-    void deleteSection(Long sectionId);
+    ResponseDto deleteSection(Long sectionId);
 
     MaterialDto createMaterial(String fileFormat, String fileName, byte[] data, Long sectionId) throws IOException;
 
-    void deleteMaterial(Long materialId);
+    ResponseDto deleteMaterial(Long materialId);
 
     MaterialDtoWithData findMaterialById(Long materialId);
 

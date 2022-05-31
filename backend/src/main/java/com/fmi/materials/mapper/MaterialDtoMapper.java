@@ -6,8 +6,6 @@ import com.fmi.materials.model.Material;
 import com.fmi.materials.model.Section;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Component
 public class MaterialDtoMapper {
     public Material convertToEntity(MaterialDto materialDto) {
@@ -20,7 +18,7 @@ public class MaterialDtoMapper {
         );
     }
 
-    public Material convertToEntity(String fileFormat, String fileName, byte[] data, Section section) throws IOException {
+    public Material convertToEntity(String fileFormat, String fileName, byte[] data, Section section) {
         return new Material(
                 fileFormat,
                 fileName,

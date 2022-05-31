@@ -20,11 +20,11 @@ public class CourseList {
     @Column(name = "list_name")
     private String listName;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(name = "courses__user_courses_lists",
             joinColumns = {
                     @JoinColumn(name = "user_courses_list_id", referencedColumnName = "id", nullable = false, updatable = false),

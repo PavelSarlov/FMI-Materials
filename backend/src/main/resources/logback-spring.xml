@@ -7,7 +7,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%boldGreen(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}) %highlight(${LOG_LEVEL_PATTERN:-%5p}) %cyan(${PID:- }) --- %magenta([%15.15t]) %boldYellow(%-40.40logger{39}) %yellow(.%-10M{9})  : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
+            <pattern>%boldGreen(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}) %highlight(${LOG_LEVEL_PATTERN:-%5p}) %cyan(${PID:- }) --- %magenta([%15.15t]) %boldYellow(%logger).%yellow(%M)  : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
         </encoder>
     </appender>
 

@@ -41,10 +41,13 @@
 				{
 					"name": "FindCourses",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/courses?filter=name&filterValue=web&size=1&page=2",
+							"raw": "{{host}}:{{port}}/api/courses",
 							"host": [
 								"{{host}}"
 							],
@@ -56,19 +59,23 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "name"
+									"value": "name",
+									"disabled": true
 								},
 								{
 									"key": "filterValue",
-									"value": "web"
+									"value": "web",
+									"disabled": true
 								},
 								{
 									"key": "size",
-									"value": "1"
+									"value": "1",
+									"disabled": true
 								},
 								{
 									"key": "page",
-									"value": "2"
+									"value": "2",
+									"disabled": true
 								}
 							]
 						}
@@ -78,6 +85,9 @@
 				{
 					"name": "TemplateCourse",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -118,6 +128,9 @@
 				{
 					"name": "GetCourseById",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -157,13 +170,64 @@
 					"response": []
 				},
 				{
+					"name": "CreateSection",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"SomeSection\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/courses/{{course_id}}/sections",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"courses",
+								"{{course_id}}",
+								"sections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteSection",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/courses/sections/{{section_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"courses",
+								"sections",
+								"{{section_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "UpdateCourse",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": {{course_id}},\r\n    \"name\": \"Web Development with C#\",\r\n    \"description\": \"MVC\",\r\n    \"createdBy\": \"Admin Adminchev\",\r\n    \"facultyDepartmentDto\": {\r\n        \"id\": 12\r\n    },\r\n    \"courseGroup\": {\r\n        \"name\": \"Computer Science Fundamentals\",\r\n        \"id\": \"CSF\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"name\": \"asd Development with Java\",\r\n    \"description\": \"WDWJ, Spring Boot, MVC\",\r\n    \"createdBy\": \"Admin Adminchev\",\r\n    \"facultyDepartmentDto\": {\r\n        \"id\": 13,\r\n        \"name\": \"Software Technologies\"\r\n    },\r\n    \"courseGroup\": {\r\n        \"name\": \"Computer Science Fundamentals\",\r\n        \"id\": \"CSF\"\r\n    },\r\n    \"sectionDtos\": null,\r\n    \"id\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -186,7 +250,7 @@
 					"response": []
 				},
 				{
-					"name": "UploadFile",
+					"name": "CreateMaterial",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -196,12 +260,12 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": []
+									"src": "/D:/Random/stuff/random.txt"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{host}}:{{port}}/api/courses/sections/{{sectionId}}/files",
+							"raw": "{{host}}:{{port}}/api/courses/sections/{{section_id}}/materials",
 							"host": [
 								"{{host}}"
 							],
@@ -210,20 +274,20 @@
 								"api",
 								"courses",
 								"sections",
-								"{{sectionId}}",
-								"files"
+								"{{section_id}}",
+								"materials"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "GetFileByName",
+					"name": "GetMaterialByName",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/api/courses/{{course_id}}/files/{{file_name}}",
+							"raw": "{{host}}:{{port}}/api/courses/sections/{{section_id}}/materials/{{file_name}}",
 							"host": [
 								"{{host}}"
 							],
@@ -231,13 +295,71 @@
 							"path": [
 								"api",
 								"courses",
-								"{{course_id}}",
-								"files",
+								"sections",
+								"{{section_id}}",
+								"materials",
 								"{{file_name}}"
 							]
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "DeleteMaterial",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/courses/sections/materials/{{material_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"courses",
+								"sections",
+								"materials",
+								"{{material_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{admin_password}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{admin_username}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -360,6 +482,609 @@
 						}
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{admin_password}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{admin_username}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"nqkoi@si.tam\",\r\n    \"name\": \"Nqkoi Sitam\",\r\n    \"password\": \"Nqk01s174m\",\r\n    \"repeatedPassword\": \"Nqk01s174m\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/auth/register",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{admin_username}}\",\r\n    \"password\": \"{{admin_password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/auth/authenticate",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"auth",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "GetCourseLists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCourseListById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/{{course_list_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"{{course_list_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetFavouriteCourses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/favourite-courses",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"favourite-courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateCourseList",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"listName\": \"someOtherList\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddCourseToList",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/2/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"2",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddFavouriteCourse",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/favourite-courses/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"favourite-courses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddMaterialRequest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/D:/Random/stuff/random.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/material-requests/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"material-requests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCourseList",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCourseFromCourseList",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/2/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"2",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCourseFromFavourites",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/favourite-courses/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"favourite-courses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateCourseList",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"listName\": \"changedListName\",\r\n    \"id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateCourseListName",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"listName\": \"asd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/api/users/{{user_id}}/lists/2?listName=asd",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"lists",
+								"2"
+							],
+							"query": [
+								{
+									"key": "listName",
+									"value": "asd"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{password}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{username}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Admins",
+			"item": [
+				{
+					"name": "GetAllMaterialRequests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/admins/{{admin_id}}/material-requests",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"admins",
+								"{{admin_id}}",
+								"material-requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetMaterialRequestById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/admins/{{admin_id}}/material-requests/1",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"admins",
+								"{{admin_id}}",
+								"material-requests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetMaterialFromMaterialRequest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/admins/{{admin_id}}/material-requests/1/material",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"admins",
+								"{{admin_id}}",
+								"material-requests",
+								"1",
+								"material"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ProcessRequest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/admins/{{admin_id}}/material-requests/2?status=true",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"admins",
+								"{{admin_id}}",
+								"material-requests",
+								"2"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "username",
+						"value": "{{admin_username}}",
+						"type": "string"
+					},
+					{
+						"key": "password",
+						"value": "{{admin_password}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		}

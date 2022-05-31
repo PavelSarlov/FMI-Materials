@@ -1,10 +1,12 @@
 package com.fmi.materials.service.impl;
 
-import com.fmi.materials.dto.PagedResultDto;
+import com.fmi.materials.dto.pagedresult.PagedResultDto;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.material.MaterialDtoWithData;
+import com.fmi.materials.dto.response.ResponseDto;
+import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.exception.EntityAlreadyExistsException;
 import com.fmi.materials.exception.EntityNotFoundException;
@@ -28,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -64,8 +67,7 @@ public class CourseServiceImpl implements CourseService {
                 .map(c -> c.getName().toLowerCase(Locale.ROOT))
                 .collect(Collectors.toList());
         if (courseNames.contains(courseDto.getName().toLowerCase(Locale.ROOT))) {
-            throw new EntityAlreadyExistsException(
-                    ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Course", "name", courseDto.getName()));
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Course", "name", courseDto.getName()));
         }
 
         Course course = this.courseDtoMapper.convertToEntity(courseDto);
@@ -73,7 +75,6 @@ public class CourseServiceImpl implements CourseService {
                 .convertToEntity(this.facultyDepartmentService.findById(courseDto.getFacultyDepartmentDto().getId()));
         course.setFacultyDepartment(facultyDepartment);
 
-        log.info(String.format("Creating Course with id = '%s'", course.getId()));
         course = this.courseRepository.save(course);
 
         Section defaultSection = new Section("Home", course, null);
@@ -85,13 +86,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void deleteCourse(Long courseId) {
+    public ResponseDto deleteCourse(Long courseId) {
         if (!this.courseRepository.existsById(courseId)) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId));
         }
-
-        log.info(String.format("Deleting Course with id = '%s'", courseId));
         this.courseRepository.deleteById(courseId);
+
+        return new ResponseDtoSuccess(HttpStatus.OK, String.format("Course with id = '%s' deleted successfully", courseId));
     }
 
     @Override
@@ -101,7 +102,6 @@ public class CourseServiceImpl implements CourseService {
         }
         Course course = this.courseDtoMapper.convertToEntityWithId(courseDto);
 
-        log.info(String.format("Updating Course with id = '%s'", course.getId()));
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.save(course));
     }
 
@@ -160,11 +160,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void deleteSection(Long sectionId) {
+    public ResponseDto deleteSection(Long sectionId) {
         if (!this.sectionRepository.existsById(sectionId)) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId));
         }
         this.sectionRepository.deleteById(sectionId);
+
+        return new ResponseDtoSuccess(HttpStatus.OK, String.format("Section with id = '%s' deleted successfully", sectionId));
     }
 
     @Override
@@ -172,14 +174,21 @@ public class CourseServiceImpl implements CourseService {
         Section section = this.sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
         Material material = this.materialDtoMapper.convertToEntity(fileFormat, fileName, data, section);
-        material = this.materialRepository.save(material);
-        return this.materialDtoMapper.convertToDto(material);
+        if (this.materialRepository.findByName(fileName, section.getId()).isPresent()) {
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Material", "filename", fileName));
+        }
+
+        return this.materialDtoMapper.convertToDto(this.materialRepository.save(material));
     }
 
     @Override
-    public void deleteMaterial(Long materialId) {
-        this.findMaterialById(materialId);
+    public ResponseDto deleteMaterial(Long materialId) {
+        if (!this.materialRepository.existsById(materialId)) {
+            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Material", "id", materialId));
+        }
         this.materialRepository.deleteById(materialId);
+
+        return new ResponseDtoSuccess(HttpStatus.OK, String.format("Material with id = '%s' deleted successfully", materialId));
     }
 
     @Override
