@@ -32,10 +32,10 @@ CREATE TABLE sections (
 
 CREATE TABLE materials (
     id SERIAL,
-    file_format VARCHAR(50) NOT NULL,
+    file_format VARCHAR(255) NOT NULL,
+    file_name VARCHAR(100) NOT NULL,
     data BYTEA NOT NULL,
     section_id INT NOT NULL,
-    file_name VARCHAR(50) NOT NULL,
 
     CONSTRAINT PK_materials PRIMARY KEY(id),
     CONSTRAINT FK_materials__sections FOREIGN KEY(section_id)
@@ -98,8 +98,8 @@ CREATE TABLE courses__user_courses_lists(
 
 CREATE TABLE material_requests (
     id SERIAL,
-    file_format VARCHAR(50) NOT NULL,
-    file_name VARCHAR(50) NOT NULL,
+    file_format VARCHAR(255) NOT NULL,
+    file_name VARCHAR(100) NOT NULL,
     data BYTEA NOT NULL,
     user_id INT NOT NULL,
     section_id INT NOT NULL,

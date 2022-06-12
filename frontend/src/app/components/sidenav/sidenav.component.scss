@@ -29,10 +29,9 @@
 
 .drawer a.active {
   filter: brightness(0.7);
-  pointer-events: none;
 }
 
-.drawer a:not([class*='active']):hover {
+.drawer a:hover {
   -webkit-filter: invert(0.7);
   filter: invert(0.7);
 }

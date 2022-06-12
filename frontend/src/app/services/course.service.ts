@@ -41,10 +41,9 @@ export class CourseService {
       );
   }
 
-  getCourseById(courseId: number): Observable<Course> {
+  getCourseById(courseId?: number): Observable<Course> {
     return this.http.get<Course>(`${environment.coursesApi}/${courseId}`).pipe(
       tap({
-        next: (resp) => console.log(resp),
         error: (err) => console.log(err),
       })
     );

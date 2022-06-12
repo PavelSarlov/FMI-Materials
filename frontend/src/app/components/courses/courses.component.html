@@ -1,6 +1,6 @@
 <div class="list-wrapper">
   <form class="filter" (submit)="onSubmitSearch()">
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="legacy">
       <mat-label>Search</mat-label>
       <input
         matInput
@@ -10,7 +10,7 @@
         [(ngModel)]="filterValue"
       />
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="legacy">
       <mat-label>Filter</mat-label>
       <mat-select [(ngModel)]="filter" name="filter">
         <mat-option *ngFor="let filter of filterKeys" [value]="filter">{{
@@ -18,7 +18,7 @@
         }}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="legacy">
       <mat-label>Sort by</mat-label>
       <mat-select [(ngModel)]="sortBy" name="sortBy">
         <mat-option *ngFor="let filter of filterKeys" [value]="filter">{{

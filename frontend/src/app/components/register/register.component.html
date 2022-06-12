@@ -1,5 +1,5 @@
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <mat-form-field class="input-field" appearance="fill">
+  <mat-form-field class="input-field" appearance="legacy">
     <mat-label>Email</mat-label>
     <input
       matInput
@@ -10,9 +10,10 @@
       name="email"
       required
     />
+    <mat-icon matSuffix>email</mat-icon>
   </mat-form-field>
 
-  <mat-form-field class="input-field" appearance="fill">
+  <mat-form-field class="input-field" appearance="legacy">
     <mat-label>Name</mat-label>
     <input
       matInput
@@ -23,9 +24,10 @@
       name="name"
       required
     />
+    <mat-icon matSuffix>badge</mat-icon>
   </mat-form-field>
 
-  <mat-form-field class="input-field" appearance="fill">
+  <mat-form-field class="input-field" appearance="legacy">
     <mat-label>Password</mat-label>
     <input
       matInput
@@ -36,9 +38,10 @@
       name="password"
       required
     />
+    <mat-icon matSuffix>password</mat-icon>
   </mat-form-field>
 
-  <mat-form-field class="input-field" appearance="fill">
+  <mat-form-field class="input-field" appearance="legacy">
     <mat-label>Repeat password</mat-label>
     <input
       matInput
@@ -49,6 +52,7 @@
       name="repeatedPassword"
       required
     />
+    <mat-icon matSuffix>password</mat-icon>
   </mat-form-field>
 
   <button mat-raised-button type="submit" class="form-button">Sign Up</button>

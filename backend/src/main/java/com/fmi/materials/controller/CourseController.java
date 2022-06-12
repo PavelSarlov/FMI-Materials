@@ -42,7 +42,7 @@ public class CourseController {
     public ResponseEntity<CourseDto> findCourseById(@PathVariable Long id) {
         return new ResponseEntity<CourseDto>(
                 this.courseService.findById(id),
-                HttpStatus.FOUND);
+                HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
@@ -105,12 +105,13 @@ public class CourseController {
         return new ResponseEntity<byte[]>(
                 material.getData(),
                 headers,
-                HttpStatus.FOUND
+                HttpStatus.OK
         );
     }
 
     @PostMapping("sections/{sectionId}/materials")
     public ResponseEntity<MaterialDto> createMaterial(@RequestBody MultipartFile file, @PathVariable Long sectionId) throws IOException {
+        System.out.println(file.getContentType());
         return new ResponseEntity<MaterialDto>(
                 this.courseService.createMaterial(file.getContentType(), file.getOriginalFilename(), file.getBytes(), sectionId),
                 HttpStatus.CREATED
