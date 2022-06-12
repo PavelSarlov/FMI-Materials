@@ -1,1 +1,22 @@
-<p>list-of-courses works!</p>
+<div class="list-wrapper">
+    <p class="title">Course Lists</p>
+
+    <mat-list>
+        <mat-list-item *ngFor="let list of coursesLists" class="coursesLists">
+            <a routerLink="">
+                <mat-card>
+                    <section class="left-side">
+                        <mat-card-title>
+                            {{list.listName}}
+                        </mat-card-title>
+                    </section>
+                    <section class="right-side">
+                        <button mat-fab color="primary" aria-label="Example icon button with a delete icon">
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+                    </section>
+                </mat-card>
+            </a>
+        </mat-list-item>
+    </mat-list>
+</div>

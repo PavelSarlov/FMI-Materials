@@ -1,4 +1,4 @@
-export class ListOfCourses {
+export class CoursesList {
   id?: number;
-  name?: string;
+  listName?: string;
 }

@@ -15,10 +15,14 @@ import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AuthComponent } from './components/auth/auth.component';
+<<<<<<< HEAD
 import { MaterialComponent } from './components/material/material.component';
 import { SectionComponent } from './components/section/section.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { CourseCreateFormComponent } from './components/course-create-form/course-create-form.component';
+=======
+import { ListOfCoursesComponent } from './components/list-of-courses/list-of-courses.component';
+>>>>>>> bf6777f (resolved conflict and completed lists enlisting)
 
 @NgModule({
   declarations: [
@@ -30,10 +34,14 @@ import { CourseCreateFormComponent } from './components/course-create-form/cours
     LoginComponent,
     RegisterComponent,
     AuthComponent,
+<<<<<<< HEAD
     MaterialComponent,
     SectionComponent,
     AlertComponent,
     CourseCreateFormComponent,
+=======
+    ListOfCoursesComponent
+>>>>>>> bf6777f (resolved conflict and completed lists enlisting)
   ],
   imports: [
     BrowserModule,

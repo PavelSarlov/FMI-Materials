@@ -8,11 +8,25 @@ import { CoursesList } from '../../models/coursesList';
   styleUrls: ['./list-of-courses.component.scss']
 })
 export class ListOfCoursesComponent implements OnInit {
-  coursesLists?: CoursesList[];
+  coursesLists: CoursesList[] = [];
   constructor(private coursesListService: CoursesListService) { }
 
   ngOnInit(): void {
-    this.coursesListService.getCoursesLists(userId: number)
+    this.getCoursesLists();
   }
 
+  getCoursesLists() {
+    let currentUser = JSON.parse(localStorage.getItem('user') ?? '');
+    if(currentUser){
+      this.coursesListService.getCoursesLists(currentUser.id).subscribe(
+        (resp) => {
+          console.log(resp);
+          this.coursesLists = resp;
+        }
+      );
+    }
+    else {
+      console.log("user undefined")
+    }
+  }
 }
