@@ -8,7 +8,7 @@ export class Course {
   description?: string;
   createdBy?: string;
   facultyDepartmentDto?: FacultyDepartment;
-  courseGroupDto?: CourseGroup;
+  courseGroup?: CourseGroup;
   sectionDtos?: Section[];
 
   constructor() {}

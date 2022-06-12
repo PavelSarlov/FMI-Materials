@@ -11,42 +11,48 @@ import { Pagination } from '../models/pagination';
   providedIn: 'root',
 })
 export class CourseService {
+  pagination$: BehaviorSubject<Pagination<Course>> = new BehaviorSubject<
+    Pagination<Course>
+  >({});
 
   constructor(private http: HttpClient) {}
 
-  getCourses(filter?: string, filterValue?: any, page?: number, size?: number): Observable<Pagination<Course>> {
+  getCourses(
+    filter?: string,
+    filterValue?: any,
+    page?: number,
+    size?: number,
+    sortBy?: string,
+    desc?: boolean
+  ): Observable<Pagination<Course>> {
     return this.http
       .get<Pagination<Course>>(
         `${environment.coursesApi}?filter=${filter ?? ''}&filterValue=${
           filterValue ?? ''
-        }&page=${page ?? ''}&size=${size ?? ''}`
+        }&page=${page ?? ''}&size=${size ?? ''}&sortBy=${sortBy ?? ''}&desc=${
+          desc ?? ''
+        }`
       )
       .pipe(
         tap({
-          next: (resp) => console.log(resp),
+          next: (resp) => this.pagination$.next(resp),
           error: (err) => console.log(err),
         })
       );
   }
 
   getCourseById(courseId: number): Observable<Course> {
-    return this.http
-      .get<Course>(
-        `${environment.coursesApi}/${courseId}`
-      )
-      .pipe(
-        tap({
-          next: (resp) => console.log(resp),
-          error: (err) => console.log(err),
-        })
-      );
+    return this.http.get<Course>(`${environment.coursesApi}/${courseId}`).pipe(
+      tap({
+        next: (resp) => console.log(resp),
+        error: (err) => console.log(err),
+      })
+    );
   }
 
   getCourseSections(courseId: number): Observable<Section[]> {
     return this.http
-      .get<Section[]>(
-        `${environment.coursesApi}/${courseId}/sections`
-      )
+      .get<Section[]>(`${environment.coursesApi}/${courseId}/sections`)
       .pipe(
         tap({
           next: (resp) => console.log(resp),
@@ -55,7 +61,10 @@ export class CourseService {
       );
   }
 
-  getMaterialByName(sectionId: number, materialName: string): Observable<Material> {
+  getMaterialByName(
+    sectionId: number,
+    materialName: string
+  ): Observable<Material> {
     return this.http
       .get<Material>(
         `${environment.coursesApi}/courses/sections/${sectionId}/materials/${materialName}`

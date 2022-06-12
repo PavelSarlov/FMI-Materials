@@ -1,3 +1,73 @@
-<div *ngIf="pagination$ | async as pagination">
-  <app-course [courses]="pagination.items"></app-course>
+<div class="list-wrapper">
+  <form class="filter" (submit)="onSubmitSearch()">
+    <mat-form-field appearance="fill">
+      <mat-label>Search</mat-label>
+      <input
+        matInput
+        type="text"
+        name="filterValue"
+        placeholder="Search"
+        [(ngModel)]="filterValue"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Filter</mat-label>
+      <mat-select [(ngModel)]="filter" name="filter">
+        <mat-option *ngFor="let filter of filterKeys" [value]="filter">{{
+          filters[filter]
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Sort by</mat-label>
+      <mat-select [(ngModel)]="sortBy" name="sortBy">
+        <mat-option *ngFor="let filter of filterKeys" [value]="filter">{{
+          filters[filter]
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-checkbox [(ngModel)]="desc" name="desc">Descending</mat-checkbox>
+    <button mat-raised-button type="submit">
+      <mat-icon>search</mat-icon>Search
+    </button>
+    <mat-paginator
+      #paginator
+      [length]="totalItems"
+      [pageSize]="itemsPerPage"
+      [pageIndex]="currentPage"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      (page)="handlePageEvent($event)"
+    >
+    </mat-paginator>
+  </form>
+  <mat-list>
+    <mat-list-item *ngFor="let course of courses">
+      <a routerLink="/courses/{{ course.id }}">
+        <mat-card>
+          <section class="left-side">
+            <mat-card-title>
+              {{ course.name }}
+            </mat-card-title>
+            <mat-card-subtitle>
+              {{ course.createdBy }}
+            </mat-card-subtitle>
+            <mat-card-content>
+              {{ course.description }}
+            </mat-card-content>
+          </section>
+          <section class="right-side">
+            <mat-card-title>
+              {{ course.facultyDepartmentDto?.name }}
+            </mat-card-title>
+            <mat-card-subtitle>
+              {{ course.courseGroup?.name }}
+            </mat-card-subtitle>
+            <mat-card-content *ngIf="user?.roles?.includes('ADMIN')">
+              {{ course.id }}
+            </mat-card-content>
+          </section>
+        </mat-card>
+      </a>
+    </mat-list-item>
+  </mat-list>
 </div>

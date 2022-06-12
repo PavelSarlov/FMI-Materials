@@ -1,9 +1,11 @@
-@import "@angular/material/prebuilt-themes/deeppurple-amber.css";
-@import "@angular/material/theming";
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+@import "assets/scss/global.scss";
 
 html,
 body {
-  height: 100%;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
   top: 0;
   left: 0;
   padding: 0;
@@ -13,4 +15,16 @@ body {
 
 * {
   box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background-color: mat-color($primary) !important;
+}
+
+.mat-list-base .mat-list-item .mat-list-item-content,
+.mat-list-base .mat-list-option .mat-list-item-content,
+.mat-list-item {
+  height: fit-content !important;
 }

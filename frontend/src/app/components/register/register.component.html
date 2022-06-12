@@ -1,1 +1,55 @@
-<p>register works!</p>
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <mat-form-field class="input-field" appearance="fill">
+    <mat-label>Email</mat-label>
+    <input
+      matInput
+      formControlName="email"
+      id="email"
+      type="email"
+      placeholder="Email"
+      name="email"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field class="input-field" appearance="fill">
+    <mat-label>Name</mat-label>
+    <input
+      matInput
+      formControlName="name"
+      id="name"
+      type="text"
+      placeholder="Name"
+      name="name"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field class="input-field" appearance="fill">
+    <mat-label>Password</mat-label>
+    <input
+      matInput
+      formControlName="password"
+      id="password"
+      type="password"
+      placeholder="Password"
+      name="password"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field class="input-field" appearance="fill">
+    <mat-label>Repeat password</mat-label>
+    <input
+      matInput
+      formControlName="repeatedPassword"
+      id="repeated-password"
+      type="password"
+      placeholder="Repeat password"
+      name="repeatedPassword"
+      required
+    />
+  </mat-form-field>
+
+  <button mat-raised-button type="submit" class="form-button">Sign Up</button>
+</form>

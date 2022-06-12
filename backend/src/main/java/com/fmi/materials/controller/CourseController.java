@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class CourseController {
     private CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto) {
+    public ResponseEntity<CourseDto> createCourse(@RequestBody @Valid CourseDto courseDto) {
         return new ResponseEntity<CourseDto>(
                 this.courseService.createCourse(courseDto),
                 HttpStatus.CREATED);
@@ -54,18 +55,18 @@ public class CourseController {
     }
 
     @PutMapping
-    public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDtoWithId courseDto) {
+    public ResponseEntity<CourseDto> updateCourse(@RequestBody @Valid CourseDtoWithId courseDto) {
         return new ResponseEntity<CourseDto>(
                 this.courseService.updateCourse(courseDto),
                 HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<Object> findCourses(@RequestParam(defaultValue = "name") String filter, @RequestParam(defaultValue = "") String filterValue, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String sortBy, @RequestParam(required = false) Boolean desc) {
+    public ResponseEntity<Object> findCourses(@RequestParam(defaultValue = "name") String filter, @RequestParam(defaultValue = "") String filterValue, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String sortBy, @RequestParam(required = false) Boolean desc) {
 
-        Sort sort = Sort.by((sortBy != null ? sortBy : "name"));
+        Sort sort = Sort.by((sortBy != null && sortBy != "" ? sortBy : "name"));
         if (desc != null && desc) sort = sort.descending();
-        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         return new ResponseEntity<Object>(
                 this.courseService.findCourses(filter, filterValue, pageable),

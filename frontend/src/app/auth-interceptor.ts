@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
 @Injectable()
-export class Interceptor implements HttpInterceptor {
+export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(
@@ -22,24 +22,11 @@ export class Interceptor implements HttpInterceptor {
       request = request.clone({
         headers: request.headers.set(
           'Authorization',
-          `Basic ${localStorage.getItem('u')}`
+          `Basic ${localStorage.getItem('auth')}`
         ),
       });
     }
 
-    return next.handle(request).pipe(
-      tap({
-        next: (event) => {
-          if (event instanceof HttpResponse) {
-            console.log('api call success :', event);
-          }
-        },
-        error: (error) => {
-          if (error instanceof HttpResponse) {
-            console.log('api call error :', event);
-          }
-        },
-      })
-    );
+    return next.handle(request);
   }
 }

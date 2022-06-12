@@ -1,2 +1,20 @@
-<mat-drawer #drawer mode="side">
+<mat-drawer #drawer mode="side" class="drawer" opened>
+  <a routerLink="/courses" routerLinkActive="active"
+    ><mat-card class="sidenav-card">
+      <mat-icon>dashboard</mat-icon>
+      <mat-card-content>Dashboard</mat-card-content>
+    </mat-card>
+  </a>
+  <a *ngIf="(user$ | async) as user" routerLink="/user" routerLinkActive="active"
+    ><mat-card class="sidenav-card">
+      <mat-icon>view_list</mat-icon>
+      <mat-card-content>Course lists</mat-card-content>
+    </mat-card>
+  </a>
+  <a *ngIf="(user$ | async) as user" routerLink="/user" routerLinkActive="active"
+    ><mat-card class="sidenav-card">
+      <mat-icon>favorite</mat-icon>
+      <mat-card-content>Favourites</mat-card-content>
+    </mat-card>
+  </a>
 </mat-drawer>

@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
-import { Interceptor } from './interceptor';
+import { AuthInterceptor } from './auth-interceptor';
 import { AppComponent } from './app.component';
 import { CourseComponent } from './components/course/course.component';
 import { CoursesComponent } from './components/courses/courses.component';
@@ -14,6 +14,7 @@ import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { AuthComponent } from './components/auth/auth.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { RegisterComponent } from './components/register/register.component';
     HeaderComponent,
     LoginComponent,
     RegisterComponent,
+    AuthComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,7 +39,7 @@ import { RegisterComponent } from './components/register/register.component';
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: Interceptor,
+      useClass: AuthInterceptor,
       multi: true,
     },
     CookieService,

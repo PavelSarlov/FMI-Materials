@@ -4,6 +4,7 @@ export class Pagination<T> {
   currentPage?: number;
   totalItems?: number;
   totalPages?: number;
+  itemsPerPage?: number;
   items?: T[];
 
   constructor() {}
