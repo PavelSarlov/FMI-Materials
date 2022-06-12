@@ -1,0 +1,3 @@
+<div *ngIf="pagination$ | async as pagination">
+  <app-course [courses]="pagination.items"></app-course>
+</div>

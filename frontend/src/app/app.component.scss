@@ -1,0 +1,11 @@
+:host {
+  --app-sidenav-width: 240px;
+  --app-header-height: 120px;
+}
+
+main {
+  height: 100%;
+  margin-left: var(--app-sidenav-width);
+  background-color: #00f;
+  transition: 0.3s;
+}

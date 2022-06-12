@@ -1,0 +1,15 @@
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--app-sidenav-width);
+  background-color: #f00;
+  height: 100%;
+  z-index: 98;
+  transition: 0.3s;
+}
+
+mat-drawer {
+  margin-top: var(--app-header-height);
+  height: 100%;
+}
