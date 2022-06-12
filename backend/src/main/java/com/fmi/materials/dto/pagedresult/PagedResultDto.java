@@ -13,6 +13,7 @@ public class PagedResultDto<T> {
     private List<T> items;
     private int currentPage;
     private int totalPages;
+    private int itemsPerPage;
     private long totalItems;
     private boolean first;
     private boolean last;

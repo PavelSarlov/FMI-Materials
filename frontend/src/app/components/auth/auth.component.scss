@@ -1,0 +1,46 @@
+@import '../../../assets/scss/global.scss';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid mat-color($primary);
+  padding: 1rem;
+}
+
+.form-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.form-header .options {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+
+.options a {
+  width: 50%;
+  text-decoration: none;
+  color: mat-color($primary);
+  border-bottom: 1px solid mat-color($primary);
+}
+
+.options a.active {
+  font-weight: bold;
+  border-bottom: 3px solid mat-color($primary);
+}

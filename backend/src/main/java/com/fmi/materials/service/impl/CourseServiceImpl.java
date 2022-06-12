@@ -126,9 +126,10 @@ public class CourseServiceImpl implements CourseService {
                             return cd;
                         })
                         .collect(Collectors.toList()))
-                .currentPage(page.getNumber() + 1)
+                .currentPage(page.getNumber())
                 .totalPages(page.getTotalPages())
                 .totalItems(page.getTotalElements())
+                .itemsPerPage(pageable.getPageSize())
                 .first(!page.isFirst())
                 .last(!page.isLast())
                 .build();

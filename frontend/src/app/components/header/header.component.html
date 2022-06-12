@@ -1,0 +1,16 @@
+<mat-toolbar>
+  <div class="panel">
+    <button mat-icon-button type="button" (click)="toggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a routerLink="/courses"><img src="assets/img/logo.svg" alt="FMI Mats" /></a>
+  </div>
+  <div *ngIf="!(user$ | async) as user" class="panel">
+    <a mat-raised-button routerLink="/auth/login" class="header-btn"><mat-icon>login</mat-icon>Login</a>
+    <a mat-raised-button routerLink="/auth/register" class="header-btn"><mat-icon>app_registration</mat-icon>Sign Up</a>
+  </div>
+  <div *ngIf="(user$ | async) as user" class="panel">
+    <a mat-raised-button routerLink="/user" class="header-btn"><mat-icon>account_circle</mat-icon>Profile</a>
+    <button mat-raised-button class="header-btn" type="button" (click)="onLogout()"><mat-icon>logout</mat-icon>Logout</button>
+  </div>
+</mat-toolbar>

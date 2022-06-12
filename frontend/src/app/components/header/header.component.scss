@@ -1,0 +1,48 @@
+@import '../../../assets/scss/global.scss';
+
+:host {
+  height: var(--app-header-height);
+  background-color: mat-color($primary);
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+}
+
+mat-toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  background-color: inherit;
+  color: mat-color($accent);
+  height: inherit;
+  padding: 1rem;
+}
+
+a, img {
+  height: inherit;
+  width: auto;
+}
+
+.panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+
+.header-btn {
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  margin: 0 1rem;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.header-btn:hover {
+  background-color: mat-color($accent);
+  color: mat-color($primary);
+}

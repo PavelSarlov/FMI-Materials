@@ -2,8 +2,18 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+export const protocol = 'http';
+export const backendHost = 'localhost';
+export const backendPort = '8080';
+export const backendApi = `${protocol}://${backendHost}:${backendPort}/api`;
+
 export const environment = {
-  production: false
+  production: false,
+  usersApi: `${backendApi}/users`,
+  coursesApi: `${backendApi}/courses`,
+  departmentsApi: `${backendApi}/departments`,
+  authApi: `${backendApi}/auth`,
+  adminsApi: `${backendApi}/admins`,
 };
 
 /*
@@ -14,3 +24,4 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+
