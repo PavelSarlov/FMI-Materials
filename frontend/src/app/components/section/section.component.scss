@@ -1,6 +1,13 @@
+@import "../../../assets/scss/global.scss";
+
+.section {
+  margin-top: 1rem;
+}
+
 .section,
 .material-list {
   width: 100%;
+  overflow: visible;
 }
 
 .section mat-expansion-panel-header {
@@ -15,8 +22,8 @@
 }
 
 .material-list-item {
-  width: 100px;
-  min-height: 100px;
+  width: 150px;
+  min-height: 150px;
   margin: 0.5rem 0.5rem;
   --material-icon-font-size: 36px;
 }
@@ -29,7 +36,7 @@
   justify-content: space-evenly;
 }
 
-#material {
+.material {
   visibility: hidden;
   position: absolute;
   width: 0;
@@ -41,8 +48,39 @@
   margin-left: 1rem;
 }
 
+.upload-btn:hover {
+  background-color: mat-color($warn);
+}
+
 .material-upload-details {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.section-header {
+  background-color: mat-color($warn)!important;
+  color: #fff!important;
+  box-shadow: 0 0.1px 2px 1px grey;
+}
+
+.section-title {
+  color: #fff!important;
+}
+
+.section-header:hover, .section-header:hover .section-title {
+  background-color: mat-color($accent)!important;
+  color: mat-color($primary)!important;
+}
+
+.slide-sideways {
+  animation-duration: 1s;
+  animation-name: slide-sideways;
+  animation-iteration-count: infinite;
+}
+
+@keyframes slide-sideways {
+  0% {margin-right: 0}
+  50% {margin-right: 1rem}
+  100% {margin-right: 0;}
 }

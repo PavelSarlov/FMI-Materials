@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CrossEventService } from '../../services/cross-event.service';
 import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/user';
-import { Observable } from 'rxjs';
+import { User, USER_ROLES } from '../../models/user';
 
 @Component({
   selector: 'app-header',
@@ -11,7 +10,8 @@ import { Observable } from 'rxjs';
 })
 export class HeaderComponent implements OnInit {
   sidenavToggled: boolean = true;
-  user$!: Observable<User | null>;
+  user?: User | null;
+  USER_ROLES = USER_ROLES
 
   constructor(
     private crossEventService: CrossEventService,
@@ -19,7 +19,10 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.user$ = this.authService.user$;
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+    });
+    this.authService.isAuthenticated();
 
     this.crossEventService.toggleSidenav.subscribe(
       (status) => (this.sidenavToggled = status)

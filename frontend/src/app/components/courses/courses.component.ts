@@ -3,6 +3,7 @@ import { Course } from '../../models/course';
 import { User } from '../../models/user';
 import { CourseService } from '../../services/course.service';
 import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-courses',
@@ -10,7 +11,7 @@ import { AlertService } from '../../services/alert.service';
   styleUrls: ['./courses.component.scss'],
 })
 export class CoursesComponent implements OnInit {
-  user?: User | null = JSON.parse(localStorage.getItem('user')!);
+  user?: User | null;
 
   courses?: Course[];
   totalItems?: number;
@@ -31,22 +32,37 @@ export class CoursesComponent implements OnInit {
 
   constructor(
     private courseService: CourseService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.courseService.getCourses().subscribe({
-      next: (pagination) => {
-        this.courses = pagination.items;
-        this.itemsPerPage = pagination.itemsPerPage;
-        this.totalPages = pagination.totalPages;
-        this.totalItems = pagination.totalItems;
-        this.currentPage = pagination.currentPage;
-      },
-      error: (resp) => {
-        this.alertService.error(resp.error.error);
-      },
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
     });
+    this.authService.isAuthenticated();
+
+    this.courseService.pagination$.subscribe((pagination) => {
+      this.courses = pagination?.items;
+      this.itemsPerPage = pagination?.itemsPerPage;
+      this.totalPages = pagination?.totalPages;
+      this.totalItems = pagination?.totalItems;
+      this.currentPage = pagination?.currentPage;
+    });
+    this.courseService.getCourses();
+
+    // this.courseService.getCourses().subscribe({
+    //   next: (pagination) => {
+    //     this.courses = pagination.items;
+    //     this.itemsPerPage = pagination.itemsPerPage;
+    //     this.totalPages = pagination.totalPages;
+    //     this.totalItems = pagination.totalItems;
+    //     this.currentPage = pagination.currentPage;
+    //   },
+    //   error: (resp) => {
+    //     this.alertService.error(resp.error.error);
+    //   },
+    // });
   }
 
   handlePageEvent(event: any) {
@@ -68,13 +84,13 @@ export class CoursesComponent implements OnInit {
         this.itemsPerPage,
         this.sortBy,
         this.desc
-      )
-      .subscribe((pagination) => {
-        this.courses = pagination.items;
-        this.itemsPerPage = pagination.itemsPerPage;
-        this.totalPages = pagination.totalPages;
-        this.totalItems = pagination.totalItems;
-        this.currentPage = pagination.currentPage;
-      });
+      );
+      // .subscribe((pagination) => {
+      //   this.courses = pagination.items;
+      //   this.itemsPerPage = pagination.itemsPerPage;
+      //   this.totalPages = pagination.totalPages;
+      //   this.totalItems = pagination.totalItems;
+      //   this.currentPage = pagination.currentPage;
+      // });
   }
 }

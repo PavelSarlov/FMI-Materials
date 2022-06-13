@@ -1,5 +1,16 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  EventEmitter,
+} from '@angular/core';
 import { Section } from '../../models/section';
+import { User, USER_ROLES } from '../../models/user';
+import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { CourseService } from '../../services/course.service';
 
 @Component({
   selector: 'app-section',
@@ -7,8 +18,16 @@ import { Section } from '../../models/section';
   styleUrls: ['./section.component.scss'],
 })
 export class SectionComponent implements OnInit {
+  user?: User | null;
+  USER_ROLES = USER_ROLES;
+
   @Input()
   section?: Section;
+
+  @ViewChild('material', { static: false })
+  material!: ElementRef;
+
+  materialOnDelete: EventEmitter<any> = new EventEmitter<any>();
 
   fileFormats: any = {
     'text/plain': 'text_snippet',
@@ -17,25 +36,64 @@ export class SectionComponent implements OnInit {
     'application/javascript': 'javascript',
     'application/x-httpd-php': 'php',
     'image/png': 'image',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'description',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+      'description',
     'application/pdf': 'picture_as_pdf',
     'application/octet-stream': 'insert_drive_file',
-    'default': 'text_snippet'
-  }
+    default: 'text_snippet',
+  };
 
   fileToUpload?: File;
 
-  constructor() {}
+  constructor(
+    private authService: AuthService,
+    private courseService: CourseService,
+    private alertService: AlertService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+    });
+
+    this.materialOnDelete.subscribe(() => {
+      this.fetchSection();
+    });
+  }
 
   onMaterialSelected(event: any) {
-    event.preventDefault();
     this.fileToUpload = event.currentTarget.files[0];
   }
 
-  onMaterialSendRequest(event: any) {
-    console.log(event);
+  fetchSection() {
+    this.courseService.getSectionById(this.section!.id!).subscribe({
+      next: (resp) => (this.section = resp),
+      error: (resp) => this.alertService.error(resp.error.error),
+    });
+  }
+
+  onMaterialUpload() {
+    if (this.fileToUpload) {
+      const formData = new FormData();
+      formData.append('file', this.fileToUpload);
+
+      if (this.user && this.user.roles?.includes(USER_ROLES.ADMIN)) {
+        this.courseService
+          .createMaterial(formData, this.section!.id!)
+          .subscribe({
+            next: (resp: any) => {
+              this.alertService.success('File uploaded successfully');
+              this.fetchSection();
+            },
+            error: (resp: any) => this.alertService.error(resp.error.error),
+          });
+      } else {
+        // todo
+      }
+
+      this.material.nativeElement.value = null;
+      this.fileToUpload = undefined;
+    }
   }
 
   handleSubmitClick(event: any) {

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { tap, BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, EventEmitter } from '@angular/core';
+import { tap, BehaviorSubject, Subject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Course } from '../models/course';
 import { Section } from '../models/section';
@@ -11,9 +11,8 @@ import { Pagination } from '../models/pagination';
   providedIn: 'root',
 })
 export class CourseService {
-  pagination$: BehaviorSubject<Pagination<Course>> = new BehaviorSubject<
-    Pagination<Course>
-  >({});
+  pagination$: Subject<Pagination<Course> | null> =
+    new BehaviorSubject<Pagination<Course> | null>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -24,8 +23,8 @@ export class CourseService {
     size?: number,
     sortBy?: string,
     desc?: boolean
-  ): Observable<Pagination<Course>> {
-    return this.http
+  ) {
+    this.http
       .get<Pagination<Course>>(
         `${environment.coursesApi}?filter=${filter ?? ''}&filterValue=${
           filterValue ?? ''
@@ -33,12 +32,10 @@ export class CourseService {
           desc ?? ''
         }`
       )
-      .pipe(
-        tap({
-          next: (resp) => this.pagination$.next(resp),
-          error: (err) => console.log(err),
-        })
-      );
+      .subscribe({
+        next: (resp) => this.pagination$.next(resp),
+        error: (err) => console.log(err),
+      });
   }
 
   getCourseById(courseId?: number): Observable<Course> {
@@ -54,24 +51,60 @@ export class CourseService {
       .get<Section[]>(`${environment.coursesApi}/${courseId}/sections`)
       .pipe(
         tap({
-          next: (resp) => console.log(resp),
           error: (err) => console.log(err),
         })
       );
   }
 
-  getMaterialByName(
-    sectionId: number,
-    materialName: string
-  ): Observable<Material> {
+  getSectionById(sectionId: number): Observable<Section> {
     return this.http
-      .get<Material>(
-        `${environment.coursesApi}/courses/sections/${sectionId}/materials/${materialName}`
+      .get(`${environment.coursesApi}/sections/${sectionId}`)
+      .pipe(
+        tap({
+          error: (err) => console.log(err),
+        })
+      );
+  }
+
+  getMaterialByName(sectionId: number, materialName: string): any {
+    return this.http
+      .get(
+        `${environment.coursesApi}/sections/${sectionId}/materials/${materialName}`,
+        { responseType: 'blob' }
       )
       .pipe(
         tap({
           error: (err) => console.log(err),
         })
       );
+  }
+
+  getMaterialById(materialId: number): any {
+    return this.http
+      .get(`${environment.coursesApi}/sections/materials/${materialId}`, {
+        responseType: 'blob',
+      })
+      .pipe(
+        tap({
+          error: (err) => console.log(err),
+        })
+      );
+  }
+
+  createMaterial(formData: FormData, sectionId: number): any {
+    return this.http
+      .post<Material>(
+        `${environment.coursesApi}/sections/${sectionId}/materials`,
+        formData
+      )
+      .pipe(tap({ error: (err) => console.log(err) }));
+  }
+
+  deleteMaterialById(materialId: number) {
+    return this.http
+      .delete<Material>(
+        `${environment.coursesApi}/sections/materials/${materialId}`
+      )
+      .pipe(tap({ error: (err) => console.log(err) }));
   }
 }

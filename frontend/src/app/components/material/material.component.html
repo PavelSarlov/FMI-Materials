@@ -1,10 +1,26 @@
-<a
-  routerLink="/courses/sections/{{ sectionId ?? '' }}/materials/{{
-    material?.fileName ?? ''
-  }}"
->
+<button [matMenuTriggerFor]="menu" class="material-btn" type="button">
   <mat-icon class="icon" [inline]="true">{{
-    fileFormats[material?.fileFormat ?? "default"] ?? fileFormats['default']
+    fileFormats[material?.fileFormat ?? "default"] ?? fileFormats["default"]
   }}</mat-icon>
   <span class="material-name">{{ material?.fileName ?? "unknown" }}</span>
-</a>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="openMaterial()">
+    <mat-icon>open_in_new</mat-icon>
+    <span>Open</span>
+  </button>
+  <button mat-menu-item (click)="downloadMaterial($event)">
+    <mat-icon>download</mat-icon>
+    <span>Download</span>
+  </button>
+  <button *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)" mat-menu-item (click)="deleteMaterial()">
+    <mat-icon>delete</mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>
+<div class="hover-tooltip">
+  <mat-icon class="icon" [inline]="true">{{
+    fileFormats[material?.fileFormat ?? "default"] ?? fileFormats["default"]
+  }}</mat-icon>
+  <span class="material-name">{{ material?.fileName ?? "unknown" }}</span>
+</div>

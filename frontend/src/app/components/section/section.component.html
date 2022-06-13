@@ -1,13 +1,14 @@
 <mat-expansion-panel class="section" expanded>
-  <mat-expansion-panel-header>
-    <mat-panel-title> {{ section?.name }} </mat-panel-title>
-    <form class="material-upload" (submit)="onMaterialSendRequest($event)">
+  <mat-expansion-panel-header class="section-header">
+    <mat-panel-title class="section-title">
+      {{ section?.name }}
+    </mat-panel-title>
+    <form *ngIf="user" class="material-upload" (submit)="onMaterialUpload()">
       <input
         type="file"
         class="material"
         name="material"
         (change)="onMaterialSelected($event)"
-        id="material"
         #material
       />
 
@@ -31,7 +32,11 @@
             <mat-icon>upload</mat-icon>
           </button>
         </div>
-        <ng-template #elseBlock>No material selected yet.</ng-template>
+        <ng-template #elseBlock
+          >Select material to upload<mat-icon class="slide-sideways"
+            >arrow_forward</mat-icon
+          ></ng-template
+        >
 
         <button
           mat-mini-fab
@@ -54,6 +59,7 @@
         [material]="material"
         [sectionId]="section?.id"
         [fileFormats]="fileFormats"
+        [materialOnDelete]="materialOnDelete"
       ></app-material>
     </div>
   </div>

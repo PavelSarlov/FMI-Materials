@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Course } from '../../models/course';
-import { User } from '../../models/user';
+import { User, USER_ROLES } from '../../models/user';
 import { CourseService } from '../../services/course.service';
 import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-course',
@@ -11,17 +12,23 @@ import { AlertService } from '../../services/alert.service';
   styleUrls: ['./course.component.scss'],
 })
 export class CourseComponent implements OnInit {
-  user?: User | null = JSON.parse(localStorage.getItem('user')!);
+  user?: User | null;
+  USER_ROLES = USER_ROLES;
 
   course?: Course;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private courseService: CourseService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+    });
+
     this.activatedRoute.paramMap.subscribe((params) => {
       this.courseService
         .getCourseById(parseInt(params.get('courseId') ?? ''))
@@ -35,4 +42,6 @@ export class CourseComponent implements OnInit {
         });
     });
   }
+
+  createSection() {}
 }
