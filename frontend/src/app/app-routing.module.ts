@@ -5,11 +5,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { CoursesComponent } from './components/courses/courses.component';
 import { CourseComponent } from './components/course/course.component';
 import { AuthComponent } from './components/auth/auth.component';
-<<<<<<< HEAD
 import { CourseCreateFormComponent } from './components/course-create-form/course-create-form.component';
-=======
 import { ListOfCoursesComponent } from './components/list-of-courses/list-of-courses.component';
->>>>>>> bf6777f (resolved conflict and completed lists enlisting)
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'courses' },
@@ -26,14 +23,11 @@ const routes: Routes = [
     component: CoursesComponent,
   },
   { path: 'courses/:courseId', component: CourseComponent },
-<<<<<<< HEAD
   { path: 'create-course', component: CourseCreateFormComponent },
-=======
   {
     path: 'user/course-lists',
     component: ListOfCoursesComponent
   }
->>>>>>> bf6777f (resolved conflict and completed lists enlisting)
 ];
 
 @NgModule({

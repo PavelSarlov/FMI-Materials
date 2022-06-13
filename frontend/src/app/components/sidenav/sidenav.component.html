@@ -5,7 +5,6 @@
       <mat-card-content>Dashboard</mat-card-content>
     </mat-card>
   </a>
-<<<<<<< HEAD
   <ng-container *ngIf="user">
     <a
       routerLink="/user/course-lists"
@@ -31,18 +30,4 @@
       </mat-card>
     </a>
   </ng-container>
-=======
-  <a *ngIf="(user$ | async) as user" routerLink="/user/course-lists" routerLinkActive="active"
-    ><mat-card class="sidenav-card">
-      <mat-icon>view_list</mat-icon>
-      <mat-card-content>Course lists</mat-card-content>
-    </mat-card>
-  </a>
-  <a *ngIf="(user$ | async) as user" routerLink="/user/favourite-courses" routerLinkActive="active"
-    ><mat-card class="sidenav-card">
-      <mat-icon>favorite</mat-icon>
-      <mat-card-content>Favourites</mat-card-content>
-    </mat-card>
-  </a>
->>>>>>> bf6777f (resolved conflict and completed lists enlisting)
 </mat-drawer>
