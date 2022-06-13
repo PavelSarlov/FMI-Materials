@@ -24,28 +24,9 @@
     </section>
   </mat-card>
 
-  <mat-list class="section-list">
-    <mat-list-item *ngFor="let section of course.sectionDtos">
-      <mat-expansion-panel class="section" expanded>
-        <mat-expansion-panel-header>
-          <mat-panel-title> {{ section.name }} </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-list class="material-list">
-          <mat-list-item *ngFor="let material of section.materials">
-            <a
-              routerLink="/courses/sections/{{ section.id }}/materials/{{
-                material.fileName
-              }}"
-            >
-              <mat-icon [inline]="true">{{ fileFormats[material.fileFormat ?? 'default'] }}</mat-icon>
-              <span>{{material.fileName ?? 'unknown'}}</span>
-            </a>
-          </mat-list-item>
-          <mat-list-item>
-            <input type="file" />
-          </mat-list-item>
-        </mat-list>
-      </mat-expansion-panel>
-    </mat-list-item>
-  </mat-list>
+  <section class="section-list">
+    <mat-accordion>
+      <app-section *ngFor="let section of course.sectionDtos" [section]="section"></app-section>
+    </mat-accordion>
+  </section>
 </div>

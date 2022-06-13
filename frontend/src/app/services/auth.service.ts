@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { User } from '../models/user';
 import { tap, Subject, ReplaySubject } from 'rxjs';
@@ -12,7 +13,11 @@ export class AuthService {
   userSubject: Subject<User | null> = new ReplaySubject<User | null>(1);
   user$ = this.userSubject.asObservable();
 
-  constructor(private http: HttpClient, private cookies: CookieService) {}
+  constructor(
+    private http: HttpClient,
+    private cookies: CookieService,
+    private router: Router
+  ) {}
 
   isAuthenticated(): boolean {
     if (localStorage.getItem('user')) {
@@ -71,5 +76,6 @@ export class AuthService {
     this.cookies.deleteAll();
     localStorage.clear();
     this.userSubject.next(null);
+    this.router.navigateByUrl('/auth/login');
   }
 }

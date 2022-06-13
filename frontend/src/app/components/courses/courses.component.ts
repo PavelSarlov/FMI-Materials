@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Course } from '../../models/course';
 import { User } from '../../models/user';
 import { CourseService } from '../../services/course.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-courses',
@@ -16,7 +17,7 @@ export class CoursesComponent implements OnInit {
   totalPages?: number;
   itemsPerPage?: number;
   currentPage?: number;
-  filter?: string = "name";
+  filter?: string = 'name';
   filterValue?: string;
   sortBy?: string = this.filter;
   desc?: boolean;
@@ -28,16 +29,23 @@ export class CoursesComponent implements OnInit {
   };
   filterKeys = Object.keys(this.filters);
 
-
-  constructor(private courseService: CourseService) {}
+  constructor(
+    private courseService: CourseService,
+    private alertService: AlertService
+  ) {}
 
   ngOnInit(): void {
-    this.courseService.getCourses().subscribe((pagination) => {
-      this.courses = pagination.items;
-      this.itemsPerPage = pagination.itemsPerPage;
-      this.totalPages = pagination.totalPages;
-      this.totalItems = pagination.totalItems;
-      this.currentPage = pagination.currentPage;
+    this.courseService.getCourses().subscribe({
+      next: (pagination) => {
+        this.courses = pagination.items;
+        this.itemsPerPage = pagination.itemsPerPage;
+        this.totalPages = pagination.totalPages;
+        this.totalItems = pagination.totalItems;
+        this.currentPage = pagination.currentPage;
+      },
+      error: (resp) => {
+        this.alertService.error(resp.error.error);
+      },
     });
   }
 
@@ -52,19 +60,21 @@ export class CoursesComponent implements OnInit {
   }
 
   fetchCourses() {
-    this.courseService.getCourses(
-      this.filter,
-      this.filterValue,
-      this.currentPage,
-      this.itemsPerPage,
-      this.sortBy,
-      this.desc
-    ).subscribe((pagination) => {
-      this.courses = pagination.items;
-      this.itemsPerPage = pagination.itemsPerPage;
-      this.totalPages = pagination.totalPages;
-      this.totalItems = pagination.totalItems;
-      this.currentPage = pagination.currentPage;
-    });
+    this.courseService
+      .getCourses(
+        this.filter,
+        this.filterValue,
+        this.currentPage,
+        this.itemsPerPage,
+        this.sortBy,
+        this.desc
+      )
+      .subscribe((pagination) => {
+        this.courses = pagination.items;
+        this.itemsPerPage = pagination.itemsPerPage;
+        this.totalPages = pagination.totalPages;
+        this.totalItems = pagination.totalItems;
+        this.currentPage = pagination.currentPage;
+      });
   }
 }

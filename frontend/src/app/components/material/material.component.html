@@ -1,0 +1,10 @@
+<a
+  routerLink="/courses/sections/{{ sectionId ?? '' }}/materials/{{
+    material?.fileName ?? ''
+  }}"
+>
+  <mat-icon class="icon" [inline]="true">{{
+    fileFormats[material?.fileFormat ?? "default"] ?? fileFormats['default']
+  }}</mat-icon>
+  <span class="material-name">{{ material?.fileName ?? "unknown" }}</span>
+</a>

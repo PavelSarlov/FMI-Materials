@@ -30,47 +30,11 @@ mat-card section * {
 }
 
 mat-list {
+  width: 100%;
   overflow-y: auto;
 }
 
-.section-list,
-.section,
-.material-list {
+.section-list {
+  margin-top: 2rem;
   width: 100%;
-}
-
-.section mat-expansion-panel-header {
-  font-weight: bold;
-}
-
-.material-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  height: fit-content;
-}
-
-.material-list mat-list-item {
-  width: 100px;
-  min-height: 100px;
-  margin: 1rem 2rem;
-}
-
-.mat-list-base .mat-list-item .mat-list-item-content {
-  height: 100%;
-  width: 100%;
-}
-
-.material-list mat-list-item a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  word-break: break-all;
-  text-decoration: none;
-}
-
-.material-list mat-list-item a mat-icon {
-  --material-icon-font-size: 36px;
-  font-size: var(--material-icon-font-size);
 }

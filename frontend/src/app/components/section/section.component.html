@@ -1,0 +1,60 @@
+<mat-expansion-panel class="section" expanded>
+  <mat-expansion-panel-header>
+    <mat-panel-title> {{ section?.name }} </mat-panel-title>
+    <form class="material-upload" (submit)="onMaterialSendRequest($event)">
+      <input
+        type="file"
+        class="material"
+        name="material"
+        (change)="onMaterialSelected($event)"
+        id="material"
+        #material
+      />
+
+      <div class="material-upload">
+        <div
+          class="material-upload-details"
+          *ngIf="fileToUpload?.name; else elseBlock"
+        >
+          <mat-icon>{{
+            fileFormats[fileToUpload?.type ?? "default"] ??
+              fileFormats["default"]
+          }}</mat-icon>
+          <span>{{ fileToUpload?.name ?? "unknown" }}</span>
+          <button
+            mat-mini-fab
+            color="primary"
+            type="submit"
+            class="upload-btn"
+            (click)="handleSubmitClick($event)"
+          >
+            <mat-icon>upload</mat-icon>
+          </button>
+        </div>
+        <ng-template #elseBlock>No material selected yet.</ng-template>
+
+        <button
+          mat-mini-fab
+          type="button"
+          color="primary"
+          class="upload-btn"
+          (click)="material.click()"
+        >
+          <mat-icon>attach_file</mat-icon>
+        </button>
+      </div>
+    </form>
+  </mat-expansion-panel-header>
+  <div class="material-list">
+    <div
+      *ngFor="let material of section?.materials ?? []"
+      class="material-list-item"
+    >
+      <app-material
+        [material]="material"
+        [sectionId]="section?.id"
+        [fileFormats]="fileFormats"
+      ></app-material>
+    </div>
+  </div>
+</mat-expansion-panel>

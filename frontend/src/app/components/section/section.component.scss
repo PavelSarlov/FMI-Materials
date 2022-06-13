@@ -1,0 +1,48 @@
+.section,
+.material-list {
+  width: 100%;
+}
+
+.section mat-expansion-panel-header {
+  font-weight: bold;
+}
+
+.material-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: fit-content;
+}
+
+.material-list-item {
+  width: 100px;
+  min-height: 100px;
+  margin: 0.5rem 0.5rem;
+  --material-icon-font-size: 36px;
+}
+
+.material-upload {
+  margin-right: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+#material {
+  visibility: hidden;
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.upload-btn {
+  margin-left: 1rem;
+}
+
+.material-upload-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
