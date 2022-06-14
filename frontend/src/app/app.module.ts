@@ -18,6 +18,7 @@ import { AuthComponent } from './components/auth/auth.component';
 import { MaterialComponent } from './components/material/material.component';
 import { SectionComponent } from './components/section/section.component';
 import { AlertComponent } from './components/alert/alert.component';
+import { CourseCreateFormComponent } from './components/course-create-form/course-create-form.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { AlertComponent } from './components/alert/alert.component';
     MaterialComponent,
     SectionComponent,
     AlertComponent,
+    CourseCreateFormComponent,
   ],
   imports: [
     BrowserModule,

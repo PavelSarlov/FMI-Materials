@@ -27,7 +27,7 @@
       </mat-select>
     </mat-form-field>
     <mat-checkbox [(ngModel)]="desc" name="desc">Descending</mat-checkbox>
-    <button mat-raised-button type="submit">
+    <button mat-raised-button color="primary" type="submit" class="form-btn">
       <mat-icon>search</mat-icon>Search
     </button>
     <mat-paginator
@@ -40,6 +40,10 @@
     >
     </mat-paginator>
   </form>
+  <div *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)" class="add-course-link">
+    <a routerLink="/create-course" mat-fab><mat-icon>add</mat-icon></a>
+    <span>Create course</span>
+  </div>
   <mat-list>
     <mat-list-item *ngFor="let course of courses">
       <a routerLink="/courses/{{ course.id }}">

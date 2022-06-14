@@ -4,10 +4,20 @@ import {
   FormGroup,
   Validators,
   AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
+
+const checkPasswordsMatch = (
+  control: AbstractControl
+): ValidationErrors | null => {
+  return control.get('password')?.value !==
+    control.get('repeatedPassword')?.value
+    ? { passwordsDontMatch: true }
+    : null;
+};
 
 @Component({
   selector: 'app-register',
@@ -43,17 +53,13 @@ export class RegisterComponent implements OnInit {
         repeatedPassword: [''],
       },
       {
-        validator: this.checkPasswordsMatch,
+        validators: checkPasswordsMatch,
       }
     );
   }
 
   get registerData() {
     return this.registerForm.controls;
-  }
-
-  checkPasswordsMatch(form: AbstractControl) {
-    return form.get('password')?.value === form.get('repeatedPassword')?.value;
   }
 
   onSubmit() {

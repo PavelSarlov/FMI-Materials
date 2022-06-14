@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Course } from '../../models/course';
-import { User } from '../../models/user';
+import { User, USER_ROLES } from '../../models/user';
 import { CourseService } from '../../services/course.service';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class CoursesComponent implements OnInit {
   user?: User | null;
+  USER_ROLES = USER_ROLES;
 
   courses?: Course[];
   totalItems?: number;

@@ -1,0 +1,103 @@
+<form
+  [formGroup]="createCourseForm"
+  (ngSubmit)="createCourse()"
+  class="create-course-form"
+>
+  <div class="section-wrapper">
+    <section class="form-section">
+      <mat-form-field appearance="legacy">
+        <mat-label>Name</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          type="text"
+          name="name"
+          placeholder="Name"
+          required
+          #name
+        />
+        <mat-hint>{{ name.value.length }}/50</mat-hint>
+        <mat-error
+          *ngIf="
+            createCourseForm.get('name')?.hasError('minlength') &&
+            !createCourseForm.get('name')?.hasError('required')
+          "
+        >
+          Name should be at least 4 characters
+        </mat-error>
+        <mat-error
+          *ngIf="
+            createCourseForm.get('name')?.hasError('maxlength') &&
+            !createCourseForm.get('name')?.hasError('required')
+          "
+        >
+          Name should be maximum 50 characters
+        </mat-error>
+        <mat-error *ngIf="createCourseForm.get('name')?.hasError('required')">
+          Name is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="legacy">
+        <mat-label>Faculty department</mat-label>
+        <mat-select
+          formControlName="facultyDepartment"
+          name="facultyDepartment"
+          required
+        >
+          <mat-option
+            *ngFor="let faculty of facultyDepartments"
+            [value]="faculty.id!"
+            >{{ faculty.name! }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="legacy">
+        <mat-label>Group</mat-label>
+        <mat-select formControlName="courseGroup" name="courseGroup" required>
+          <mat-option
+            *ngFor="let group of COURSE_GROUPS | keyvalue"
+            [value]="group.key"
+            >{{ group.value }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </section>
+
+    <section class="form-section">
+      <mat-form-field appearance="fill" class="description">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          type="text"
+          name="description"
+          formControlName="description"
+          placeholder="Description"
+          required
+          #description
+        ></textarea>
+        <mat-hint>{{ description.value.length }}/255</mat-hint>
+        <mat-error
+          *ngIf="
+            createCourseForm.get('description')?.hasError('maxlength')
+          "
+        >
+          Description should be maximum 255 characters
+        </mat-error>
+      </mat-form-field>
+    </section>
+  </div>
+  <button
+    mat-raised-button
+    type="submit"
+    color="primary"
+    [disabled]="createCourseForm.invalid"
+  >
+    Create course
+  </button>
+  <div *ngIf="courseId" class="go-to-course">
+    Go to
+    <a routerLink="/courses/{{ courseId }}" mat-flat-button color="warn"
+      >Course<mat-icon>link</mat-icon></a
+    >
+  </div>
+</form>

@@ -1,27 +1,138 @@
 <div *ngIf="course" class="course-wrapper">
   <mat-card>
-    <section class="left-side">
-      <mat-card-title>
-        {{ course.name }}
-      </mat-card-title>
-      <mat-card-subtitle>
-        {{ course.createdBy }}
-      </mat-card-subtitle>
-      <mat-card-content>
-        {{ course.description }}
-      </mat-card-content>
-    </section>
-    <section class="right-side">
-      <mat-card-title>
-        {{ course.facultyDepartmentDto?.name }}
-      </mat-card-title>
-      <mat-card-subtitle>
-        {{ course.courseGroup?.name }}
-      </mat-card-subtitle>
-      <mat-card-content *ngIf="user?.roles?.includes('ADMIN')">
-        {{ course.id }}
-      </mat-card-content>
-    </section>
+    <ng-container
+      *ngIf="user?.roles?.includes(USER_ROLES.ADMIN); else notAdmin"
+    >
+      <form
+        class="edit-form"
+        #editForm="ngForm"
+        (submit)="updateCourse(editForm)"
+      >
+        <section class="course-details">
+          <section class="left-side">
+            <mat-card-title>
+              <mat-form-field class="input-field" appearance="legacy">
+                <mat-label>Name</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  placeholder="Name"
+                  name="name"
+                  required
+                  #name="ngModel"
+                  [(ngModel)]="course.name"
+                  minlength="4"
+                  maxlength="50"
+                />
+                <mat-hint>{{ name?.value?.length }}/50</mat-hint>
+                <mat-error
+                  *ngIf="name.errors?.['minlength'] && !name.errors?.['required']"
+                >
+                  Name should be at least 4 characters
+                </mat-error>
+                <mat-error
+                  *ngIf="name.errors?.['maxlength'] && !name.errors?.['required']"
+                >
+                  Name should be maximum 50 characters
+                </mat-error>
+                <mat-error *ngIf="name.errors?.['required']">
+                  Name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </mat-card-title>
+            <mat-card-subtitle>
+              {{ course.createdBy }}
+            </mat-card-subtitle>
+            <mat-card-content>
+              <mat-form-field class="input-field" appearance="legacy">
+                <mat-label>Description</mat-label>
+                <textarea
+                  matInput
+                  type="text"
+                  placeholder="Description"
+                  name="description"
+                  required
+                  #description="ngModel"
+                  [(ngModel)]="course.description"
+                  maxlength="255"
+                ></textarea>
+                <mat-hint>{{ description?.value?.length }}/255</mat-hint>
+                <mat-error *ngIf="description.errors?.['maxlength']">
+                  Description should be maximum 255 characters
+                </mat-error>
+              </mat-form-field>
+            </mat-card-content>
+          </section>
+          <section class="right-side">
+            <mat-card-title>
+              <mat-form-field class="input-field" appearance="legacy">
+                <mat-label>Faculty department</mat-label>
+                <mat-select
+                  name="facultyDepartment"
+                  [(ngModel)]="course.facultyDepartmentDto!.id"
+                  required
+                  #facultyDepartment
+                >
+                  <mat-option
+                    *ngFor="let faculty of facultyDepartments"
+                    [value]="faculty.id!"
+                    >{{ faculty.name! }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </mat-card-title>
+            <mat-card-subtitle>
+              <mat-form-field appearance="legacy">
+                <mat-label>Group</mat-label>
+                <mat-select
+                  name="courseGroup"
+                  [(ngModel)]="course.courseGroup!.id"
+                  required
+                  #courseGroup
+                >
+                  <mat-option
+                    *ngFor="let group of COURSE_GROUPS | keyvalue"
+                    [value]="group.key"
+                    >{{ group.value }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </mat-card-subtitle>
+            <mat-card-content *ngIf="user?.roles?.includes('ADMIN')">
+              {{ course.id }}
+            </mat-card-content>
+          </section>
+        </section>
+        <section class="form-btns">
+          <button mat-raised-button color="primary" type="submit" class="form-btn">Save</button>
+          <button mat-raised-button color="warn" type="button" class="form-btn" (click)="deleteCourse()">Delete</button>
+        </section>
+      </form>
+    </ng-container>
+    <ng-template #notAdmin>
+      <section class="left-side">
+        <mat-card-title>
+          {{ course.name }}
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{ course.createdBy }}
+        </mat-card-subtitle>
+        <mat-card-content>
+          {{ course.description }}
+        </mat-card-content>
+      </section>
+      <section class="right-side">
+        <mat-card-title>
+          {{ course.facultyDepartmentDto?.name }}
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{ course.courseGroup?.name }}
+        </mat-card-subtitle>
+        <mat-card-content *ngIf="user?.roles?.includes('ADMIN')">
+          {{ course.id }}
+        </mat-card-content>
+      </section>
+    </ng-template>
   </mat-card>
 
   <section class="section-list">
@@ -43,6 +154,7 @@
       <app-section
         *ngFor="let section of course.sectionDtos"
         [section]="section"
+        [sectionOnDelete]="sectionOnDelete"
       ></app-section>
     </mat-accordion>
   </section>

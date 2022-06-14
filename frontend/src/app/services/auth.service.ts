@@ -31,7 +31,7 @@ export class AuthService {
         next: (resp) => {
           status = true;
         },
-        error: (err) => console.log(err.error),
+        error: (err) => console.log(err.error.error),
       });
 
       return status;

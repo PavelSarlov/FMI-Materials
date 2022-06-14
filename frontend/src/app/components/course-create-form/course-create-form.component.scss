@@ -1,0 +1,48 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.create-course-form {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 100%;
+  margin: 1rem;
+}
+
+.description,
+.description .mat-form-field-wrapper {
+  min-height: 100%;
+}
+
+.section-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+.go-to-course {
+  margin-top: 1rem;
+}
+
+.go-to-course a {
+  text-decoration: none;
+}
+
+@media screen and (max-width: 900px) {
+  .section-wrapper {
+    flex-direction: column;
+  }
+}

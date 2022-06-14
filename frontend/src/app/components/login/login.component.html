@@ -11,6 +11,17 @@
       required
     />
     <mat-icon matSuffix>email</mat-icon>
+    <mat-error
+      *ngIf="
+        loginForm.get('email')?.hasError('email') &&
+        !loginForm.get('email')?.hasError('required')
+      "
+    >
+      Please enter a valid email address
+    </mat-error>
+    <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+      Email is <strong>required</strong>
+    </mat-error>
   </mat-form-field>
 
   <mat-form-field class="input-field" appearance="legacy">
@@ -25,7 +36,18 @@
       required
     />
     <mat-icon matSuffix>password</mat-icon>
+    <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+      Password is <strong>required</strong>
+    </mat-error>
+    <mat-error
+      *ngIf="
+        loginForm.get('password')?.hasError('pattern') &&
+        !loginForm.get('password')?.hasError('required')
+      "
+    >
+      Password should be at least 8 symbols and contain a lowercase and an uppercase letter and a number
+    </mat-error>
   </mat-form-field>
 
-  <button mat-raised-button type="submit" class="form-button">Login</button>
+  <button mat-raised-button type="submit" class="form-button" [disabled]="loginForm.invalid">Login</button>
 </form>

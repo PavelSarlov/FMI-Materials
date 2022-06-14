@@ -1,10 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, EventEmitter } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Course } from '../../models/course';
+import { COURSE_GROUPS } from '../../models/course-group';
+import { FacultyDepartment } from '../../models/faculty-department';
 import { User, USER_ROLES } from '../../models/user';
-import { CourseService } from '../../services/course.service';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
+import { CourseService } from '../../services/course.service';
+import { FacultyDepartmentService } from '../../services/faculty-department.service';
 
 @Component({
   selector: 'app-course',
@@ -17,30 +21,80 @@ export class CourseComponent implements OnInit {
 
   course?: Course;
 
+  facultyDepartments: FacultyDepartment[] = [];
+
+  COURSE_GROUPS = COURSE_GROUPS;
+
+  sectionOnDelete: EventEmitter<any> = new EventEmitter<any>();
+
   constructor(
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     private courseService: CourseService,
     private alertService: AlertService,
-    private authService: AuthService
+    private authService: AuthService,
+    private fb: FormBuilder,
+    private facultyDepartmentService: FacultyDepartmentService
   ) {}
 
   ngOnInit(): void {
     this.authService.user$.subscribe((user) => {
       this.user = user;
     });
+    this.authService.isAuthenticated();
 
     this.activatedRoute.paramMap.subscribe((params) => {
-      this.courseService
-        .getCourseById(parseInt(params.get('courseId') ?? ''))
-        .subscribe({
-          next: (course) => {
-            this.course = course;
-          },
-          error: (resp) => {
-            this.alertService.error(resp.error.error);
-          },
-        });
+      this.fetchCourse(parseInt(params.get('courseId') ?? ''));
     });
+
+    if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
+      this.facultyDepartmentService.getAllFacultyDepartments().subscribe({
+        next: (resp) => (this.facultyDepartments = resp),
+        error: (resp) => this.alertService.error(resp.error.error),
+      });
+    }
+
+    this.sectionOnDelete.subscribe(() => this.fetchCourse(this.course?.id!));
+  }
+
+  fetchCourse(courseId: number) {
+    this.courseService.getCourseById(courseId).subscribe({
+      next: (course) => {
+        this.course = course;
+      },
+      error: (resp) => {
+        this.alertService.error(resp.error.error);
+        this.router.navigateByUrl('/courses');
+      },
+    });
+  }
+
+  updateCourse(form: any) {
+    let course = this.course!;
+
+    course.name = form.value.name;
+    course.description = form.value.description;
+    course.courseGroup!.id = form.value.courseGroup;
+    course.facultyDepartmentDto!.id = form.value.facultyDepartment;
+
+    this.courseService.updateCourse(course).subscribe({
+      next: (resp) => this.alertService.success('Course updated successfully!'),
+      error: (resp) => this.alertService.error(resp.error.error),
+    });
+  }
+
+  deleteCourse() {
+    if (window.confirm('Are you sure about that?')) {
+      this.courseService.deleteCourseById(this.course!.id!).subscribe({
+        next: (resp) => {
+          this.alertService.success('Course deleted successfully!', {
+            keepAfterRouteChange: true,
+          });
+          this.router.navigateByUrl('/courses');
+        },
+        error: (resp) => this.alertService.error(resp.error.error),
+      });
+    }
   }
 
   createSection() {}

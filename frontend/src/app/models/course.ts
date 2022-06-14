@@ -10,6 +10,4 @@ export class Course {
   facultyDepartmentDto?: FacultyDepartment;
   courseGroup?: CourseGroup;
   sectionDtos?: Section[];
-
-  constructor() {}
 }

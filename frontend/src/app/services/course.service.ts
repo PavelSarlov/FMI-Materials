@@ -38,12 +38,34 @@ export class CourseService {
       });
   }
 
+  createCourse(course: Course) {
+    return this.http
+      .post<Course>(`${environment.coursesApi}`, course)
+      .pipe(tap({ error: (resp) => console.log(resp) }));
+  }
+
+  updateCourse(course: Course): Observable<Course> {
+    return this.http.put<Course>(`${environment.coursesApi}`, course).pipe(
+      tap({
+        error: (resp) => {
+          console.log(resp);
+        },
+      })
+    );
+  }
+
   getCourseById(courseId?: number): Observable<Course> {
     return this.http.get<Course>(`${environment.coursesApi}/${courseId}`).pipe(
       tap({
         error: (err) => console.log(err),
       })
     );
+  }
+
+  deleteCourseById(courseId: number) {
+    return this.http.delete(`${environment.coursesApi}/${courseId}`).pipe(tap({
+      error: (resp) => console.log(resp)
+    }));
   }
 
   getCourseSections(courseId: number): Observable<Section[]> {
@@ -64,6 +86,22 @@ export class CourseService {
           error: (err) => console.log(err),
         })
       );
+  }
+
+  patchSection(section: Section) {
+    return this.http.patch<Course>(`${environment.coursesApi}/sections`, section).pipe(
+      tap({
+        error: (resp) => {
+          console.log(resp);
+        },
+      })
+    );
+  }
+
+  deleteSectionById(sectionId: number) {
+    return this.http.delete(`${environment.coursesApi}/sections/${sectionId}`).pipe(tap({
+      error: (resp) => console.log(resp)
+    }));
   }
 
   getMaterialByName(sectionId: number, materialName: string): any {

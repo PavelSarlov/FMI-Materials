@@ -1,10 +1,10 @@
 package com.fmi.materials.service.impl;
 
-import com.fmi.materials.dto.pagedresult.PagedResultDto;
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.material.MaterialDtoWithData;
+import com.fmi.materials.dto.pagedresult.PagedResultDto;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.section.SectionDto;
@@ -25,15 +25,16 @@ import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.FacultyDepartmentService;
 import com.fmi.materials.specification.CourseSpecification;
 import com.fmi.materials.vo.ExceptionMessage;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -168,6 +169,26 @@ public class CourseServiceImpl implements CourseService {
         this.sectionRepository.deleteById(sectionId);
 
         return new ResponseDtoSuccess(HttpStatus.OK, String.format("Section with id = '%s' deleted successfully", sectionId));
+    }
+
+    @Override
+    public SectionDto patchSection(SectionDto sectionDto) throws IllegalAccessException {
+        Section section = this.sectionRepository.findById(sectionDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionDto.getId())));
+
+        sectionDto.setId(null);
+
+        for (Field field : sectionDto.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+
+            if (field.get(sectionDto) != null) {
+                Field fieldEntity = ReflectionUtils.findField(Section.class, field.getName());
+                fieldEntity.setAccessible(true);
+                ReflectionUtils.setField(fieldEntity, section, field.get(sectionDto));
+            }
+        }
+
+        return this.sectionDtoMapper.convertToDto(this.sectionRepository.save(section));
     }
 
     @Override

@@ -29,6 +29,9 @@ export class SectionComponent implements OnInit {
 
   materialOnDelete: EventEmitter<any> = new EventEmitter<any>();
 
+  @Input()
+  sectionOnDelete?: EventEmitter<any>;
+
   fileFormats: any = {
     'text/plain': 'text_snippet',
     'text/html': 'html',
@@ -98,5 +101,27 @@ export class SectionComponent implements OnInit {
 
   handleSubmitClick(event: any) {
     event.stopPropagation();
+  }
+
+  patchSectionName(patchSectionForm: any) {
+    let section = new Section();
+    section.id = this.section?.id;
+    section.name = patchSectionForm.value.name;
+
+    this.courseService.patchSection(section).subscribe({
+      next: (resp) =>
+        this.alertService.success('Section updated successfully!'),
+      error: (resp) => this.alertService.error(resp.error.error),
+    });
+  }
+
+  deleteSection() {
+    this.courseService.deleteSectionById(this.section!.id!).subscribe({
+      next: (resp) => {
+        this.alertService.success('Section deleted successfully!');
+        this.sectionOnDelete?.emit();
+      },
+      error: (resp) => this.alertService.error(resp.error.error),
+    });
   }
 }

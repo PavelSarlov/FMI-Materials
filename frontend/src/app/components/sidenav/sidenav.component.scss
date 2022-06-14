@@ -16,7 +16,6 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-width: var(--app-sidenav-width);
   background-color: inherit;
   overflow-y: auto;
 }
@@ -34,6 +33,7 @@
 
 .drawer:hover {
   width: fit-content;
+  min-width: var(--app-sidenav-width);
 }
 
 .drawer a:hover {
