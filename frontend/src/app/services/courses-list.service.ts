@@ -9,6 +9,7 @@ import { CoursesList } from '../models/coursesList';
 })
 export class CoursesListService {
   coursesLists$: BehaviorSubject<CoursesList[]> = new BehaviorSubject<CoursesList[]>([]);
+  coursesList$: BehaviorSubject<CoursesList> = new BehaviorSubject<CoursesList>({});
 
   constructor(private http: HttpClient) { }
 
@@ -20,6 +21,18 @@ export class CoursesListService {
       .subscribe(
         (resp) => {
           this.coursesLists$.next(resp);
+        }
+      );
+  }
+
+  public getCoursesListById(userId: number, coursesListId: number) {
+    this.http
+      .get<CoursesList>(
+        `${environment.usersApi}/${userId}/lists/${coursesListId}`
+      )
+      .subscribe(
+        (resp) => {
+          this.coursesList$.next(resp);
         }
       );
   }

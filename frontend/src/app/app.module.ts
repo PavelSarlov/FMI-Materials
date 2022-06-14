@@ -22,6 +22,7 @@ import { CourseCreateFormComponent } from './components/course-create-form/cours
 import { ListOfCoursesComponent } from './components/list-of-courses/list-of-courses.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { CourseListCardComponent } from './components/course-list-card/course-list-card.component';
+import { CourseListComponent } from './components/course-list/course-list.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { CourseListCardComponent } from './components/course-list-card/course-li
     CourseCreateFormComponent,
     ListOfCoursesComponent,
     ProfileComponent,
-    CourseListCardComponent
+    CourseListCardComponent,
+    CourseListComponent
   ],
   imports: [
     BrowserModule,

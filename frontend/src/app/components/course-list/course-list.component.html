@@ -1,0 +1,44 @@
+<div class="list-wrapper">
+    <div class="lsitName" *ngIf="isEditClicked; else notClicked">
+        <form class="example-form">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Courses List Name</mat-label>
+              <input matInput #message [(ngModel)]="inputValue" name="inputValue" maxlength="256" placeholder="Ex. I need help with...">
+              <mat-hint align="start"><strong>{{coursesList.listName}}</strong> </mat-hint>
+              <mat-hint align="end">{{message.value.length}} / 256</mat-hint>
+            </mat-form-field>
+          </form>
+          <div class="response">
+            <button mat-button color="warn" (click)="$event.stopPropagation();  closeInputDeny()">Deny</button>
+            <button mat-button color="primary" (click)="$event.stopPropagation();  closeInputSubmit()">Submit</button>
+          </div>          
+    </div>
+    <ng-template #notClicked>
+        <mat-card-title>
+            {{coursesList.listName}}
+        </mat-card-title>
+    </ng-template>
+    <button mat-fab color="primary" (click)="$event.stopPropagation();  showInput()" aria-label="Example icon button with a edit icon">
+        <mat-icon>edit</mat-icon>
+    </button>
+
+    <!--<div class="inputField">
+        <mat-form-field class="example-form-field" appearance="fill">
+            <mat-label>Clearable input</mat-label>
+            <input matInput type="text" [(ngModel)]="value">
+            <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+              <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <button mat-fab color="primary" (click)="addList()" aria-label="Example icon button with a add icon">
+            <mat-icon>playlist_add</mat-icon>
+        </button>
+    </div>
+
+    <mat-list>
+        <mat-list-item class="coursesLists" *ngFor="let list of coursesLists">
+            <app-course-list-card [list]="list"></app-course-list-card>
+        </mat-list-item>
+    </mat-list>-->
+</div>

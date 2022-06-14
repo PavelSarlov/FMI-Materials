@@ -1,20 +1,9 @@
-<button #listButton routerLink="" class="parent">
+<button #listButton routerLink="{{list.id}}" class="parent">
     <mat-card>
         <section class="left-side">
-            <div class="lsitName" *ngIf="isEditClicked; else notClicked">
-                <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Courses List Name</mat-label>
-                    <input matInput [(ngModel)]="inputValue" (click)="$event.stopPropagation()" (keydown.Space)="$event.stopPropagation()" (keyup.Space)="$event.stopPropagation(); $event.preventDefault();">
-                </mat-form-field>
-            </div>
-            <ng-template #notClicked>
-                <mat-card-title>
-                    {{list.listName}}
-                </mat-card-title>
-            </ng-template>
-            <button mat-fab color="primary" (click)="$event.stopPropagation();  showInput()" aria-label="Example icon button with a edit icon">
-                <mat-icon>edit</mat-icon>
-            </button>
+            <mat-card-title>
+                {{list.listName}}
+            </mat-card-title>
         </section>
         <section class="right-side">
             <button mat-fab color="primary" (click)="$event.stopPropagation(); deleteList(list.id!)" aria-label="Example icon button with a delete icon">

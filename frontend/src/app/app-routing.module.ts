@@ -7,6 +7,8 @@ import { CourseComponent } from './components/course/course.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { CourseCreateFormComponent } from './components/course-create-form/course-create-form.component';
 import { ListOfCoursesComponent } from './components/list-of-courses/list-of-courses.component';
+import { CourseListComponent } from './components/course-list/course-list.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'courses' },
@@ -27,6 +29,14 @@ const routes: Routes = [
   {
     path: 'user/course-lists',
     component: ListOfCoursesComponent
+  },
+  {
+    path: 'user/course-lists/:coursesListId',
+    component: CourseListComponent
+  },
+  {
+    path: 'user',
+    component: ProfileComponent
   }
 ];
 
