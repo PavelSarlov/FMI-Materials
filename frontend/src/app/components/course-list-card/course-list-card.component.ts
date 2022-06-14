@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Renderer2, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CoursesListService } from '../../services/courses-list.service';
 import { CoursesList } from '../../models/coursesList';
 
@@ -10,11 +10,8 @@ import { CoursesList } from '../../models/coursesList';
 export class CourseListCardComponent implements OnInit {
 
   @Input() list!: CoursesList;
-  @ViewChild('listButton') listButton!: ElementRef;
-  isEditClicked: boolean = false;
-  inputValue: string = '';
   
-  constructor(private coursesListService: CoursesListService, private renderer: Renderer2) {
+  constructor(private coursesListService: CoursesListService) {
     
   }
 

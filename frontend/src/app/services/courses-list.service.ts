@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CoursesList } from '../models/coursesList';
+import { CoursesListWithCourses } from 'src/app/models/coursesListWithCourses';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoursesListService {
   coursesLists$: BehaviorSubject<CoursesList[]> = new BehaviorSubject<CoursesList[]>([]);
-  coursesList$: BehaviorSubject<CoursesList> = new BehaviorSubject<CoursesList>({});
+  coursesList$: BehaviorSubject<CoursesListWithCourses> = new BehaviorSubject<CoursesListWithCourses>({});
 
   constructor(private http: HttpClient) { }
 
@@ -27,7 +28,7 @@ export class CoursesListService {
 
   public getCoursesListById(userId: number, coursesListId: number) {
     this.http
-      .get<CoursesList>(
+      .get<CoursesListWithCourses>(
         `${environment.usersApi}/${userId}/lists/${coursesListId}`
       )
       .subscribe(

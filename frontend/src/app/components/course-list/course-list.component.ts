@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CoursesListService } from '../../services/courses-list.service';
-import { CoursesList } from 'src/app/models/coursesList';
+import { CoursesListWithCourses } from 'src/app/models/coursesListWithCourses';
 
 @Component({
   selector: 'app-course-list',
@@ -9,7 +9,7 @@ import { CoursesList } from 'src/app/models/coursesList';
 })
 export class CourseListComponent implements OnInit {
 
-  coursesList: CoursesList = new CoursesList();
+  coursesList: CoursesListWithCourses = new CoursesListWithCourses();
   isEditClicked: boolean = false;
   inputValue: string = '';
 

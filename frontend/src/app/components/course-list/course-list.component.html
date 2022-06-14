@@ -1,5 +1,5 @@
 <div class="list-wrapper">
-    <div class="lsitName" *ngIf="isEditClicked; else notClicked">
+    <div *ngIf="isEditClicked; else notClicked">
         <form class="example-form">
             <mat-form-field class="example-full-width" appearance="fill">
               <mat-label>Courses List Name</mat-label>
@@ -14,31 +14,19 @@
           </div>          
     </div>
     <ng-template #notClicked>
-        <mat-card-title>
-            {{coursesList.listName}}
-        </mat-card-title>
-    </ng-template>
-    <button mat-fab color="primary" (click)="$event.stopPropagation();  showInput()" aria-label="Example icon button with a edit icon">
-        <mat-icon>edit</mat-icon>
-    </button>
-
-    <!--<div class="inputField">
-        <mat-form-field class="example-form-field" appearance="fill">
-            <mat-label>Clearable input</mat-label>
-            <input matInput type="text" [(ngModel)]="value">
-            <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-              <mat-icon>close</mat-icon>
+        <div class="listName">
+            <p class="title">
+                {{coursesList.listName}}
+            </p>
+            <button mat-fab color="primary" (click)="$event.stopPropagation();  showInput()" aria-label="Example icon button with a edit icon">
+                <mat-icon>edit</mat-icon>
             </button>
-        </mat-form-field>
-
-        <button mat-fab color="primary" (click)="addList()" aria-label="Example icon button with a add icon">
-            <mat-icon>playlist_add</mat-icon>
-        </button>
-    </div>
+        </div>
+    </ng-template>
 
     <mat-list>
-        <mat-list-item class="coursesLists" *ngFor="let list of coursesLists">
-            <app-course-list-card [list]="list"></app-course-list-card>
+        <mat-list-item class="course" *ngFor="let course of coursesList.courses">
+            <app-course-card [course]="course"></app-course-card>
         </mat-list-item>
-    </mat-list>-->
+    </mat-list>
 </div>

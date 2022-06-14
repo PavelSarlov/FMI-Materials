@@ -1,0 +1,26 @@
+<button #listButton routerLink="" class="parent">
+    <mat-card>
+        <section class="left-side">
+          <mat-card-title>
+            {{ course.name }}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ course.createdBy }}
+          </mat-card-subtitle>
+          <mat-card-content>
+            {{ course.description }}
+          </mat-card-content>
+        </section>
+        <section class="right-side">
+          <mat-card-title>
+            {{ course.facultyDepartmentDto?.name }}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ course.courseGroup?.name }}
+          </mat-card-subtitle>
+          <mat-card-content *ngIf="user?.roles?.includes('ADMIN')">
+            {{ course.id }}
+          </mat-card-content>
+        </section>
+      </mat-card>
+</button>

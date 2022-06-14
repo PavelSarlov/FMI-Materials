@@ -23,6 +23,7 @@ import { ListOfCoursesComponent } from './components/list-of-courses/list-of-cou
 import { ProfileComponent } from './components/profile/profile.component';
 import { CourseListCardComponent } from './components/course-list-card/course-list-card.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
+import { CourseCardComponent } from './components/course-card/course-card.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { CourseListComponent } from './components/course-list/course-list.compon
     ListOfCoursesComponent,
     ProfileComponent,
     CourseListCardComponent,
-    CourseListComponent
+    CourseListComponent,
+    CourseCardComponent
   ],
   imports: [
     BrowserModule,
