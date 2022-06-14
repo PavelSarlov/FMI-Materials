@@ -16,24 +16,8 @@
     </div>
 
     <mat-list>
-        <mat-list-item *ngFor="let list of coursesLists" class="coursesLists">
-            <button routerLink="" class="parent">
-                <mat-card>
-                    <section class="left-side">
-                        <mat-card-title>
-                            {{list.listName}}
-                        </mat-card-title>
-                        <button mat-fab color="primary" (click)="addList()" aria-label="Example icon button with a add icon">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                    </section>
-                    <section class="right-side">
-                        <button mat-fab color="primary" (click)="$event.stopPropagation(); deleteList(list.id!)" aria-label="Example icon button with a delete icon">
-                            <mat-icon>delete_outline</mat-icon>
-                        </button>
-                    </section>
-                </mat-card>
-            </button>
+        <mat-list-item class="coursesLists" *ngFor="let list of coursesLists">
+            <app-course-list-card [list]="list"></app-course-list-card>
         </mat-list-item>
     </mat-list>
 </div>

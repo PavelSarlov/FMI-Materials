@@ -20,6 +20,8 @@ import { SectionComponent } from './components/section/section.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { CourseCreateFormComponent } from './components/course-create-form/course-create-form.component';
 import { ListOfCoursesComponent } from './components/list-of-courses/list-of-courses.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { CourseListCardComponent } from './components/course-list-card/course-list-card.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { ListOfCoursesComponent } from './components/list-of-courses/list-of-cou
     SectionComponent,
     AlertComponent,
     CourseCreateFormComponent,
-    ListOfCoursesComponent
+    ListOfCoursesComponent,
+    ProfileComponent,
+    CourseListCardComponent
   ],
   imports: [
     BrowserModule,

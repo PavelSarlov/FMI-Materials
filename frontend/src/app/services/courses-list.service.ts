@@ -44,4 +44,13 @@ export class CoursesListService {
       this.getCoursesLists(userId);
     });
   }
+
+  public changeCoursesListName(userId: number, coursesListId: number, listName: string) {
+    this.http
+    .put(`${environment.usersApi}/${userId}/lists/${coursesListId}?listName=${listName}`, undefined)
+    .subscribe(resp => {
+      console.log(resp);
+      this.getCoursesLists(userId);
+    });
+  }
 }

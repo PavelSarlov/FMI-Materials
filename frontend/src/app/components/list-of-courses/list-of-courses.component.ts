@@ -11,11 +11,12 @@ export class ListOfCoursesComponent implements OnInit {
 
   coursesLists: CoursesList[] = [];
   value: string = '';
+
   constructor(private coursesListService: CoursesListService) { }
 
   ngOnInit(): void {
     let currentUser = JSON.parse(localStorage.getItem('user') ?? '');
-    if(currentUser){
+    if (currentUser){
       this.coursesListService.getCoursesLists(currentUser.id);
       this.coursesListService.coursesLists$.subscribe(
         (resp) => {
@@ -28,19 +29,9 @@ export class ListOfCoursesComponent implements OnInit {
     }
   }
 
-  deleteList(coursesListId: number) {
-    let currentUser = JSON.parse(localStorage.getItem('user') ?? '');
-    if(currentUser){
-      this.coursesListService.deleteCourseList(currentUser.id, coursesListId!);
-    }
-    else {
-      console.log("user undefined")
-    }
-  }
-
   addList() {
     let currentUser = JSON.parse(localStorage.getItem('user') ?? '');
-    if(currentUser && this.value != ''){
+    if (currentUser && this.value != ''){
       this.coursesListService.addCourseList(currentUser.id, this.value);
       this.value = '';
     }
