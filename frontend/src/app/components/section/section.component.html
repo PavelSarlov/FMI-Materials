@@ -43,6 +43,7 @@
             </mat-form-field>
             <button
               mat-mini-fab
+              matTooltip="Save changes"
               type="submit"
               class="primary-btn"
               (click)="$event.stopPropagation()"
@@ -52,6 +53,7 @@
           </form>
           <button
             mat-mini-fab
+            matTooltip="Delete section"
             type="button"
             class="primary-btn"
             (click)="$event.stopPropagation(); deleteSection()"
@@ -84,6 +86,7 @@
             <span>{{ fileToUpload?.name ?? "unknown" }}</span>
             <button
               mat-mini-fab
+              matTooltip="Upload selected"
               type="submit"
               class="primary-btn"
               (click)="handleSubmitClick($event)"
@@ -99,6 +102,7 @@
         </div>
         <button
           mat-mini-fab
+          matTooltip="Select material to upload"
           type="button"
           class="primary-btn"
           (click)="material.click()"
@@ -117,7 +121,6 @@
         [material]="material"
         [sectionId]="section?.id"
         [fileFormats]="fileFormats"
-        [materialOnDelete]="materialOnDelete"
       ></app-material>
     </div>
   </div>

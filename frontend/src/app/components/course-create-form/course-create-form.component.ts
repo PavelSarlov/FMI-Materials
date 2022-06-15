@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CourseGroup, COURSE_GROUPS } from '../../models/course-group';
 import { FacultyDepartment } from '../../models/faculty-department';
@@ -9,13 +9,16 @@ import { CourseService } from '../../services/course.service';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-course-create-form',
   templateUrl: './course-create-form.component.html',
   styleUrls: ['./course-create-form.component.scss'],
 })
-export class CourseCreateFormComponent implements OnInit {
+export class CourseCreateFormComponent implements OnInit, OnDestroy {
+  authSubscription?: Subscription;
+
   user?: User | null;
 
   createCourseForm!: FormGroup;
@@ -36,7 +39,9 @@ export class CourseCreateFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.user$.subscribe((user) => (this.user = user));
+    this.authSubscription = this.authService.user$.subscribe(
+      (user) => (this.user = user)
+    );
 
     if (
       !this.authService.isAuthenticated() ||
@@ -47,26 +52,30 @@ export class CourseCreateFormComponent implements OnInit {
         { keepAfterRouteChange: true }
       );
       this.router.navigateByUrl('courses');
-    }
+    } else {
+      this.facultyDepartmentService.getAllFacultyDepartments().subscribe({
+        next: (resp) => (this.facultyDepartments = resp),
+        error: (resp) => this.alertService.error(resp.error.error),
+      });
 
-    this.facultyDepartmentService.getAllFacultyDepartments().subscribe({
-      next: (resp) => (this.facultyDepartments = resp),
-      error: (resp) => this.alertService.error(resp.error.error),
-    });
-
-    this.createCourseForm = this.fb.group({
-      name: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(4),
-          Validators.maxLength(50),
+      this.createCourseForm = this.fb.group({
+        name: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(4),
+            Validators.maxLength(50),
+          ],
         ],
-      ],
-      facultyDepartment: [''],
-      courseGroup: [''],
-      description: ['', [Validators.maxLength(255)]],
-    });
+        facultyDepartment: [''],
+        courseGroup: [''],
+        description: ['', [Validators.maxLength(255)]],
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    this.authSubscription?.unsubscribe();
   }
 
   get courseData() {

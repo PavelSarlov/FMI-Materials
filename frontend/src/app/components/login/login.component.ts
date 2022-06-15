@@ -21,6 +21,9 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
+      this.alertService.warn('You are already logged in!', {
+        keepAfterRouteChange: true,
+      });
       this.router.navigateByUrl('courses');
     }
 
@@ -59,8 +62,7 @@ export class LoginComponent implements OnInit {
               for (let error of resp.error.error) {
                 this.alertService.error(error);
               }
-            }
-            else {
+            } else {
               this.alertService.error(resp.error.error);
             }
           },

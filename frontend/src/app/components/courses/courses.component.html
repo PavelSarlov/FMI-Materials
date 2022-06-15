@@ -41,7 +41,7 @@
     </mat-paginator>
   </form>
   <div *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)" class="add-course-link">
-    <a routerLink="/create-course" mat-fab><mat-icon>add</mat-icon></a>
+    <a routerLink="/create-course" mat-fab matTooltip="Add course"><mat-icon>add</mat-icon></a>
     <span>Create course</span>
   </div>
   <mat-list>

@@ -1,16 +1,20 @@
-import { Component, OnInit, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Material } from '../../models/material';
 import { User, USER_ROLES } from '../../models/user';
 import { CourseService } from '../../services/course.service';
 import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
+import { CrossEventService } from '../../services/cross-event.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-material',
   templateUrl: './material.component.html',
   styleUrls: ['./material.component.scss'],
 })
-export class MaterialComponent implements OnInit {
+export class MaterialComponent implements OnInit, OnDestroy {
+  authSubscription?: Subscription;
+
   user?: User | null;
   USER_ROLES = USER_ROLES;
 
@@ -21,19 +25,23 @@ export class MaterialComponent implements OnInit {
   sectionId?: number;
 
   @Input()
-  materialOnDelete?: EventEmitter<any>;
-
-  @Input()
   fileFormats?: any;
 
   constructor(
     private courseService: CourseService,
     private authService: AuthService,
+    private crossEventService: CrossEventService,
     private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
-    this.authService.user$.subscribe((user) => (this.user = user));
+    this.authSubscription = this.authService.user$.subscribe(
+      (user) => (this.user = user)
+    );
+  }
+
+  ngOnDestroy() {
+    this.authSubscription?.unsubscribe();
   }
 
   openMaterial() {
@@ -61,7 +69,7 @@ export class MaterialComponent implements OnInit {
     this.courseService.deleteMaterialById(this.material!.id!).subscribe({
       next: (resp) => {
         this.alertService.success('Material deleted successfully');
-        this.materialOnDelete?.emit();
+        this.crossEventService.materialOnDelete.emit();
       },
       error: (resp) => {
         this.alertService.success(resp.error.error);

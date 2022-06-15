@@ -2,22 +2,28 @@ import {
   Component,
   Input,
   OnInit,
+  OnDestroy,
   ViewChild,
   ElementRef,
   EventEmitter,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Section } from '../../models/section';
 import { User, USER_ROLES } from '../../models/user';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
+import { CrossEventService } from '../../services/cross-event.service';
 
 @Component({
   selector: 'app-section',
   templateUrl: './section.component.html',
   styleUrls: ['./section.component.scss'],
 })
-export class SectionComponent implements OnInit {
+export class SectionComponent implements OnInit, OnDestroy {
+  authSubscription?: Subscription;
+  materialOnDeleteSubscription?: Subscription;
+
   user?: User | null;
   USER_ROLES = USER_ROLES;
 
@@ -26,8 +32,6 @@ export class SectionComponent implements OnInit {
 
   @ViewChild('material', { static: false })
   material!: ElementRef;
-
-  materialOnDelete: EventEmitter<any> = new EventEmitter<any>();
 
   @Input()
   sectionOnDelete?: EventEmitter<any>;
@@ -51,17 +55,23 @@ export class SectionComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private courseService: CourseService,
+    private crossEventService: CrossEventService,
     private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
-    this.authService.user$.subscribe((user) => {
+    this.authSubscription = this.authService.user$.subscribe((user) => {
       this.user = user;
     });
 
-    this.materialOnDelete.subscribe(() => {
+    this.crossEventService.materialOnDelete.subscribe(() => {
       this.fetchSection();
     });
+  }
+
+  ngOnDestroy() {
+    this.authSubscription?.unsubscribe();
+    this.materialOnDeleteSubscription?.unsubscribe();
   }
 
   onMaterialSelected(event: any) {

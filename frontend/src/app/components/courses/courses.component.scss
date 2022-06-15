@@ -14,13 +14,22 @@ mat-list-item {
   margin: 1rem 0;
 }
 
+mat-list-item a,
+mat-list-item mat-card,
+mat-list-item mat-card mat-card-subtitle {
+  transition: 0.3s;
+  background-color: mat-color($accent);
+  color: mat-color($primary);
+}
+
 mat-list-item a {
   width: 100%;
   text-decoration: none;
 }
 
 mat-list-item:hover a,
-mat-list-item:hover mat-card section * {
+mat-list-item:hover mat-card,
+mat-list-item:hover mat-card mat-card-subtitle {
   background-color: mat-color($primary);
   color: mat-color($accent);
 }

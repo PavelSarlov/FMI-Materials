@@ -1,3 +1,5 @@
+@import "../../../assets/scss/global.scss";
+
 :host {
   display: flex;
   justify-content: center;
@@ -21,9 +23,14 @@
   margin: 1rem;
 }
 
-.description,
-.description .mat-form-field-wrapper {
-  min-height: 100%;
+.description textarea {
+  resize: none;
+}
+
+mat-form-field.description {
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
 
 .section-wrapper {
