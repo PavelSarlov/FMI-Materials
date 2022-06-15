@@ -1,0 +1,43 @@
+@import '../../../assets/scss/global.scss';
+
+:host,
+.list-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
+
+p.title {
+    color: mat-color($primary);
+    font-size: 32pt;
+    font-weight: bold;
+    margin-left: 1rem;
+}
+
+.inputField {
+  display: flex;
+  flex-direction: row;
+  margin-left: 1rem;
+}
+
+.inputField mat-form-field {
+  width: 50%;
+  margin-right: 2rem;
+}
+
+mat-list-item {
+  width: 100%;
+  height: fit-content;
+  margin: 1rem 0;
+}
+
+mat-list-item:hover button.parent, mat-list-item:hover mat-card section mat-card-title {
+  background-color: mat-color($primary);
+  color: #fff;
+}
+
+mat-list-item:hover button.parent .mat-fab.mat-primary {
+    background-color: #fff;
+    color: mat-color($primary);
+}

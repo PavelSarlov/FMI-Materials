@@ -14,51 +14,6 @@ mat-list-item {
   margin: 1rem 0;
 }
 
-mat-list-item a,
-mat-list-item mat-card,
-mat-list-item mat-card mat-card-subtitle {
-  transition: 0.3s;
-  background-color: mat-color($accent);
-  color: mat-color($primary);
-}
-
-mat-list-item a {
-  width: 100%;
-  text-decoration: none;
-}
-
-mat-list-item:hover a,
-mat-list-item:hover mat-card,
-mat-list-item:hover mat-card mat-card-subtitle {
-  background-color: mat-color($primary);
-  color: mat-color($accent);
-}
-
-mat-card {
-  background-color: inherit;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  transition: 0.5s;
-}
-
-mat-card section {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  overflow: hidden;
-}
-
-.right-side {
-  align-items: flex-end;
-}
-
-.left-side mat-card-description {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
 .filter {
   display: flex;
   flex-direction: row;

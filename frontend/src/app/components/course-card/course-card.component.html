@@ -1,0 +1,36 @@
+<button #listButton routerLink="/courses/{{ course.id }}" class="parent noEffect">
+    <mat-card>
+        <section class="left-side">
+          <mat-card-title>
+            {{ course.name }}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ course.createdBy }}
+          </mat-card-subtitle>
+          <mat-card-content>
+            {{ course.description }}
+          </mat-card-content>
+        </section>
+        <section class="right-side">
+          <mat-card-title>
+            {{ course.facultyDepartmentDto?.name }}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ course.courseGroup?.name }}
+          </mat-card-subtitle>
+          <mat-card-content *ngIf="currentUser?.roles?.includes('ADMIN')">
+            {{ course.id }}
+          </mat-card-content>
+          <ng-container *ngIf="url.startsWith('/user/course-lists')">
+            <button mat-mini-fab color="primary" aria-label="Delete icon button with a menu icon" class="delete" (click)="deleteCourseFromList(); $event.stopPropagation();">
+              <mat-icon>bookmark remove</mat-icon>
+            </button>
+          </ng-container>
+          <ng-container *ngIf="url.startsWith('/user/favourite-courses')">
+            <button mat-mini-fab color="primary" aria-label="Delete icon button with a menu icon" class="delete" (click)="deleteCourseFromFavourites(); $event.stopPropagation();">
+              <mat-icon>bookmark remove</mat-icon>
+            </button>
+          </ng-container>
+        </section>
+      </mat-card>
+</button>

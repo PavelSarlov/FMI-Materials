@@ -19,6 +19,12 @@ import { MaterialComponent } from './components/material/material.component';
 import { SectionComponent } from './components/section/section.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { CourseCreateFormComponent } from './components/course-create-form/course-create-form.component';
+import { ListOfCoursesComponent } from './components/list-of-courses/list-of-courses.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { CourseListCardComponent } from './components/course-list-card/course-list-card.component';
+import { CourseListComponent } from './components/course-list/course-list.component';
+import { CourseCardComponent } from './components/course-card/course-card.component';
+import { FavouriteCoursesComponent } from './components/favourite-courses/favourite-courses.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +40,12 @@ import { CourseCreateFormComponent } from './components/course-create-form/cours
     SectionComponent,
     AlertComponent,
     CourseCreateFormComponent,
+    ListOfCoursesComponent,
+    ProfileComponent,
+    CourseListCardComponent,
+    CourseListComponent,
+    CourseCardComponent,
+    FavouriteCoursesComponent
   ],
   imports: [
     BrowserModule,

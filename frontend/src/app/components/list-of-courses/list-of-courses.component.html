@@ -1,0 +1,23 @@
+<div class="list-wrapper">
+    <p class="title">Course Lists</p>
+
+    <div class="inputField">
+        <mat-form-field class="example-form-field" appearance="fill">
+            <mat-label>Clearable input</mat-label>
+            <input matInput type="text" [(ngModel)]="value">
+            <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+              <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <button mat-fab color="primary" (click)="addList()" aria-label="Example icon button with a add icon">
+            <mat-icon>playlist_add</mat-icon>
+        </button>
+    </div>
+
+    <mat-list>
+        <mat-list-item class="coursesLists" *ngFor="let list of coursesLists">
+            <app-course-list-card [list]="list"></app-course-list-card>
+        </mat-list-item>
+    </mat-list>
+</div>
