@@ -47,6 +47,15 @@ export class CoursesListService {
         });
   }
 
+  public deleteCourseFromCoursesList(userId: number, coursesListId: number, courseId: number) {
+    this.http
+      .delete(`${environment.usersApi}/${userId}/lists/${coursesListId}/${courseId}`)
+      .subscribe(resp => {
+          console.log(resp);
+          this.getCoursesListById(userId, coursesListId);
+        });
+  }
+
   public addCourseList(userId: number, listName: string) {
     let courseList = new CoursesList();
     courseList.listName = listName;

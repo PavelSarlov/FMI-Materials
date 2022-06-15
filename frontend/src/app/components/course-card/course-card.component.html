@@ -1,4 +1,4 @@
-<button #listButton routerLink="" class="parent">
+<button #listButton routerLink="" class="parent noEffect">
     <mat-card>
         <section class="left-side">
           <mat-card-title>
@@ -21,6 +21,9 @@
           <mat-card-content *ngIf="user?.roles?.includes('ADMIN')">
             {{ course.id }}
           </mat-card-content>
+          <button class="noEffect">
+            <mat-icon>bookmark remove</mat-icon>
+          </button>
         </section>
       </mat-card>
 </button>
