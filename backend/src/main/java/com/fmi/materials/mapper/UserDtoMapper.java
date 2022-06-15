@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 public class UserDtoMapper {
 
     public UserDto convertToDto(User user) {
+        if (user == null) {
+            return null;
+        }
+
         return new UserDto(
                 user.getName(),
                 null,
@@ -23,6 +27,10 @@ public class UserDtoMapper {
     }
 
     public UserDtoWithId convertToDtoWithId(User user) {
+        if (user == null) {
+            return null;
+        }
+
         return new UserDtoWithId(
                 user.getId(),
                 user.getName(),
@@ -35,10 +43,22 @@ public class UserDtoMapper {
     }
 
     public User convertToEntity(UserDtoRegistration userDto) {
-        return new User(userDto.getName(), userDto.getPassword(), userDto.getEmail());
+        if (userDto == null) {
+            return null;
+        }
+
+        return new User(
+                userDto.getName(),
+                userDto.getPassword(),
+                userDto.getEmail()
+        );
     }
 
     public User convertToEntity(UserDto userDto) {
+        if (userDto == null) {
+            return null;
+        }
+
         return new User(userDto.getName(),
                 userDto.getPassword(),
                 userDto.getEmail()
@@ -46,6 +66,10 @@ public class UserDtoMapper {
     }
 
     public User convertToEntityWithId(UserDtoWithId userDto) {
+        if (userDto == null) {
+            return null;
+        }
+
         return new User(
                 userDto.getId(),
                 userDto.getName(),

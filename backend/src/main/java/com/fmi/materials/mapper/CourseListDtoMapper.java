@@ -15,6 +15,10 @@ public class CourseListDtoMapper {
     private CourseDtoMapper courseDtoMapper;
 
     public CourseList convertToEntity(CourseListDto courseListDto) {
+        if (courseListDto == null) {
+            return null;
+        }
+
         return new CourseList(
                 courseListDto.getListName(),
                 courseListDto.getCourses() != null ? courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()) : null
@@ -22,6 +26,10 @@ public class CourseListDtoMapper {
     }
 
     public CourseList convertToEntityWithId(CourseListDtoWithId courseListDto) {
+        if (courseListDto == null) {
+            return null;
+        }
+
         return new CourseList(
                 courseListDto.getId(), courseListDto.getListName(),
                 courseListDto.getCourses() != null ? courseListDto.getCourses().stream().map(this.courseDtoMapper::convertToEntityWithId).collect(Collectors.toSet()) : null
@@ -29,6 +37,9 @@ public class CourseListDtoMapper {
     }
 
     public CourseListDto convertToDto(CourseList courseList) {
+        if (courseList == null) {
+            return null;
+        }
 
         return new CourseListDto(
                 courseList.getListName(),
@@ -39,6 +50,10 @@ public class CourseListDtoMapper {
     }
 
     public CourseListDtoWithId convertToDtoWithId(CourseList courseList) {
+        if (courseList == null) {
+            return null;
+        }
+
         return new CourseListDtoWithId(
                 courseList.getId(),
                 courseList.getListName(),
@@ -49,7 +64,12 @@ public class CourseListDtoMapper {
     }
 
     public List<CourseListDtoWithId> convertToDtoList(List<CourseList> courseLists) {
+        if (courseLists == null) {
+            return null;
+        }
+
         return courseLists.stream()
+                .filter(c -> c != null)
                 .map(this::convertToDtoWithId)
                 .collect(Collectors.toList());
     }

@@ -17,6 +17,10 @@ public class CourseDtoMapper {
     private SectionDtoMapper sectionDtoMapper;
 
     public Course convertToEntity(CourseDto courseDto) {
+        if (courseDto == null) {
+            return null;
+        }
+
         return new Course(
                 courseDto.getName(),
                 courseDto.getDescription(),
@@ -27,6 +31,10 @@ public class CourseDtoMapper {
     }
 
     public Course convertToEntityWithId(CourseDtoWithId courseDto) {
+        if(courseDto == null) {
+            return null;
+        }
+
         return new Course(
                 courseDto.getId(),
                 courseDto.getName(),
@@ -38,6 +46,10 @@ public class CourseDtoMapper {
     }
 
     public CourseDto convertToDto(Course course) {
+        if (course == null) {
+            return null;
+        }
+
         return new CourseDto(
                 course.getName(),
                 course.getDescription(),
@@ -51,6 +63,9 @@ public class CourseDtoMapper {
     }
 
     public CourseDtoWithId convertToDtoWithId(Course course) {
+        if (course == null) {
+            return null;
+        }
 
         return new CourseDtoWithId(
                 course.getId(),

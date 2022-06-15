@@ -22,9 +22,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @Slf4j
@@ -32,6 +36,8 @@ import java.util.List;
 public class CourseController {
     @Autowired
     private CourseService courseService;
+    @Autowired
+    private Validator validator;
 
     @PostMapping
     public ResponseEntity<CourseDto> createCourse(@RequestBody @Valid CourseDto courseDto) {
@@ -141,8 +147,16 @@ public class CourseController {
 
     @PostMapping("sections/{sectionId}/materials")
     public ResponseEntity<MaterialDto> createMaterial(@RequestBody MultipartFile file, @PathVariable Long sectionId) throws IOException {
+        MaterialDto materialDto = new MaterialDtoWithData(null, file.getContentType(), file.getOriginalFilename(), file.getBytes());
+
+        Set<ConstraintViolation<MaterialDto>> violations = validator.validate(materialDto);
+
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+
         return new ResponseEntity<MaterialDto>(
-                this.courseService.createMaterial(file.getContentType(), file.getOriginalFilename(), file.getBytes(), sectionId),
+                this.courseService.createMaterial(materialDto, sectionId),
                 HttpStatus.CREATED
         );
     }

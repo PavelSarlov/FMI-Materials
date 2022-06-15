@@ -14,6 +14,7 @@ import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
 import { CrossEventService } from '../../services/cross-event.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-section',
@@ -22,7 +23,7 @@ import { CrossEventService } from '../../services/cross-event.service';
 })
 export class SectionComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
-  materialOnDeleteSubscription?: Subscription;
+  materialEventSubscription?: Subscription;
 
   user?: User | null;
   USER_ROLES = USER_ROLES;
@@ -56,7 +57,8 @@ export class SectionComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private courseService: CourseService,
     private crossEventService: CrossEventService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -64,14 +66,14 @@ export class SectionComponent implements OnInit, OnDestroy {
       this.user = user;
     });
 
-    this.crossEventService.materialOnDelete.subscribe(() => {
+    this.crossEventService.materialEvent.subscribe(() => {
       this.fetchSection();
     });
   }
 
   ngOnDestroy() {
     this.authSubscription?.unsubscribe();
-    this.materialOnDeleteSubscription?.unsubscribe();
+    this.materialEventSubscription?.unsubscribe();
   }
 
   onMaterialSelected(event: any) {
@@ -101,7 +103,15 @@ export class SectionComponent implements OnInit, OnDestroy {
             error: (resp: any) => this.alertService.error(resp.error.error),
           });
       } else {
-        // todo
+        this.userService
+          .createMaterialRequest(formData, this.section!.id!, this.user!.id!)
+          .subscribe({
+            next: (resp: any) => {
+              this.alertService.success('Request send successfully!');
+              this.fetchSection();
+            },
+            error: (resp: any) => this.alertService.error(resp.error.error),
+          });
       }
 
       this.material.nativeElement.value = null;

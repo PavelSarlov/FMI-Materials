@@ -5,7 +5,8 @@ import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.mapper.MaterialDtoMapper;
 import com.fmi.materials.mapper.MaterialRequestDtoMapper;
-import com.fmi.materials.model.*;
+import com.fmi.materials.model.Material;
+import com.fmi.materials.model.MaterialRequest;
 import com.fmi.materials.repository.MaterialRequestRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.repository.UserRepository;
@@ -90,7 +91,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
         if (status) {
-            this.courseService.createMaterial(materialRequest.getFileFormat(), materialRequest.getFileName(), materialRequest.getData(), materialRequest.getSection().getId());
+            this.courseService.createMaterial(this.materialRequestDtoMapper.convertToMaterialDto(materialRequest), materialRequest.getSection().getId());
         }
 
         this.materialRequestRepository.deleteById(materialRequestId);

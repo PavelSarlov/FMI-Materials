@@ -14,7 +14,7 @@
   font-size: var(--material-icon-font-size);
 }
 
-.material-name {
+.name-field, .name-field {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -32,6 +32,9 @@
   overflow: hidden;
   border-radius: 1rem;
   padding: 1rem;
+  background-color: mat-color($warn);
+  color: #fff;
+  opacity: 0.5;
 }
 
 .hover-tooltip {
@@ -48,7 +51,7 @@
   pointer-events: none;
 }
 
-.hover-tooltip .material-name {
+.hover-tooltip .name-field {
   overflow: visible;
   white-space: normal;
 }
@@ -67,3 +70,4 @@
   transition: 0.3s;
   font-size: 6pt;
 }
+

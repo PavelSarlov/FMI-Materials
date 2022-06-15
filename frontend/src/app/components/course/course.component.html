@@ -1,5 +1,5 @@
 <div *ngIf="course" class="course-wrapper">
-  <mat-card>
+  <mat-card class="course-card">
     <ng-container
       *ngIf="user?.roles?.includes(USER_ROLES.ADMIN); else notAdmin"
     >
@@ -104,8 +104,25 @@
           </section>
         </section>
         <section class="form-btns">
-          <button mat-raised-button color="primary" type="submit" class="form-btn">Save</button>
-          <button mat-raised-button color="warn" type="button" class="form-btn" (click)="deleteCourse()">Delete</button>
+          <button
+            mat-fab
+            color="primary"
+            type="submit"
+            class="form-btn"
+            matTooltip="Save changes"
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+          <button
+            mat-fab
+            color="warn"
+            type="button"
+            class="form-btn"
+            (click)="deleteCourse()"
+            matTooltip="Delete course"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
         </section>
       </form>
     </ng-container>
@@ -136,21 +153,41 @@
   </mat-card>
 
   <section class="section-list">
-    <mat-accordion multi>
-      <form
-        *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)"
-        (submit)="createSection()"
+    <form
+      *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)"
+      (submit)="createSection(createSectionForm)"
+      class="create-section-form"
+      #createSectionForm="ngForm"
+    >
+      <button
+        mat-mini-fab
+        color="primary"
+        type="submit"
+        matTooltip="Create section"
       >
-        <mat-card>
-          <button mat-mini-fab color="primary" type="submit">
-            <mat-icon>add</mat-icon>
-          </button>
-          <mat-form-field appearance="legacy">
-            <mat-label>Section name</mat-label>
-            <input matInput type="text" required />
-          </mat-form-field>
-        </mat-card>
-      </form>
+        <mat-icon>add</mat-icon>
+      </button>
+      <mat-form-field appearance="legacy">
+        <mat-label>Section name</mat-label>
+        <input
+          matInput
+          type="text"
+          name="create-section-name"
+          required
+          [(ngModel)]="createSectionName"
+          minlength="1"
+          maxlength="50"
+          #sectionName="ngModel"
+        />
+        <mat-hint>{{ sectionName?.value?.length }}/50</mat-hint>
+        <mat-error
+          *ngIf="sectionName.errors?.['minlength'] || sectionName.errors?.['maxlength'] || sectionName.errors?.['required']"
+        >
+          Section name should be between 1 and 50 characters
+        </mat-error>
+      </mat-form-field>
+    </form>
+    <mat-accordion multi>
       <app-section
         *ngFor="let section of course.sectionDtos"
         [section]="section"

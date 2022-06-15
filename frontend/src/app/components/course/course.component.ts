@@ -3,6 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Course } from '../../models/course';
+import { Section } from '../../models/section';
 import { COURSE_GROUPS } from '../../models/course-group';
 import { FacultyDepartment } from '../../models/faculty-department';
 import { User, USER_ROLES } from '../../models/user';
@@ -19,8 +20,7 @@ import { FacultyDepartmentService } from '../../services/faculty-department.serv
 })
 export class CourseComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
-  routerSubscription?: Subscription;
-  sectionOnDeleteSubscription?: Subscription;
+  sectionEventSubscription?: Subscription;
 
   user?: User | null;
   USER_ROLES = USER_ROLES;
@@ -30,6 +30,8 @@ export class CourseComponent implements OnInit, OnDestroy {
   facultyDepartments: FacultyDepartment[] = [];
 
   COURSE_GROUPS = COURSE_GROUPS;
+
+  createSectionName?: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -48,10 +50,8 @@ export class CourseComponent implements OnInit, OnDestroy {
     });
     this.authService.isAuthenticated();
 
-    this.routerSubscription = this.activatedRoute.paramMap.subscribe(
-      (params) => {
-        this.fetchCourse(parseInt(params.get('courseId') ?? ''));
-      }
+    this.fetchCourse(
+      parseInt(this.activatedRoute.snapshot.paramMap.get('courseId')!)
     );
 
     if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
@@ -61,17 +61,16 @@ export class CourseComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.sectionOnDeleteSubscription = this.crossEventService.sectionOnDelete.subscribe(() =>
-      this.fetchCourse(this.course?.id!)
-    );
+    this.sectionEventSubscription =
+      this.crossEventService.sectionEvent.subscribe(() =>
+        this.fetchCourse(this.course?.id!)
+      );
   }
 
   ngOnDestroy() {
     this.authSubscription?.unsubscribe();
-    this.routerSubscription?.unsubscribe();
-    this.sectionOnDeleteSubscription?.unsubscribe();
+    this.sectionEventSubscription?.unsubscribe();
   }
-
 
   fetchCourse(courseId: number) {
     this.courseService.getCourseById(courseId).subscribe({
@@ -113,5 +112,16 @@ export class CourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  createSection() {}
+  createSection(form: any) {
+    let section = new Section();
+    section.name = this.createSectionName;
+
+    this.courseService.createSection(section,  this.course!.id!).subscribe({
+      next: (resp) => {
+        this.alertService.success('Section created successfully!');
+        this.fetchCourse(this.course!.id!);
+      },
+      error: (resp) => this.alertService.error(resp.error.error),
+    });
+  }
 }

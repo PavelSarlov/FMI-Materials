@@ -78,7 +78,7 @@ public class CourseServiceImpl implements CourseService {
 
         course = this.courseRepository.save(course);
 
-        Section defaultSection = new Section("Home", course, null);
+        Section defaultSection = new Section("Home", course, null, null);
         this.sectionRepository.save(defaultSection);
 
         course.setSections(Stream.of(defaultSection).collect(Collectors.toSet()));
@@ -192,13 +192,17 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public MaterialDto createMaterial(String fileFormat, String fileName, byte[] data, Long sectionId) throws IOException {
+    public MaterialDto createMaterial(MaterialDto materialDto, Long sectionId) throws IOException {
         Section section = this.sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
-        Material material = this.materialDtoMapper.convertToEntity(fileFormat, fileName, data, section);
-        if (this.materialRepository.findByName(fileName, section.getId()).isPresent()) {
-            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Material", "filename", fileName));
+
+        if (this.materialRepository.findByName(materialDto.getFileName(), section.getId()).isPresent()) {
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Material", "filename", materialDto.getFileName()));
         }
+
+        Material material = this.materialDtoMapper.convertToEntity(materialDto);
+        material.setSection(section);
+        material.setData(((MaterialDtoWithData)materialDto).getData());
 
         return this.materialDtoMapper.convertToDto(this.materialRepository.save(material));
     }

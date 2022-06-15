@@ -4,6 +4,7 @@ import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
+import com.fmi.materials.dto.materialrequest.MaterialRequestDtoWithData;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.service.CourseListService;
@@ -15,8 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/users/{userId}")
@@ -24,6 +29,8 @@ public class UserController {
     private CourseListService courseListService;
     private FavouriteCoursesService favouriteCoursesService;
     private UserService userService;
+    @Autowired
+    private Validator validator;
 
     @Autowired
     public UserController(CourseListService courseListService,
@@ -84,8 +91,16 @@ public class UserController {
 
     @PostMapping("material-requests/{sectionId}")
     public ResponseEntity<MaterialRequestDto> addMaterialRequest(@RequestParam("file") MultipartFile file, @PathVariable Long sectionId, @PathVariable Long userId) throws IOException {
+        MaterialRequestDto materialRequestDto = new MaterialRequestDtoWithData(null, file.getContentType(), file.getOriginalFilename(), null, null, file.getBytes());
+
+        Set<ConstraintViolation<MaterialRequestDto>> violations = validator.validate(materialRequestDto);
+
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+
         return new ResponseEntity<MaterialRequestDto>(
-                this.userService.createMaterialRequest(file, sectionId, userId),
+                this.userService.createMaterialRequest(materialRequestDto, sectionId, userId),
                 HttpStatus.CREATED
         );
     }

@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
-import { AuthInterceptor } from './auth-interceptor';
+import { AuthInterceptor } from './interceptors/auth-interceptor';
 import { AppComponent } from './app.component';
 import { CourseComponent } from './components/course/course.component';
 import { CoursesComponent } from './components/courses/courses.component';
@@ -25,6 +25,8 @@ import { CourseListCardComponent } from './components/course-list-card/course-li
 import { CourseListComponent } from './components/course-list/course-list.component';
 import { CourseCardComponent } from './components/course-card/course-card.component';
 import { FavouriteCoursesComponent } from './components/favourite-courses/favourite-courses.component';
+import { MaterialRequestComponent } from './components/material-request/material-request.component';
+import { BlobErrorInterceptor } from './interceptors/blob-error-interceptor';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { FavouriteCoursesComponent } from './components/favourite-courses/favour
     CourseListCardComponent,
     CourseListComponent,
     CourseCardComponent,
-    FavouriteCoursesComponent
+    FavouriteCoursesComponent,
+    MaterialRequestComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,6 +63,11 @@ import { FavouriteCoursesComponent } from './components/favourite-courses/favour
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: BlobErrorInterceptor,
       multi: true,
     },
     CookieService,

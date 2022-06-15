@@ -63,9 +63,11 @@ export class CourseService {
   }
 
   deleteCourseById(courseId: number) {
-    return this.http.delete(`${environment.coursesApi}/${courseId}`).pipe(tap({
-      error: (resp) => console.log(resp)
-    }));
+    return this.http.delete(`${environment.coursesApi}/${courseId}`).pipe(
+      tap({
+        error: (resp) => console.log(resp),
+      })
+    );
   }
 
   getCourseSections(courseId: number): Observable<Section[]> {
@@ -88,20 +90,36 @@ export class CourseService {
       );
   }
 
+  createSection(section: Section, courseId: number): Observable<Section> {
+    return this.http
+      .post<Section>(`${environment.coursesApi}/${courseId}/sections`, section)
+      .pipe(
+        tap({
+          error: (err) => console.log(err),
+        })
+      );
+  }
+
   patchSection(section: Section) {
-    return this.http.patch<Course>(`${environment.coursesApi}/sections`, section).pipe(
-      tap({
-        error: (resp) => {
-          console.log(resp);
-        },
-      })
-    );
+    return this.http
+      .patch<Section>(`${environment.coursesApi}/sections`, section)
+      .pipe(
+        tap({
+          error: (resp) => {
+            console.log(resp);
+          },
+        })
+      );
   }
 
   deleteSectionById(sectionId: number) {
-    return this.http.delete(`${environment.coursesApi}/sections/${sectionId}`).pipe(tap({
-      error: (resp) => console.log(resp)
-    }));
+    return this.http
+      .delete(`${environment.coursesApi}/sections/${sectionId}`)
+      .pipe(
+        tap({
+          error: (resp) => console.log(resp),
+        })
+      );
   }
 
   getMaterialByName(sectionId: number, materialName: string): any {

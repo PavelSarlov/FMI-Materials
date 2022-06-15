@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,6 +44,15 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
                 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
         log.info(ex.getMessage());
         return buildResponseEntity(errorList, status);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
+        log.info(ex.getMessage());
+        Set<String> errors = ex.getConstraintViolations().stream()
+                .map(cv -> cv.getMessage())
+                .collect(Collectors.toSet());
+        return buildResponseEntity(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RuntimeException.class)

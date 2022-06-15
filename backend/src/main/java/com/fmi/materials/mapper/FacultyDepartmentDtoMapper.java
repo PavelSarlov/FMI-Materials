@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class FacultyDepartmentDtoMapper {
     public FacultyDepartment convertToEntity(FacultyDepartmentDto facultyDepartmentDto) {
+        if (facultyDepartmentDto == null) {
+            return null;
+        }
+
         return new FacultyDepartment(
                 facultyDepartmentDto.getId(),
                 facultyDepartmentDto.getName()
@@ -14,6 +18,10 @@ public class FacultyDepartmentDtoMapper {
     }
 
     public FacultyDepartmentDto convertToDto(FacultyDepartment facultyDepartment) {
+        if (facultyDepartment == null) {
+            return null;
+        }
+
         return new FacultyDepartmentDto(
                 facultyDepartment.getId(),
                 facultyDepartment.getName()

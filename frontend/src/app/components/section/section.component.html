@@ -114,7 +114,7 @@
   </mat-expansion-panel-header>
   <div class="material-list">
     <div
-      *ngFor="let material of section?.materials ?? []"
+      *ngFor="let material of section?.materialDtos ?? []"
       class="material-list-item"
     >
       <app-material
@@ -123,5 +123,16 @@
         [fileFormats]="fileFormats"
       ></app-material>
     </div>
+    <ng-container *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)">
+      <div
+        *ngFor="let materialRequest of section?.materialRequestDtos ?? []"
+        class="material-list-item material-request"
+      >
+        <app-material-request
+          [materialRequest]="materialRequest"
+          [fileFormats]="fileFormats"
+        ></app-material-request>
+      </div>
+    </ng-container>
   </div>
 </mat-expansion-panel>

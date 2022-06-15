@@ -1,37 +1,35 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Material } from '../../models/material';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { MaterialRequest } from '../../models/material-request';
 import { User, USER_ROLES } from '../../models/user';
-import { CourseService } from '../../services/course.service';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { CrossEventService } from '../../services/cross-event.service';
-import { Subscription } from 'rxjs';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
-  selector: 'app-material',
-  templateUrl: './material.component.html',
-  styleUrls: ['./material.component.scss'],
+  selector: 'app-material-request',
+  templateUrl: './material-request.component.html',
+  styleUrls: ['./material-request.component.scss'],
 })
-export class MaterialComponent implements OnInit, OnDestroy {
+export class MaterialRequestComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
 
   user?: User | null;
   USER_ROLES = USER_ROLES;
 
   @Input()
-  material?: Material;
-
-  @Input()
-  sectionId?: number;
+  materialRequest?: MaterialRequest;
 
   @Input()
   fileFormats?: any;
 
+
   constructor(
-    private courseService: CourseService,
     private authService: AuthService,
     private crossEventService: CrossEventService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +43,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
   }
 
   openMaterial() {
-    this.courseService.getMaterialById(this.material!.id!).subscribe({
+    this.adminService.getMaterialFromMaterialRequest(this.user!.id!, this.materialRequest!.id!).subscribe({
       next: (resp: any) => {
         window.open(URL.createObjectURL(resp));
       },
@@ -54,10 +52,10 @@ export class MaterialComponent implements OnInit, OnDestroy {
   }
 
   downloadMaterial() {
-    this.courseService.getMaterialById(this.material!.id!).subscribe({
+    this.adminService.getMaterialFromMaterialRequest(this.user!.id!, this.materialRequest!.id!).subscribe({
       next: (resp: any) => {
         const element = document.createElement('a');
-        element.download = this.material!.fileName!;
+        element.download = this.materialRequest!.fileName!;
         element.href = URL.createObjectURL(resp);
         element.click();
       },
@@ -65,10 +63,10 @@ export class MaterialComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteMaterial() {
-    this.courseService.deleteMaterialById(this.material!.id!).subscribe({
+  processMaterialRequest(status: boolean) {
+    this.adminService.processMaterialRequest(this.user!.id!, this.materialRequest!.id!, status).subscribe({
       next: (resp) => {
-        this.alertService.success('Material deleted successfully');
+        this.alertService.success('Material processed successfully!');
         this.crossEventService.materialEvent.emit();
       },
       error: (resp) => {
