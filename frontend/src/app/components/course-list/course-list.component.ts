@@ -1,35 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CoursesListService } from '../../services/courses-list.service';
 import { CoursesListWithCourses } from 'src/app/models/coursesListWithCourses';
+import { User } from '../../models/user';
+import { AuthService } from 'src/app/services/auth.service';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
   selector: 'app-course-list',
   templateUrl: './course-list.component.html',
   styleUrls: ['./course-list.component.scss']
 })
-export class CourseListComponent implements OnInit {
+export class CourseListComponent implements OnInit, OnDestroy {
 
   coursesList: CoursesListWithCourses = new CoursesListWithCourses();
   isEditClicked: boolean = false;
   inputValue: string = '';
+  currentUser?: User | null;
+  authSubscription?: Subscription;
+  courseListSubscription?: Subscription;
 
-  constructor(private coursesListService: CoursesListService) { }
+  constructor(private coursesListService: CoursesListService, 
+    private authService: AuthService, 
+    private activatedRoute: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit(): void {
-    let currentUser = JSON.parse(localStorage.getItem('user') ?? '');
-    let url = window.location.href;
-    let courseListId = parseInt(url.split('/').pop()!);
-    if (currentUser){
-      this.coursesListService.getCoursesListById(currentUser.id, courseListId);
-      this.coursesListService.coursesList$.subscribe(
+    this.authSubscription = this.authService.user$.subscribe(
+      (resp) => {
+        this.currentUser = resp;
+      }
+    );
+
+    let courseListId = parseInt(this.activatedRoute.snapshot.paramMap.get('coursesListId')!);
+
+    if (this.authService.isAuthenticated()){
+      this.coursesListService.getCoursesListById(this.currentUser!.id!, courseListId);
+      this.courseListSubscription = this.coursesListService.coursesList$.subscribe(
         (resp) => {
           this.coursesList = resp;
         }
       );
     }
     else {
-      console.log("user undefined")
+      this.router.navigateByUrl('/auth/login');
     }
+  }
+
+  ngOnDestroy() {
+    this.authSubscription?.unsubscribe();
+    this.courseListSubscription?.unsubscribe();
   }
 
   showInput() {
@@ -54,14 +74,7 @@ export class CourseListComponent implements OnInit {
   }
 
   changeListName() {
-    let currentUser = JSON.parse(localStorage.getItem('user') ?? '');
-
-    if (currentUser && this.inputValue != '' && this.inputValue != this.coursesList.listName) {
-      this.coursesListService.changeCoursesListName(currentUser.id, this.coursesList.id!, this.inputValue);
-      this.coursesListService.getCoursesListById(currentUser.id, this.coursesList.id!);
-    }
-    else {
-      console.log("user undefined")
-    }
+    this.coursesListService.changeCoursesListName(this.currentUser!.id!, this.coursesList.id!, this.inputValue);
+    this.coursesListService.getCoursesListById(this.currentUser!.id!, this.coursesList.id!);
   }
 }

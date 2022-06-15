@@ -8,6 +8,7 @@
 
 button.parent {
     width: 100%;
+    cursor: pointer;
   }
 
   .noEffect {
@@ -17,10 +18,39 @@ button.parent {
     border: none;
     padding: 0;
     outline: inherit;
+    box-shadow: none;
   }
 
-  button.parent:hover, button.parent:hover mat-card section * {
+  .delete {
+    text-decoration: none;
+    border: none;
+    padding: 0;
+    outline: inherit;
+    box-shadow: none;
+  }
+
+  button.parent,
+  button.parent mat-card,
+  button.parent mat-card mat-card-subtitle {
+    transition: 0.3s;
+    background-color: #fff;
+    color: mat-color($primary);
+  }
+  
+  button.parent {
+    width: 100%;
+    text-decoration: none;
+  }
+  
+  button.parent:hover,
+  button.parent:hover mat-card,
+  button.parent:hover mat-card mat-card-subtitle {
     background-color: mat-color($primary);
+    color: mat-color($accent);
+  }
+
+  button.parent:hover mat-card button.delete {
+    background-color: #fff;
     color: mat-color($accent);
   }
   

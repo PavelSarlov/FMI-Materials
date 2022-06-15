@@ -1,24 +1,45 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { User } from '../../models/user';
 import { Course } from '../../models/course';
+import { CoursesListService } from '../../services/courses-list.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
   selector: 'app-course-card',
   templateUrl: './course-card.component.html',
   styleUrls: ['./course-card.component.scss']
 })
-export class CourseCardComponent implements OnInit {
+export class CourseCardComponent implements OnInit, OnDestroy {
 
   @Input() course!: Course;
-  user?: User | null = JSON.parse(localStorage.getItem('user')!);
-  url: string = window.location.href;
+  authSubscription?: Subscription;
+  currentUser?: User | null;
+  url: string = window.location.pathname;
 
-  constructor() { }
+  constructor(private coursesListService: CoursesListService, 
+    private authService: AuthService,
+    private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.authSubscription = this.authService.user$.subscribe(
+      (resp) => {
+        this.currentUser = resp;
+      }
+    );
   }
 
-  deleteCourse() {
-    
+  ngOnDestroy() {
+    this.authSubscription?.unsubscribe();
+  }
+
+  deleteCourseFromList() {
+    let coursesListId = parseInt(this.activatedRoute.snapshot.paramMap.get('coursesListId')!);
+    this.coursesListService.deleteCourseFromCoursesList(this.currentUser!.id!, coursesListId, this.course.id!)
+  }
+
+  deleteCourseFromFavourites() {
+    this.coursesListService.deleteCourseFromFavourites(this.currentUser!.id!, this.course.id!)
   }
 }

@@ -1,4 +1,4 @@
-<button #listButton routerLink="" class="parent noEffect">
+<button #listButton routerLink="/courses/{{ course.id }}" class="parent noEffect">
     <mat-card>
         <section class="left-side">
           <mat-card-title>
@@ -18,12 +18,17 @@
           <mat-card-subtitle>
             {{ course.courseGroup?.name }}
           </mat-card-subtitle>
-          <mat-card-content *ngIf="user?.roles?.includes('ADMIN')">
+          <mat-card-content *ngIf="currentUser?.roles?.includes('ADMIN')">
             {{ course.id }}
           </mat-card-content>
-          <button class="noEffect">
-            <mat-icon>bookmark remove</mat-icon>
-          </button>
+          <ng-container *ngIf="(url.startsWith('/user/course-lists') || url.startsWith('/user/favourite-courses')); else blank">
+            <button mat-mini-fab color="primary" aria-label="Delete icon button with a menu icon" class="delete" (click)="deleteCourseFromList(); $event.stopPropagation();">
+              <mat-icon>bookmark remove</mat-icon>
+            </button>
+          </ng-container>
+          <ng-template #blank>
+
+          </ng-template>
         </section>
       </mat-card>
 </button>

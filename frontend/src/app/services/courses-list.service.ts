@@ -38,6 +38,18 @@ export class CoursesListService {
       );
   }
 
+  public getFavouriteCourses(userId: number) {
+    this.http
+      .get<CoursesListWithCourses>(
+        `${environment.usersApi}/${userId}/favourite-courses`
+      )
+      .subscribe(
+        (resp) => {
+          this.coursesList$.next(resp);
+        }
+      );
+  }
+
   public deleteCourseList(userId: number, coursesListId: number) {
     this.http
       .delete(`${environment.usersApi}/${userId}/lists/${coursesListId}`)
@@ -53,6 +65,15 @@ export class CoursesListService {
       .subscribe(resp => {
           console.log(resp);
           this.getCoursesListById(userId, coursesListId);
+        });
+  }
+
+  public deleteCourseFromFavourites(userId: number, courseId: number) {
+    this.http
+      .delete(`${environment.usersApi}/${userId}/favourite-courses/${courseId}`)
+      .subscribe(resp => {
+          console.log(resp);
+          this.getFavouriteCourses(userId);
         });
   }
 
