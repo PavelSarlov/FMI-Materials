@@ -29,10 +29,14 @@
 
 .drawer a.active {
   filter: brightness(0.7);
-  pointer-events: none;
 }
 
-.drawer a:not([class*='active']):hover {
+.drawer:hover {
+  width: fit-content;
+  min-width: var(--app-sidenav-width);
+}
+
+.drawer a:hover {
   -webkit-filter: invert(0.7);
   filter: invert(0.7);
 }
@@ -47,10 +51,12 @@
 }
 
 .sidenav-card mat-card-content {
-  text-align: center;
+  text-align: left;
   vertical-align: middle;
   font-size: 16pt;
   margin-left: 1rem;
   height: fit-content;
-  line-height: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

@@ -1,22 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Course } from '../../models/course';
-import { User } from '../../models/user';
+import { User, USER_ROLES } from '../../models/user';
 import { CourseService } from '../../services/course.service';
+import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-courses',
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.scss'],
 })
-export class CoursesComponent implements OnInit {
-  user?: User | null = JSON.parse(localStorage.getItem('user')!);
+export class CoursesComponent implements OnInit, OnDestroy {
+  authSubscription?: Subscription;
+  paginationSubscription?: Subscription;
+
+  user?: User | null;
+  USER_ROLES = USER_ROLES;
 
   courses?: Course[];
   totalItems?: number;
   totalPages?: number;
   itemsPerPage?: number;
   currentPage?: number;
-  filter?: string = "name";
+  filter?: string = 'name';
   filterValue?: string;
   sortBy?: string = this.filter;
   desc?: boolean;
@@ -28,17 +35,33 @@ export class CoursesComponent implements OnInit {
   };
   filterKeys = Object.keys(this.filters);
 
-
-  constructor(private courseService: CourseService) {}
+  constructor(
+    private courseService: CourseService,
+    private alertService: AlertService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.courseService.getCourses().subscribe((pagination) => {
-      this.courses = pagination.items;
-      this.itemsPerPage = pagination.itemsPerPage;
-      this.totalPages = pagination.totalPages;
-      this.totalItems = pagination.totalItems;
-      this.currentPage = pagination.currentPage;
-    });
+    this.authSubscription = this.authService.user$.subscribe(
+      (user) => (this.user = user)
+    );
+    this.authService.isAuthenticated();
+
+    this.paginationSubscription = this.courseService.pagination$.subscribe(
+      (pagination) => {
+        this.courses = pagination?.items;
+        this.itemsPerPage = pagination?.itemsPerPage;
+        this.totalPages = pagination?.totalPages;
+        this.totalItems = pagination?.totalItems;
+        this.currentPage = pagination?.currentPage;
+      }
+    );
+    this.courseService.getCourses();
+  }
+
+  ngOnDestroy() {
+    this.authSubscription?.unsubscribe();
+    this.paginationSubscription?.unsubscribe();
   }
 
   handlePageEvent(event: any) {
@@ -59,12 +82,6 @@ export class CoursesComponent implements OnInit {
       this.itemsPerPage,
       this.sortBy,
       this.desc
-    ).subscribe((pagination) => {
-      this.courses = pagination.items;
-      this.itemsPerPage = pagination.itemsPerPage;
-      this.totalPages = pagination.totalPages;
-      this.totalItems = pagination.totalItems;
-      this.currentPage = pagination.currentPage;
-    });
+    );
   }
 }

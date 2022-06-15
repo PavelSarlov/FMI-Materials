@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -16,7 +18,9 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SectionDto {
 
+    @NotNull
     private Long id;
+    @Size(min=4,max=50, message="Section name should be between 4 and 50 characters")
     private String name;
     private List<MaterialDto> materials;
 

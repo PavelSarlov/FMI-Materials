@@ -1,22 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { User } from '../models/user';
-import { tap, Subject, ReplaySubject } from 'rxjs';
+import { tap, Subject, BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  userSubject: Subject<User | null> = new ReplaySubject<User | null>(1);
-  user$ = this.userSubject.asObservable();
+  user$: Subject<User | null> = new BehaviorSubject<User | null>(null);
 
-  constructor(private http: HttpClient, private cookies: CookieService) {}
+  constructor(
+    private http: HttpClient,
+    private cookies: CookieService,
+    private router: Router
+  ) {}
 
   isAuthenticated(): boolean {
     if (localStorage.getItem('user')) {
-      this.userSubject.next(JSON.parse(localStorage.getItem('user')!));
+      this.user$.next(JSON.parse(localStorage.getItem('user')!));
       return true;
     }
     if (this.cookies.get('auth')) {
@@ -27,7 +31,7 @@ export class AuthService {
         next: (resp) => {
           status = true;
         },
-        error: (err) => console.log(err.error),
+        error: (err) => console.log(err.error.error),
       });
 
       return status;
@@ -47,8 +51,8 @@ export class AuthService {
           let auth = window.btoa(`${email}:${password}`);
           localStorage.setItem('auth', auth);
           localStorage.setItem('user', JSON.stringify(resp));
-          this.cookies.set('auth', auth);
-          this.userSubject.next(resp);
+          this.cookies.set('auth', auth, undefined, '/');
+          this.user$.next(resp);
         })
       );
   }
@@ -68,8 +72,9 @@ export class AuthService {
   }
 
   logout() {
-    this.cookies.deleteAll();
     localStorage.clear();
-    this.userSubject.next(null);
+    this.cookies.deleteAll('../');
+    this.user$.next(null);
+    this.router.navigateByUrl('/auth/login');
   }
 }

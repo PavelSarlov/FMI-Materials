@@ -35,7 +35,7 @@ public class FacultyDepartmentController {
     public ResponseEntity<FacultyDepartmentDto> findFacultyDepartmentById(@PathVariable Long id) {
         return new ResponseEntity<FacultyDepartmentDto>(
                 this.facultyDepartmentService.findById(id),
-                HttpStatus.FOUND);
+                HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")

@@ -1,6 +1,6 @@
 <div class="list-wrapper">
   <form class="filter" (submit)="onSubmitSearch()">
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="legacy">
       <mat-label>Search</mat-label>
       <input
         matInput
@@ -10,7 +10,7 @@
         [(ngModel)]="filterValue"
       />
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="legacy">
       <mat-label>Filter</mat-label>
       <mat-select [(ngModel)]="filter" name="filter">
         <mat-option *ngFor="let filter of filterKeys" [value]="filter">{{
@@ -18,7 +18,7 @@
         }}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="legacy">
       <mat-label>Sort by</mat-label>
       <mat-select [(ngModel)]="sortBy" name="sortBy">
         <mat-option *ngFor="let filter of filterKeys" [value]="filter">{{
@@ -27,7 +27,7 @@
       </mat-select>
     </mat-form-field>
     <mat-checkbox [(ngModel)]="desc" name="desc">Descending</mat-checkbox>
-    <button mat-raised-button type="submit">
+    <button mat-raised-button color="primary" type="submit" class="form-btn">
       <mat-icon>search</mat-icon>Search
     </button>
     <mat-paginator
@@ -40,6 +40,10 @@
     >
     </mat-paginator>
   </form>
+  <div *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)" class="add-course-link">
+    <a routerLink="/create-course" mat-fab matTooltip="Add course"><mat-icon>add</mat-icon></a>
+    <span>Create course</span>
+  </div>
   <mat-list>
     <mat-list-item *ngFor="let course of courses">
       <a routerLink="/courses/{{ course.id }}">

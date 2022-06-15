@@ -5,6 +5,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { CoursesComponent } from './components/courses/courses.component';
 import { CourseComponent } from './components/course/course.component';
 import { AuthComponent } from './components/auth/auth.component';
+import { CourseCreateFormComponent } from './components/course-create-form/course-create-form.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'courses' },
@@ -21,6 +22,7 @@ const routes: Routes = [
     component: CoursesComponent,
   },
   { path: 'courses/:courseId', component: CourseComponent },
+  { path: 'create-course', component: CourseCreateFormComponent },
 ];
 
 @NgModule({

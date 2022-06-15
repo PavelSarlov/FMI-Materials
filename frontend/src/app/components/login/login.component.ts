@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-login',
@@ -14,11 +15,15 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
+      this.alertService.warn('You are already logged in!', {
+        keepAfterRouteChange: true,
+      });
       this.router.navigateByUrl('courses');
     }
 
@@ -46,11 +51,24 @@ export class LoginComponent implements OnInit {
           this.loginForm.get('password')?.value
         )
         .subscribe({
-          next: (resp) => this.router.navigateByUrl("courses"),
-          error: (err) => console.log(err),
+          next: (resp) => {
+            this.alertService.success('Login successful!', {
+              keepAfterRouteChange: true,
+            });
+            this.router.navigateByUrl('courses');
+          },
+          error: (resp) => {
+            if (typeof resp.error.error === 'object') {
+              for (let error of resp.error.error) {
+                this.alertService.error(error);
+              }
+            } else {
+              this.alertService.error(resp.error.error);
+            }
+          },
         });
     } else {
-      console.log(this.loginForm.status);
+      this.alertService.error('Invalid data');
     }
   }
 }

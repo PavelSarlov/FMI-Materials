@@ -51,7 +51,7 @@ public class AdminController {
         return new ResponseEntity<byte[]>(
                 material.getData(),
                 headers,
-                HttpStatus.FOUND
+                HttpStatus.OK
         );
     }
 

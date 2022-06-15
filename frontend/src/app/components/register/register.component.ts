@@ -4,9 +4,20 @@ import {
   FormGroup,
   Validators,
   AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AlertService } from '../../services/alert.service';
+
+const checkPasswordsMatch = (
+  control: AbstractControl
+): ValidationErrors | null => {
+  return control.get('password')?.value !==
+    control.get('repeatedPassword')?.value
+    ? { passwordsDontMatch: true }
+    : null;
+};
 
 @Component({
   selector: 'app-register',
@@ -19,11 +30,15 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
+      this.alertService.warn('You are already logged in!', {
+        keepAfterRouteChange: true,
+      });
       this.router.navigateByUrl('courses');
     }
 
@@ -41,17 +56,13 @@ export class RegisterComponent implements OnInit {
         repeatedPassword: [''],
       },
       {
-        validator: this.checkPasswordsMatch,
+        validators: checkPasswordsMatch,
       }
     );
   }
 
   get registerData() {
     return this.registerForm.controls;
-  }
-
-  checkPasswordsMatch(form: AbstractControl) {
-    return form.get('password')?.value === form.get('repeatedPassword')?.value;
   }
 
   onSubmit() {
@@ -64,11 +75,24 @@ export class RegisterComponent implements OnInit {
           this.registerForm.get('repeatedPassword')?.value
         )
         .subscribe({
-          next: (resp) => this.router.navigateByUrl('/auth/login'),
-          error: (err) => console.log(err),
+          next: (resp) => {
+            this.alertService.success('Registration successful!', {
+              keepAfterRouteChange: true,
+            });
+            this.router.navigateByUrl('/auth/login');
+          },
+          error: (resp) => {
+            if (typeof resp.error.error === 'object') {
+              for (let error of resp.error.error) {
+                this.alertService.error(error);
+              }
+            } else {
+              this.alertService.error(resp.error.error);
+            }
+          },
         });
     } else {
-      console.log(this.registerForm.status);
+      this.alertService.error('Invalid data!');
     }
   }
 }

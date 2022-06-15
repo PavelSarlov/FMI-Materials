@@ -14,12 +14,22 @@ mat-list-item {
   margin: 1rem 0;
 }
 
+mat-list-item a,
+mat-list-item mat-card,
+mat-list-item mat-card mat-card-subtitle {
+  transition: 0.3s;
+  background-color: mat-color($accent);
+  color: mat-color($primary);
+}
+
 mat-list-item a {
   width: 100%;
   text-decoration: none;
 }
 
-mat-list-item:hover a, mat-list-item:hover mat-card section * {
+mat-list-item:hover a,
+mat-list-item:hover mat-card,
+mat-list-item:hover mat-card mat-card-subtitle {
   background-color: mat-color($primary);
   color: mat-color($accent);
 }
@@ -61,6 +71,45 @@ mat-form-field {
   margin-right: 1rem;
 }
 
+.add-course-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem;
+  transition: 0.3s;
+}
+
+.add-course-link a {
+  background-color: mat-color($warn);
+  color: #fff;
+}
+
+.add-course-link a:hover {
+  background-color: mat-color($primary);
+}
+
+.add-course-link span {
+  margin-left: 1rem;
+  font-weight: bold;
+  font-size: 16pt;
+}
+
+.form-btn {
+  font-weight: bold;
+}
+
+.form-btn:hover {
+  background-color: mat-color($accent);
+  color: mat-color($primary);
+}
+
+@media screen and (max-width: 900px) {
+  mat-card section {
+    width: 100%;
+    align-items: flex-start;
+  }
+}
+
 @media screen and (max-width: 1600px) {
   .filter {
     flex-direction: column;
@@ -68,12 +117,5 @@ mat-form-field {
 
   mat-form-field {
     width: 100%;
-  }
-}
-
-@media screen and (max-width: 900px) {
-  mat-card section {
-    width: 100%;
-    align-items: flex-start;
   }
 }

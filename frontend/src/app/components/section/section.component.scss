@@ -1,0 +1,125 @@
+@import "../../../assets/scss/global.scss";
+
+.section {
+  margin-top: 1rem;
+}
+
+.section,
+.material-list {
+  width: 100%;
+  overflow: visible;
+}
+
+.material-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: fit-content;
+}
+
+.material-list-item {
+  width: 150px;
+  min-height: 150px;
+  margin: 0.5rem 0.5rem;
+  --material-icon-font-size: 36px;
+}
+
+.material-upload {
+  margin-right: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.material {
+  visibility: hidden;
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.primary-btn {
+  margin-left: 1rem;
+  background-color: mat-color($warn);
+  color: #fff;
+}
+
+.primary-btn:hover {
+  background-color: mat-color($primary);
+  color: mat-color($accent);
+}
+
+.material-upload-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-header {
+  font-weight: bold;
+  background-color: mat-color($accent) !important;
+  color: mat-color($primary) !important;
+  box-shadow: 0 0.1px 2px 1px grey;
+}
+
+.section-header:not(.mat-expanded) {
+  height: fit-content;
+}
+
+.section-title {
+  color: mat-color($primary) !important;
+}
+
+.header-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.slide-sideways {
+  animation-duration: 1s;
+  animation-name: slide-sideways;
+  animation-iteration-count: infinite;
+}
+
+.mat-form-field mat-hint,
+.mat-form-field mat-label {
+  color: mat-color($primary) !important;
+}
+
+.patch-section-form {
+  display: flex;
+  align-items: center;
+}
+
+@keyframes slide-sideways {
+  0% {
+    margin-right: 0;
+  }
+  50% {
+    margin-right: 1rem;
+  }
+  100% {
+    margin-right: 0;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  mat-expansion-panel-header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header-wrapper {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .section-title, .section-title > form {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,17 @@
+:host {
+  position: fixed;
+  top: 0;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 999;
+  width: 40%;
+}
+
+.app-alert {
+  margin-top: 1rem;
+  font-size: 12pt;
+  word-break: break-all;
+  width: 100%;
+}

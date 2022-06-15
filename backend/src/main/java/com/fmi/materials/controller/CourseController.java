@@ -10,6 +10,7 @@ import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.vo.CourseGroup;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping(value = "api/courses")
 public class CourseController {
     @Autowired
@@ -42,7 +44,7 @@ public class CourseController {
     public ResponseEntity<CourseDto> findCourseById(@PathVariable Long id) {
         return new ResponseEntity<CourseDto>(
                 this.courseService.findById(id),
-                HttpStatus.FOUND);
+                HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
@@ -58,6 +60,13 @@ public class CourseController {
     public ResponseEntity<CourseDto> updateCourse(@RequestBody @Valid CourseDtoWithId courseDto) {
         return new ResponseEntity<CourseDto>(
                 this.courseService.updateCourse(courseDto),
+                HttpStatus.OK);
+    }
+
+    @PatchMapping("sections")
+    public ResponseEntity<SectionDto> patchSection(@RequestBody @Valid SectionDto sectionDto) throws IllegalAccessException {
+        return new ResponseEntity<SectionDto>(
+                this.courseService.patchSection(sectionDto),
                 HttpStatus.OK);
     }
 
@@ -80,6 +89,13 @@ public class CourseController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/sections/{sectionId}")
+    public ResponseEntity<SectionDto> getCourseSectionById(@PathVariable Long sectionId) {
+        return new ResponseEntity<SectionDto>(
+                this.courseService.findSectionById(sectionId),
+                HttpStatus.OK);
+    }
+
     @PostMapping("{courseId}/sections")
     public ResponseEntity<SectionDto> createCourseSection(@PathVariable Long courseId,
                                                           @RequestBody SectionDto sectionDto) {
@@ -95,6 +111,20 @@ public class CourseController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("sections/materials/{materialId}")
+    public ResponseEntity<byte[]> getMaterialById(@PathVariable Long materialId) {
+        MaterialDtoWithData material = this.courseService.findMaterialById(materialId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(material.getFileFormat()));
+        headers.add("Content-Disposition", "inline; filename=" + material.getFileName());
+
+        return new ResponseEntity<byte[]>(
+                material.getData(),
+                headers,
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("sections/{sectionId}/materials/{materialName}")
     public ResponseEntity<byte[]> getMaterialByName(@PathVariable Long sectionId, @PathVariable String materialName) {
         MaterialDtoWithData material = this.courseService.findCourseMaterialByName(sectionId, materialName);
@@ -105,7 +135,7 @@ public class CourseController {
         return new ResponseEntity<byte[]>(
                 material.getData(),
                 headers,
-                HttpStatus.FOUND
+                HttpStatus.OK
         );
     }
 

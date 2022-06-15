@@ -31,6 +31,8 @@ public interface CourseService {
 
     ResponseDto deleteSection(Long sectionId);
 
+    SectionDto patchSection(SectionDto sectionDto) throws IllegalAccessException;
+
     MaterialDto createMaterial(String fileFormat, String fileName, byte[] data, Long sectionId) throws IOException;
 
     ResponseDto deleteMaterial(Long materialId);

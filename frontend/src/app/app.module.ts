@@ -15,6 +15,10 @@ import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AuthComponent } from './components/auth/auth.component';
+import { MaterialComponent } from './components/material/material.component';
+import { SectionComponent } from './components/section/section.component';
+import { AlertComponent } from './components/alert/alert.component';
+import { CourseCreateFormComponent } from './components/course-create-form/course-create-form.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +30,10 @@ import { AuthComponent } from './components/auth/auth.component';
     LoginComponent,
     RegisterComponent,
     AuthComponent,
+    MaterialComponent,
+    SectionComponent,
+    AlertComponent,
+    CourseCreateFormComponent,
   ],
   imports: [
     BrowserModule,

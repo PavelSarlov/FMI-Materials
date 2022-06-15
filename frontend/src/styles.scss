@@ -4,8 +4,8 @@
 html,
 body {
   position: relative;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   top: 0;
   left: 0;
   padding: 0;
@@ -27,4 +27,10 @@ body {
 .mat-list-base .mat-list-option .mat-list-item-content,
 .mat-list-item {
   height: fit-content !important;
+}
+
+mat-form-field.description .mat-form-field-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
