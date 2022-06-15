@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CoursesList } from '../models/coursesList';
+import { Course } from '../models/course';
 import { CoursesListWithCourses } from 'src/app/models/coursesListWithCourses';
 
 @Injectable({
@@ -10,6 +11,7 @@ import { CoursesListWithCourses } from 'src/app/models/coursesListWithCourses';
 })
 export class CoursesListService {
   coursesLists$: BehaviorSubject<CoursesList[]> = new BehaviorSubject<CoursesList[]>([]);
+  courses$: BehaviorSubject<Course[]> = new BehaviorSubject<Course[]>([]);
   coursesList$: BehaviorSubject<CoursesListWithCourses> = new BehaviorSubject<CoursesListWithCourses>({});
 
   constructor(private http: HttpClient) { }
@@ -40,12 +42,12 @@ export class CoursesListService {
 
   public getFavouriteCourses(userId: number) {
     this.http
-      .get<CoursesListWithCourses>(
+      .get<Course[]>(
         `${environment.usersApi}/${userId}/favourite-courses`
       )
       .subscribe(
         (resp) => {
-          this.coursesList$.next(resp);
+          this.courses$.next(resp);
         }
       );
   }

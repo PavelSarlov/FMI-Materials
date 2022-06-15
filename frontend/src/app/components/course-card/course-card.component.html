@@ -21,14 +21,16 @@
           <mat-card-content *ngIf="currentUser?.roles?.includes('ADMIN')">
             {{ course.id }}
           </mat-card-content>
-          <ng-container *ngIf="(url.startsWith('/user/course-lists') || url.startsWith('/user/favourite-courses')); else blank">
+          <ng-container *ngIf="url.startsWith('/user/course-lists')">
             <button mat-mini-fab color="primary" aria-label="Delete icon button with a menu icon" class="delete" (click)="deleteCourseFromList(); $event.stopPropagation();">
               <mat-icon>bookmark remove</mat-icon>
             </button>
           </ng-container>
-          <ng-template #blank>
-
-          </ng-template>
+          <ng-container *ngIf="url.startsWith('/user/favourite-courses')">
+            <button mat-mini-fab color="primary" aria-label="Delete icon button with a menu icon" class="delete" (click)="deleteCourseFromFavourites(); $event.stopPropagation();">
+              <mat-icon>bookmark remove</mat-icon>
+            </button>
+          </ng-container>
         </section>
       </mat-card>
 </button>

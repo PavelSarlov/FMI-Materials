@@ -24,6 +24,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { CourseListCardComponent } from './components/course-list-card/course-list-card.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
 import { CourseCardComponent } from './components/course-card/course-card.component';
+import { FavouriteCoursesComponent } from './components/favourite-courses/favourite-courses.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { CourseCardComponent } from './components/course-card/course-card.compon
     ProfileComponent,
     CourseListCardComponent,
     CourseListComponent,
-    CourseCardComponent
+    CourseCardComponent,
+    FavouriteCoursesComponent
   ],
   imports: [
     BrowserModule,
