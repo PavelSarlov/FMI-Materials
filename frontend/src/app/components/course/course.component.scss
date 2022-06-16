@@ -38,7 +38,8 @@ mat-list {
   overflow-y: auto;
 }
 
-.section-list, .section-list .mat-accordion {
+.section-list,
+.section-list .mat-accordion {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -94,6 +95,19 @@ mat-card.course-card section.form-btns {
   margin-right: 1rem;
 }
 
+.material-search {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-self: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.material-search .mat-form-field {
+  margin: 0 1rem;
+}
+
 @media screen and (max-width: 900px) {
   mat-card.course-card section.course-details {
     flex-direction: column;
@@ -101,5 +115,10 @@ mat-card.course-card section.form-btns {
 
   mat-card.course-card section.course-details section {
     width: 100%;
+  }
+
+  .material-search {
+    flex-direction: column;
+    align-items: center;
   }
 }

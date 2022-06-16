@@ -7,6 +7,7 @@ import { Section } from '../../models/section';
 import { COURSE_GROUPS } from '../../models/course-group';
 import { FacultyDepartment } from '../../models/faculty-department';
 import { User, USER_ROLES } from '../../models/user';
+import { FILE_FORMATS } from '../../vo/file-formats';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
@@ -26,12 +27,18 @@ export class CourseComponent implements OnInit, OnDestroy {
   USER_ROLES = USER_ROLES;
 
   course?: Course;
+  sectionBackup?: Section[] = [];
 
   facultyDepartments: FacultyDepartment[] = [];
 
   COURSE_GROUPS = COURSE_GROUPS;
 
   createSectionName?: string;
+
+  FILE_FORMATS = FILE_FORMATS;
+  materialSearchName: string = '';
+  materialSearchFileFormat: string = '';
+  materialSearchSectionName: string = '';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -63,7 +70,7 @@ export class CourseComponent implements OnInit, OnDestroy {
 
     this.sectionEventSubscription =
       this.crossEventService.sectionEvent.subscribe(() =>
-        this.fetchCourse(this.course?.id!)
+        this.fetchCourseSections(this.course?.id!)
       );
   }
 
@@ -76,10 +83,23 @@ export class CourseComponent implements OnInit, OnDestroy {
     this.courseService.getCourseById(courseId).subscribe({
       next: (course) => {
         this.course = course;
+        this.sectionBackup = course.sectionDtos;
       },
       error: (resp) => {
         this.alertService.error(resp.error.error);
         this.router.navigateByUrl('/courses');
+      },
+    });
+  }
+
+  fetchCourseSections(courseId: number) {
+    this.courseService.getCourseSections(courseId).subscribe({
+      next: (resp) => {
+        this.course!.sectionDtos = resp;
+        this.sectionBackup = resp;
+      },
+      error: (resp) => {
+        this.alertService.error(resp.error.error);
       },
     });
   }
@@ -113,15 +133,60 @@ export class CourseComponent implements OnInit, OnDestroy {
   }
 
   createSection(form: any) {
-    let section = new Section();
-    section.name = this.createSectionName;
+    if (form.valid) {
+      let section = new Section();
+      section.name = this.createSectionName;
 
-    this.courseService.createSection(section,  this.course!.id!).subscribe({
-      next: (resp) => {
-        this.alertService.success('Section created successfully!');
-        this.fetchCourse(this.course!.id!);
-      },
-      error: (resp) => this.alertService.error(resp.error.error),
+      this.courseService.createSection(section, this.course!.id!).subscribe({
+        next: (resp) => {
+          this.alertService.success('Section created successfully!');
+          this.fetchCourse(this.course!.id!);
+        },
+        error: (resp) => this.alertService.error(resp.error.error),
+      });
+    }
+  }
+
+  onMaterialSearch() {
+    console.log(FILE_FORMATS[this.materialSearchFileFormat]);
+    this.course!.sectionDtos = JSON.parse(JSON.stringify(this.sectionBackup));
+
+    this.course!.sectionDtos = this.course!.sectionDtos!.filter((s) => {
+      if (
+        !this.materialSearchSectionName ||
+        s.name?.match(new RegExp(this.materialSearchSectionName, 'gi'))
+      ) {
+        s.materialDtos = s.materialDtos?.filter((m) => {
+          if (
+            (!this.materialSearchFileFormat ||
+              m.fileFormat?.match(
+                new RegExp(this.materialSearchFileFormat, 'gi')
+              )) &&
+            (!this.materialSearchName ||
+              m.fileName?.match(new RegExp(this.materialSearchName, 'gi')))
+          ) {
+            return true;
+          }
+          return false;
+        });
+
+        s.materialRequestDtos = s.materialRequestDtos?.filter((m) => {
+          if (
+            (!this.materialSearchFileFormat ||
+              m.fileFormat?.match(
+                new RegExp(this.materialSearchFileFormat, 'gi')
+              )) &&
+            (!this.materialSearchName ||
+              m.fileName?.match(new RegExp(this.materialSearchName, 'gi')))
+          ) {
+            return true;
+          }
+          return false;
+        });
+
+        return true;
+      }
+      return false;
     });
   }
 }

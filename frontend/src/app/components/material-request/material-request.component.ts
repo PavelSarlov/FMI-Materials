@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { CrossEventService } from '../../services/cross-event.service';
 import { AdminService } from '../../services/admin.service';
+import { FILE_FORMATS } from '../../vo/file-formats';
 
 @Component({
   selector: 'app-material-request',
@@ -18,12 +19,10 @@ export class MaterialRequestComponent implements OnInit, OnDestroy {
   user?: User | null;
   USER_ROLES = USER_ROLES;
 
+  FILE_FORMATS = FILE_FORMATS;
+
   @Input()
   materialRequest?: MaterialRequest;
-
-  @Input()
-  fileFormats?: any;
-
 
   constructor(
     private authService: AuthService,
@@ -43,35 +42,41 @@ export class MaterialRequestComponent implements OnInit, OnDestroy {
   }
 
   openMaterial() {
-    this.adminService.getMaterialFromMaterialRequest(this.user!.id!, this.materialRequest!.id!).subscribe({
-      next: (resp: any) => {
-        window.open(URL.createObjectURL(resp));
-      },
-      error: (resp: any) => this.alertService.error(resp.error.error),
-    });
+    this.adminService
+      .getMaterialFromMaterialRequest(this.user!.id!, this.materialRequest!.id!)
+      .subscribe({
+        next: (resp: any) => {
+          window.open(URL.createObjectURL(resp));
+        },
+        error: (resp: any) => this.alertService.error(resp.error.error),
+      });
   }
 
   downloadMaterial() {
-    this.adminService.getMaterialFromMaterialRequest(this.user!.id!, this.materialRequest!.id!).subscribe({
-      next: (resp: any) => {
-        const element = document.createElement('a');
-        element.download = this.materialRequest!.fileName!;
-        element.href = URL.createObjectURL(resp);
-        element.click();
-      },
-      error: (resp: any) => this.alertService.error(resp.error.error),
-    });
+    this.adminService
+      .getMaterialFromMaterialRequest(this.user!.id!, this.materialRequest!.id!)
+      .subscribe({
+        next: (resp: any) => {
+          const element = document.createElement('a');
+          element.download = this.materialRequest!.fileName!;
+          element.href = URL.createObjectURL(resp);
+          element.click();
+        },
+        error: (resp: any) => this.alertService.error(resp.error.error),
+      });
   }
 
   processMaterialRequest(status: boolean) {
-    this.adminService.processMaterialRequest(this.user!.id!, this.materialRequest!.id!, status).subscribe({
-      next: (resp) => {
-        this.alertService.success('Material processed successfully!');
-        this.crossEventService.materialEvent.emit();
-      },
-      error: (resp) => {
-        this.alertService.success(resp.error.error);
-      },
-    });
+    this.adminService
+      .processMaterialRequest(this.user!.id!, this.materialRequest!.id!, status)
+      .subscribe({
+        next: (resp) => {
+          this.alertService.success('Material processed successfully!');
+          this.crossEventService.materialEvent.emit();
+        },
+        error: (resp) => {
+          this.alertService.success(resp.error.error);
+        },
+      });
   }
 }

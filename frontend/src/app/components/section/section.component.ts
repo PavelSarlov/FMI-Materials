@@ -15,6 +15,7 @@ import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
 import { CrossEventService } from '../../services/cross-event.service';
 import { UserService } from '../../services/user.service';
+import { FILE_FORMATS } from '../../vo/file-formats';
 
 @Component({
   selector: 'app-section',
@@ -28,28 +29,13 @@ export class SectionComponent implements OnInit, OnDestroy {
   user?: User | null;
   USER_ROLES = USER_ROLES;
 
+  FILE_FORMATS = FILE_FORMATS;
+
   @Input()
   section?: Section;
 
   @ViewChild('material', { static: false })
   material!: ElementRef;
-
-  @Input()
-  sectionOnDelete?: EventEmitter<any>;
-
-  fileFormats: any = {
-    'text/plain': 'text_snippet',
-    'text/html': 'html',
-    'text/css': 'css',
-    'application/javascript': 'javascript',
-    'application/x-httpd-php': 'php',
-    'image/png': 'image',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-      'description',
-    'application/pdf': 'picture_as_pdf',
-    'application/octet-stream': 'insert_drive_file',
-    default: 'text_snippet',
-  };
 
   fileToUpload?: File;
 
@@ -139,7 +125,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     this.courseService.deleteSectionById(this.section!.id!).subscribe({
       next: (resp) => {
         this.alertService.success('Section deleted successfully!');
-        this.sectionOnDelete?.emit();
+        this.crossEventService.sectionEvent.emit();
       },
       error: (resp) => this.alertService.error(resp.error.error),
     });

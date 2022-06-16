@@ -32,12 +32,11 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
 
     @Autowired
     public MaterialRequestServiceImpl(MaterialRequestRepository materialRequestRepository,
-                                      MaterialRequestDtoMapper materialRequestDtoMapper,
-                                      MaterialDtoMapper materialDtoMapper,
-                                      SectionRepository sectionRepository,
-                                      UserRepository userRepository,
-                                      CourseService courseService
-    ) {
+            MaterialRequestDtoMapper materialRequestDtoMapper,
+            MaterialDtoMapper materialDtoMapper,
+            SectionRepository sectionRepository,
+            UserRepository userRepository,
+            CourseService courseService) {
         this.materialRequestRepository = materialRequestRepository;
         this.materialRequestDtoMapper = materialRequestDtoMapper;
         this.materialDtoMapper = materialDtoMapper;
@@ -51,7 +50,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
         CustomUtils.authenticateCurrentUser(userId);
 
         return this.materialRequestRepository.findAllByUserId(userId).stream()
-                .map(this.materialRequestDtoMapper::convertToDto)
+                .map(r -> this.materialRequestDtoMapper.convertToDtoWithCourseId(r, r.getSection().getCourse().getId()))
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +59,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
         CustomUtils.authenticateCurrentUser(adminId);
 
         return this.materialRequestRepository.findAllByAdminId(adminId).stream()
-                .map(this.materialRequestDtoMapper::convertToDto)
+                .map(r -> this.materialRequestDtoMapper.convertToDtoWithCourseId(r, r.getSection().getCourse().getId()))
                 .collect(Collectors.toList());
     }
 
@@ -68,8 +67,10 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     public MaterialRequestDto getMaterialRequestById(Long userId, Long materialRequestId) {
         CustomUtils.authenticateCurrentUser(userId);
 
-        return this.materialRequestDtoMapper.convertToDto(this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
-                        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId))));
+        return this.materialRequestDtoMapper
+                .convertToDto(this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId))));
     }
 
     @Override
@@ -77,9 +78,12 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
         CustomUtils.authenticateCurrentUser(userId);
 
         MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
-        Material material = new Material(materialRequest.getFileFormat(), materialRequest.getFileName(), materialRequest.getData(), null);
+        Material material = new Material(materialRequest.getFileFormat(), materialRequest.getFileName(),
+                materialRequest.getData(), null);
+
         return this.materialDtoMapper.convertToDtoWithData(material);
     }
 
@@ -88,10 +92,12 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
         CustomUtils.authenticateCurrentUser(userId);
 
         MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
         if (status) {
-            this.courseService.createMaterial(this.materialRequestDtoMapper.convertToMaterialDto(materialRequest), materialRequest.getSection().getId());
+            this.courseService.createMaterial(this.materialRequestDtoMapper.convertToMaterialDto(materialRequest),
+                    materialRequest.getSection().getId());
         }
 
         this.materialRequestRepository.deleteById(materialRequestId);

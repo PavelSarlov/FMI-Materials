@@ -10,6 +10,7 @@ import { ListOfCoursesComponent } from './components/list-of-courses/list-of-cou
 import { CourseListComponent } from './components/course-list/course-list.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { FavouriteCoursesComponent } from './components/favourite-courses/favourite-courses.component';
+import { MaterialRequestsListComponent } from './components/material-requests-list/material-requests-list.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'courses' },
@@ -29,20 +30,24 @@ const routes: Routes = [
   { path: 'create-course', component: CourseCreateFormComponent },
   {
     path: 'user/course-lists',
-    component: ListOfCoursesComponent
+    component: ListOfCoursesComponent,
   },
   {
     path: 'user/course-lists/:coursesListId',
-    component: CourseListComponent
+    component: CourseListComponent,
   },
   {
     path: 'user/favourite-courses',
-    component: FavouriteCoursesComponent
+    component: FavouriteCoursesComponent,
   },
   {
     path: 'user',
-    component: ProfileComponent
-  }
+    component: ProfileComponent,
+  },
+  {
+    path: 'material-requests',
+    component: MaterialRequestsListComponent,
+  },
 ];
 
 @NgModule({

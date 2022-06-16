@@ -1,6 +1,6 @@
 <button [matMenuTriggerFor]="menu" class="material-btn" type="button">
   <mat-icon class="icon" [inline]="true">{{
-    fileFormats[material?.fileFormat ?? "default"] ?? fileFormats["default"]
+    FILE_FORMATS[material?.fileFormat ?? "default"].icon
   }}</mat-icon>
   <span class="material-name">{{ material?.fileName ?? "unknown" }}</span>
 </button>
@@ -20,7 +20,7 @@
 </mat-menu>
 <div class="hover-tooltip">
   <mat-icon class="icon" [inline]="true">{{
-    fileFormats[material?.fileFormat ?? "default"] ?? fileFormats["default"]
+    FILE_FORMATS[material?.fileFormat ?? "default"].icon
   }}</mat-icon>
   <span class="material-name">{{ material?.fileName ?? "unknown" }}</span>
 </div>

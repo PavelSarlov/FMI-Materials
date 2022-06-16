@@ -1,6 +1,8 @@
 @import "../../../assets/scss/global.scss";
 
 :host {
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: 100%;
   height: 100%;
@@ -11,7 +13,10 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: var(--material-icon-font-size);
+  font-size: 3em;
+  height: fit-content;
+  width: fit-content;
+  flex-grow: 1;
 }
 
 .name-field, .name-field {
@@ -39,7 +44,7 @@
 
 .hover-tooltip {
   position: absolute;
-  bottom: 100%;
+  top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,10 +69,8 @@
 
 .material-btn:hover ~ .hover-tooltip {
   z-index: 999;
-  left: 0;
-  transform: scale(2) translateY(-50%);
+  transform: scale(2);
   opacity: 1;
   transition: 0.3s;
-  font-size: 6pt;
+  font-size: 0.7em;
 }
-

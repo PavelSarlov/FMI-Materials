@@ -71,7 +71,7 @@ public class MaterialRequestDtoMapper {
         );
     }
 
-    public MaterialRequestDtoWithCourseId convertToDtoCourseId(MaterialRequest material, Long courseId) {
+    public MaterialRequestDtoWithCourseId convertToDtoWithCourseId(MaterialRequest material, Long courseId) {
         if (material == null) {
             return null;
         }

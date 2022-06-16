@@ -20,7 +20,7 @@
                 required
                 #name="ngModel"
                 [(ngModel)]="section!.name"
-                minlength="4"
+                minlength="1"
                 maxlength="50"
                 (click)="$event.stopPropagation()"
                 (keyup)="$event.stopPropagation()"
@@ -80,8 +80,7 @@
             *ngIf="fileToUpload?.name; else elseBlock"
           >
             <mat-icon>{{
-              fileFormats[fileToUpload?.type ?? "default"] ??
-                fileFormats["default"]
+              FILE_FORMATS[fileToUpload?.type ?? "default"].icon
             }}</mat-icon>
             <span>{{ fileToUpload?.name ?? "unknown" }}</span>
             <button
@@ -120,7 +119,6 @@
       <app-material
         [material]="material"
         [sectionId]="section?.id"
-        [fileFormats]="fileFormats"
       ></app-material>
     </div>
     <ng-container *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)">
@@ -130,7 +128,6 @@
       >
         <app-material-request
           [materialRequest]="materialRequest"
-          [fileFormats]="fileFormats"
         ></app-material-request>
       </div>
     </ng-container>

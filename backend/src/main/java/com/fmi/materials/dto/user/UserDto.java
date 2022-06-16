@@ -19,8 +19,9 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
     @NotNull
-    @SizeByteString(min=4, max = 50, message = "User name should be between 4 and 50 bytes.")
+    @SizeByteString(min = 4, max = 50, message = "User name should be between 4 and 50 bytes.")
     private String name;
+
     @Pattern.List({
             @Pattern(regexp = "(?=.*[0-9]).+", message = "Password must contain at least one digit."),
             @Pattern(regexp = "(?=.*[a-z]).+", message = "Password must contain at least one lowercase letter."),
@@ -28,9 +29,11 @@ public class UserDto {
             @Pattern(regexp = "^[a-zA-Z\\d]{8,}$", message = "Password should be at least 8 characters long.")
     })
     private String password;
+
     @Email(message = "The email is not a valid one.")
     @SizeByteString(max = 50, message = "Email should be maximum 50 bytes.")
     private String email;
+
     private List<String> roles;
 
     public UserDto(String name, String password, String email, List<String> roles) {

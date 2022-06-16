@@ -1,0 +1,30 @@
+@import "../../../assets/scss/global.scss";
+
+:host {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
+
+.material-requests-list {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.material-requests-list-item {
+  display: flex;
+  position: relative;
+  max-width: 150px;
+  max-height: 150px;
+  margin: 0.5rem 0.5rem;
+}
+
+.course-redirect {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+}
