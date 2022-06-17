@@ -1,12 +1,54 @@
-<div class="profile-wrapper">
-    <mat-card class="example-card">
-        <mat-card-title-group>
-          <mat-card-title>Shiba Inu</mat-card-title>
-          <mat-card-subtitle>Extra large</mat-card-subtitle>
-          <img mat-card-xl-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" >
-        </mat-card-title-group>
-        <mat-card-content>
-          
-        </mat-card-content>
-    </mat-card>
-</div>
+<mat-card class="wrapper">
+  <p class="title">Profile</p>
+  <div class="cards">
+    <div class="leftSide">
+      <mat-card class="userInfo">
+        <p class="sub-title">User data</p>
+
+          <div>
+            <mat-card-title>Name</mat-card-title>
+            <mat-card-subtitle>{{currentUser?.name}}</mat-card-subtitle>
+          </div>
+          <div>
+            <mat-card-title>Email</mat-card-title>
+            <mat-card-subtitle>{{currentUser?.email}}</mat-card-subtitle>
+          </div>
+          <div>
+            <mat-card-title>Role</mat-card-title>
+            <mat-card-subtitle>{{currentUser?.roles}}</mat-card-subtitle>
+          </div>     
+
+      </mat-card>
+
+      <mat-card class="others">
+        <p class="sub-title">Others</p>
+
+        <div>
+          <a
+          routerLink="/user/favourite-courses"
+          routerLinkActive="active"
+          >
+            Favourite courses
+          </a>
+        </div>
+
+      </mat-card>
+    </div>
+  
+    <div class="rightSide">
+      <mat-card class="coursesLists">
+        <p class="sub-title">Lists of courses</p>
+
+        <div class="coursesLists" *ngFor="let list of coursesLists">
+          <a
+          routerLink="/user/course-lists/{{list.id}}"
+          routerLinkActive="active"
+          >
+            {{list.listName}}
+          </a>
+        </div>
+
+      </mat-card>
+    </div>
+  </div>
+</mat-card>
