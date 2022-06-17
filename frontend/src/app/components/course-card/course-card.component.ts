@@ -2,6 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { User } from '../../models/user';
 import { Course } from '../../models/course';
 import { CoursesListService } from '../../services/courses-list.service';
+import { FavouriteCoursesService } from '../../services/favourite-courses.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router'
@@ -19,6 +20,7 @@ export class CourseCardComponent implements OnInit, OnDestroy {
   url: string = window.location.pathname;
 
   constructor(private coursesListService: CoursesListService, 
+    private favouriteCoursesService: FavouriteCoursesService,
     private authService: AuthService,
     private activatedRoute: ActivatedRoute) { }
 
@@ -40,6 +42,6 @@ export class CourseCardComponent implements OnInit, OnDestroy {
   }
 
   deleteCourseFromFavourites() {
-    this.coursesListService.deleteCourseFromFavourites(this.currentUser!.id!, this.course.id!)
+    this.favouriteCoursesService.deleteCourseFromFavourites(this.currentUser!.id!, this.course.id!)
   }
 }
