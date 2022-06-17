@@ -41,10 +41,11 @@ export class AdminService {
   getMaterialFromMaterialRequest(
     adminId: number,
     materialRequestId: number
-  ): Observable<Material> {
+  ): any {
     return this.http
-      .get<Material>(
-        `${environment.adminsApi}/${adminId}/material-requests/${materialRequestId}/material`
+      .get(
+        `${environment.adminsApi}/${adminId}/material-requests/${materialRequestId}/material`,
+        { responseType: 'blob' }
       )
       .pipe(
         tap({

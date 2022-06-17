@@ -5,8 +5,9 @@ import { Injectable, EventEmitter } from '@angular/core';
 })
 export class CrossEventService {
   toggleSidenav: EventEmitter<boolean> = new EventEmitter<boolean>();
-  sectionOnDelete: EventEmitter<any> = new EventEmitter<any>();
-  materialOnDelete: EventEmitter<any> = new EventEmitter<any>();
+  sectionEvent: EventEmitter<any> = new EventEmitter<any>();
+  materialEvent: EventEmitter<any> = new EventEmitter<any>();
+  materialSearchEvent: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() {}
 }

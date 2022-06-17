@@ -1,0 +1,44 @@
+<button [matMenuTriggerFor]="materialMenu" class="material-btn" type="button">
+  <span class="name-field">{{
+    materialRequest?.userDto?.name ?? "unknown"
+  }}</span>
+  <mat-icon class="icon" [inline]="true">{{
+    FILE_FORMATS[materialRequest?.fileFormat ?? "default"].icon
+  }}</mat-icon>
+  <span class="name-field">{{ materialRequest?.fileName ?? "unknown" }}</span>
+</button>
+<mat-menu #materialMenu="matMenu">
+  <button mat-menu-item (click)="openMaterial()">
+    <mat-icon>open_in_new</mat-icon>
+    <span>Open</span>
+  </button>
+  <button mat-menu-item (click)="downloadMaterial()">
+    <mat-icon>download</mat-icon>
+    <span>Download</span>
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="processMenu">
+    <mat-icon>build</mat-icon>
+    <span>Process</span>
+  </button>
+</mat-menu>
+<mat-menu #processMenu="matMenu">
+  <button mat-menu-item (click)="processMaterialRequest(true)">
+    <mat-icon>check_circle_outline</mat-icon>
+    <span>Approve</span>
+  </button>
+  <button mat-menu-item (click)="processMaterialRequest(false)">
+    <mat-icon>do_not_disturb</mat-icon>
+    <span>Deny</span>
+  </button>
+</mat-menu>
+<div class="hover-tooltip">
+  <span class="requestor-name">{{
+    materialRequest?.userDto?.name ?? "unknown"
+  }}</span>
+  <mat-icon class="icon" [inline]="true">{{
+    FILE_FORMATS[materialRequest?.fileFormat ?? "default"].icon
+  }}</mat-icon>
+  <span class="material-name">{{
+    materialRequest?.fileName ?? "unknown"
+  }}</span>
+</div>

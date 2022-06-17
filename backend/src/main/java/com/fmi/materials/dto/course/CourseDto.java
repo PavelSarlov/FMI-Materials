@@ -3,6 +3,7 @@ package com.fmi.materials.dto.course;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
 import com.fmi.materials.dto.section.SectionDto;
+import com.fmi.materials.validator.SizeByteString;
 import com.fmi.materials.vo.CourseGroup;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -10,7 +11,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -21,13 +21,13 @@ import java.util.List;
 public class CourseDto {
 
     @NotNull
-    @Size(min=4, max = 50, message = "Course name should be between 4 and 50 characters.")
+    @SizeByteString(min=4, max = 50, message = "Course name should be between 4 and 50 bytes.")
     private String name;
     @NotNull
-    @Size(max = 255, message = "Course description should be maximum 255 characters.")
+    @SizeByteString(max = 255, message = "Course description should be maximum 255 bytes.")
     private String description;
     @NotNull
-    @Size(min=4, max = 50, message = "Creator name should be between 4 and 50 characters.")
+    @SizeByteString(min=4, max = 50, message = "Creator name should be between 4 and 50 bytes.")
     private String createdBy;
     @NotNull
     private FacultyDepartmentDto facultyDepartmentDto;

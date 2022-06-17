@@ -2,13 +2,13 @@ package com.fmi.materials.dto.section;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fmi.materials.dto.material.MaterialDto;
+import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
+import com.fmi.materials.validator.SizeByteString;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -18,15 +18,16 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SectionDto {
 
-    @NotNull
     private Long id;
-    @Size(min=4,max=50, message="Section name should be between 4 and 50 characters")
+    @SizeByteString(min=4,max=50, message="Section name should be between 4 and 50 characters")
     private String name;
-    private List<MaterialDto> materials;
+    private List<MaterialDto> materialDtos;
+    private List<MaterialRequestDto> materialRequestDtos;
 
-    public SectionDto(Long id, String name, List<MaterialDto> materialDtos) {
+    public SectionDto(Long id, String name, List<MaterialDto> materialDtos, List<MaterialRequestDto> materialRequestDtos) {
         this.id = id;
         this.name = name;
-        this.materials = materialDtos;
+        this.materialDtos = materialDtos;
+        this.materialRequestDtos = materialRequestDtos;
     }
 }

@@ -35,15 +35,16 @@ public class Section {
 
     public Section() {}
 
-    public Section(String name, Course course, List<Material> materials) {
-        this(null, name, course, materials);
+    public Section(String name, Course course, List<Material> materials, List<MaterialRequest> materialRequests) {
+        this(null, name, course, materials, materialRequests);
     }
 
-    public Section(Long id, String name, Course course, List<Material> materials) {
+    public Section(Long id, String name, Course course, List<Material> materials, List<MaterialRequest> materialRequests) {
         this.id = id;
         this.name = name;
         this.course = course;
         this.materials =  (materials != null ? materials.stream().collect(Collectors.toSet()) : null);
+        this.materialRequests =  (materialRequests != null ? materialRequests.stream().collect(Collectors.toSet()) : null);
     }
 
     public void addMaterialRequest(MaterialRequest materialRequest) {

@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { CrossEventService } from '../../services/cross-event.service';
 import { Subscription } from 'rxjs';
+import { FILE_FORMATS } from '../../vo/file-formats';
 
 @Component({
   selector: 'app-material',
@@ -18,14 +19,13 @@ export class MaterialComponent implements OnInit, OnDestroy {
   user?: User | null;
   USER_ROLES = USER_ROLES;
 
+  FILE_FORMATS = FILE_FORMATS;
+
   @Input()
   material?: Material;
 
   @Input()
   sectionId?: number;
-
-  @Input()
-  fileFormats?: any;
 
   constructor(
     private courseService: CourseService,
@@ -49,11 +49,11 @@ export class MaterialComponent implements OnInit, OnDestroy {
       next: (resp: any) => {
         window.open(URL.createObjectURL(resp));
       },
-      error: (resp: any) => console.log(resp),
+      error: (resp: any) => this.alertService.error(resp.error.error),
     });
   }
 
-  downloadMaterial(event: any) {
+  downloadMaterial() {
     this.courseService.getMaterialById(this.material!.id!).subscribe({
       next: (resp: any) => {
         const element = document.createElement('a');
@@ -61,7 +61,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
         element.href = URL.createObjectURL(resp);
         element.click();
       },
-      error: (resp: any) => console.log(resp),
+      error: (resp: any) => this.alertService.error(resp.error.error),
     });
   }
 
@@ -69,7 +69,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
     this.courseService.deleteMaterialById(this.material!.id!).subscribe({
       next: (resp) => {
         this.alertService.success('Material deleted successfully');
-        this.crossEventService.materialOnDelete.emit();
+        this.crossEventService.materialEvent.emit();
       },
       error: (resp) => {
         this.alertService.success(resp.error.error);

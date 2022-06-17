@@ -8,7 +8,7 @@
   height: 100%;
 }
 
-mat-card {
+mat-card.course-card {
   background-color: inherit;
   display: flex;
   flex-direction: row;
@@ -17,13 +17,13 @@ mat-card {
   transition: 0.5s;
 }
 
-mat-card section {
+mat-card.course-card section {
   display: flex;
   flex-direction: column;
   width: 40%;
 }
 
-mat-card section * {
+mat-card.course-card section * {
   word-break: break-word;
 }
 
@@ -38,7 +38,11 @@ mat-list {
   overflow-y: auto;
 }
 
-.section-list {
+.section-list,
+.section-list .mat-accordion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 2rem;
   width: 100%;
 }
@@ -53,24 +57,23 @@ mat-list {
   flex-direction: column;
 }
 
-mat-card section.course-details {
+mat-card.course-card section.course-details {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-mat-card section.form-btns {
+mat-card.course-card section.form-btns {
   width: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+  flex-direction: row;
+  justify-content: flex-end;
   align-items: center;
 }
 
 .form-btn {
-  width: 30%;
-  margin: 1rem 0;
+  margin: 1rem;
   font-weight: bold;
 }
 
@@ -79,12 +82,43 @@ mat-card section.form-btns {
   color: mat-color($primary);
 }
 
+.create-section-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: fit-content;
+  justify-self: center;
+}
+
+.create-section-form button {
+  margin-right: 1rem;
+}
+
+.material-search {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-self: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.material-search .mat-form-field {
+  margin: 0 1rem;
+}
+
 @media screen and (max-width: 900px) {
-  mat-card section.course-details {
+  mat-card.course-card section.course-details {
     flex-direction: column;
   }
 
-  mat-card section.course-details section {
+  mat-card.course-card section.course-details section {
     width: 100%;
+  }
+
+  .material-search {
+    flex-direction: column;
+    align-items: center;
   }
 }

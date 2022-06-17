@@ -15,4 +15,8 @@ public interface MaterialRepository extends CrudRepository<Material, Long> {
     @Query(value = "SELECT * FROM materials\n" +
             "WHERE file_name = ?1 AND section_id = ?2", nativeQuery = true)
     Optional<Material> findByName(String name, Long sectionId);
+
+    @Query(value = "SELECT * FROM materials\n" +
+            "WHERE section_id = ?1 AND file_name = ?2", nativeQuery = true)
+    Optional<Material> findBySectionAndFileName(Long sectionId, String fileName);
 }

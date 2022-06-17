@@ -1,7 +1,9 @@
 import { Material } from './material';
+import { MaterialRequest } from './material-request';
 
 export class Section {
   id?: number;
   name?: string;
-  materials?: Material[];
+  materialDtos?: Material[];
+  materialRequestDtos?: MaterialRequest[];
 }

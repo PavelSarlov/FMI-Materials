@@ -1,5 +1,9 @@
 @import "../../../assets/scss/global.scss";
 
+:host {
+  width: 100%;
+}
+
 .section {
   margin-top: 1rem;
 }
@@ -21,7 +25,6 @@
   width: 150px;
   min-height: 150px;
   margin: 0.5rem 0.5rem;
-  --material-icon-font-size: 36px;
 }
 
 .material-upload {
@@ -57,14 +60,18 @@
   align-items: center;
 }
 
+.material-upload-details span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
 .section-header {
   font-weight: bold;
   background-color: mat-color($accent) !important;
   color: mat-color($primary) !important;
   box-shadow: 0 0.1px 2px 1px grey;
-}
-
-.section-header:not(.mat-expanded) {
   height: fit-content;
 }
 

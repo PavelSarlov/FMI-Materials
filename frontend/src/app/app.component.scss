@@ -1,17 +1,17 @@
 :host {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1;
   height: 100%;
   --app-sidenav-width: 240px;
   --app-header-height: 60px;
 }
 
 main {
+  display: flex;
+  flex: 1;
   height: 100%;
   margin-left: var(--app-sidenav-width);
   background-color: #fff;
   transition: 0.3s;
-  display: flex;
-  flex-grow: 1;
 }

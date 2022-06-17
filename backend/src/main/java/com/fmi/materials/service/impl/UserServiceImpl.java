@@ -12,6 +12,7 @@ import com.fmi.materials.mapper.UserDtoMapper;
 import com.fmi.materials.model.MaterialRequest;
 import com.fmi.materials.model.Section;
 import com.fmi.materials.model.User;
+import com.fmi.materials.repository.MaterialRepository;
 import com.fmi.materials.repository.MaterialRequestRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.repository.UserRepository;
@@ -21,7 +22,6 @@ import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     private SectionRepository sectionRepository;
     private MaterialRequestRepository materialRequestRepository;
+    private MaterialRepository materialRepository;
     private MaterialRequestDtoMapper materialRequestDtoMapper;
 
     @Autowired
@@ -40,12 +41,14 @@ public class UserServiceImpl implements UserService {
                            PasswordEncoder passwordEncoder,
                            SectionRepository sectionRepository,
                            MaterialRequestRepository materialRequestRepository,
+                           MaterialRepository materialRepository,
                            MaterialRequestDtoMapper materialRequestDtoMapper) {
         this.userRepository = userRepository;
         this.userDtoMapper = userDtoMapper;
         this.passwordEncoder = passwordEncoder;
         this.sectionRepository = sectionRepository;
         this.materialRequestRepository = materialRequestRepository;
+        this.materialRepository = materialRepository;
         this.materialRequestDtoMapper = materialRequestDtoMapper;
     }
 
@@ -96,18 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long existsUser(UserDto userDto) {
-        // won't work
-        Long userId = this.userRepository.findUserByNameAndEmailAndPassword(userDto.getName(), userDto.getEmail(), userDto.getPassword());
-        if (userId > 0) {
-            return userId;
-        } else {
-            throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId));
-        }
-    }
-
-    @Override
-    public MaterialRequestDto createMaterialRequest(MultipartFile materialFile, Long sectionId, Long userId) throws IOException {
+    public MaterialRequestDto createMaterialRequest(MaterialRequestDto materialRequestDto, Long sectionId, Long userId) throws IOException {
         CustomUtils.authenticateCurrentUser(userId);
 
         Section section = this.sectionRepository.findById(sectionId)
@@ -116,10 +108,18 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
 
-        MaterialRequest materialRequest = this.materialRequestDtoMapper.convertToEntity(materialFile, user, section);
-        if (this.materialRequestRepository.findBySectionAndFileName(section.getId(), materialRequest.getFileName()).isPresent()) {
-            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Material request", "filename", materialRequest.getFileName()));
+        if (this.materialRequestRepository.findBySectionAndFileName(section.getId(), materialRequestDto.getFileName()).isPresent()) {
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Material request", "filename", materialRequestDto.getFileName()));
         }
+
+        if (this.materialRepository.findBySectionAndFileName(section.getId(), materialRequestDto.getFileName()).isPresent()) {
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Material", "filename", materialRequestDto.getFileName()));
+        }
+
+        MaterialRequest materialRequest = this.materialRequestDtoMapper.convertToEntity(materialRequestDto);
+        materialRequest.setSection(section);
+        materialRequest.setUser(user);
+
         return this.materialRequestDtoMapper.convertToDto(this.materialRequestRepository.save(materialRequest));
     }
 

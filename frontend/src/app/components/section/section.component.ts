@@ -14,6 +14,8 @@ import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
 import { CrossEventService } from '../../services/cross-event.service';
+import { UserService } from '../../services/user.service';
+import { FILE_FORMATS } from '../../vo/file-formats';
 
 @Component({
   selector: 'app-section',
@@ -22,10 +24,12 @@ import { CrossEventService } from '../../services/cross-event.service';
 })
 export class SectionComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
-  materialOnDeleteSubscription?: Subscription;
+  materialEventSubscription?: Subscription;
 
   user?: User | null;
   USER_ROLES = USER_ROLES;
+
+  FILE_FORMATS = FILE_FORMATS;
 
   @Input()
   section?: Section;
@@ -33,30 +37,14 @@ export class SectionComponent implements OnInit, OnDestroy {
   @ViewChild('material', { static: false })
   material!: ElementRef;
 
-  @Input()
-  sectionOnDelete?: EventEmitter<any>;
-
-  fileFormats: any = {
-    'text/plain': 'text_snippet',
-    'text/html': 'html',
-    'text/css': 'css',
-    'application/javascript': 'javascript',
-    'application/x-httpd-php': 'php',
-    'image/png': 'image',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-      'description',
-    'application/pdf': 'picture_as_pdf',
-    'application/octet-stream': 'insert_drive_file',
-    default: 'text_snippet',
-  };
-
   fileToUpload?: File;
 
   constructor(
     private authService: AuthService,
     private courseService: CourseService,
     private crossEventService: CrossEventService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -64,14 +52,14 @@ export class SectionComponent implements OnInit, OnDestroy {
       this.user = user;
     });
 
-    this.crossEventService.materialOnDelete.subscribe(() => {
+    this.crossEventService.materialEvent.subscribe(() => {
       this.fetchSection();
     });
   }
 
   ngOnDestroy() {
     this.authSubscription?.unsubscribe();
-    this.materialOnDeleteSubscription?.unsubscribe();
+    this.materialEventSubscription?.unsubscribe();
   }
 
   onMaterialSelected(event: any) {
@@ -101,7 +89,15 @@ export class SectionComponent implements OnInit, OnDestroy {
             error: (resp: any) => this.alertService.error(resp.error.error),
           });
       } else {
-        // todo
+        this.userService
+          .createMaterialRequest(formData, this.section!.id!, this.user!.id!)
+          .subscribe({
+            next: (resp: any) => {
+              this.alertService.success('Request send successfully!');
+              this.fetchSection();
+            },
+            error: (resp: any) => this.alertService.error(resp.error.error),
+          });
       }
 
       this.material.nativeElement.value = null;
@@ -129,7 +125,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     this.courseService.deleteSectionById(this.section!.id!).subscribe({
       next: (resp) => {
         this.alertService.success('Section deleted successfully!');
-        this.sectionOnDelete?.emit();
+        this.crossEventService.sectionEvent.emit();
       },
       error: (resp) => this.alertService.error(resp.error.error),
     });

@@ -5,7 +5,7 @@
 >
   <div class="section-wrapper">
     <section class="form-section">
-      <mat-form-field appearance="legacy">
+      <mat-form-field appearance="fill">
         <mat-label>Name</mat-label>
         <input
           matInput
@@ -37,7 +37,7 @@
           Name is <strong>required</strong>
         </mat-error>
       </mat-form-field>
-      <mat-form-field appearance="legacy">
+      <mat-form-field appearance="fill">
         <mat-label>Faculty department</mat-label>
         <mat-select
           formControlName="facultyDepartment"
@@ -51,7 +51,7 @@
           >
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="legacy">
+      <mat-form-field appearance="fill">
         <mat-label>Group</mat-label>
         <mat-select formControlName="courseGroup" name="courseGroup" required>
           <mat-option
@@ -77,9 +77,7 @@
         ></textarea>
         <mat-hint>{{ description.value.length }}/255</mat-hint>
         <mat-error
-          *ngIf="
-            createCourseForm.get('description')?.hasError('maxlength')
-          "
+          *ngIf="createCourseForm.get('description')?.hasError('maxlength')"
         >
           Description should be maximum 255 characters
         </mat-error>
@@ -95,9 +93,8 @@
     Create course
   </button>
   <div *ngIf="courseId" class="go-to-course">
-    Go to
-    <a routerLink="/courses/{{ courseId }}" mat-flat-button color="warn"
-      >Course<mat-icon>link</mat-icon></a
+    <a routerLink="/courses/{{ courseId }}" mat-flat-button color="warn">
+      Go to Course<mat-icon>link</mat-icon></a
     >
   </div>
 </form>

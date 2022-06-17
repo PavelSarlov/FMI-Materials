@@ -3,9 +3,11 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Course } from '../../models/course';
+import { Section } from '../../models/section';
 import { COURSE_GROUPS } from '../../models/course-group';
 import { FacultyDepartment } from '../../models/faculty-department';
 import { User, USER_ROLES } from '../../models/user';
+import { FILE_FORMATS } from '../../vo/file-formats';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
@@ -19,17 +21,24 @@ import { FacultyDepartmentService } from '../../services/faculty-department.serv
 })
 export class CourseComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
-  routerSubscription?: Subscription;
-  sectionOnDeleteSubscription?: Subscription;
+  sectionEventSubscription?: Subscription;
 
   user?: User | null;
   USER_ROLES = USER_ROLES;
 
   course?: Course;
+  sectionBackup?: Section[] = [];
 
   facultyDepartments: FacultyDepartment[] = [];
 
   COURSE_GROUPS = COURSE_GROUPS;
+
+  createSectionName?: string;
+
+  FILE_FORMATS = FILE_FORMATS;
+  materialSearchName: string = '';
+  materialSearchFileFormat: string = '';
+  materialSearchSectionName: string = '';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -48,10 +57,8 @@ export class CourseComponent implements OnInit, OnDestroy {
     });
     this.authService.isAuthenticated();
 
-    this.routerSubscription = this.activatedRoute.paramMap.subscribe(
-      (params) => {
-        this.fetchCourse(parseInt(params.get('courseId') ?? ''));
-      }
+    this.fetchCourse(
+      parseInt(this.activatedRoute.snapshot.paramMap.get('courseId')!)
     );
 
     if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
@@ -61,26 +68,38 @@ export class CourseComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.sectionOnDeleteSubscription = this.crossEventService.sectionOnDelete.subscribe(() =>
-      this.fetchCourse(this.course?.id!)
-    );
+    this.sectionEventSubscription =
+      this.crossEventService.sectionEvent.subscribe(() =>
+        this.fetchCourseSections(this.course?.id!)
+      );
   }
 
   ngOnDestroy() {
     this.authSubscription?.unsubscribe();
-    this.routerSubscription?.unsubscribe();
-    this.sectionOnDeleteSubscription?.unsubscribe();
+    this.sectionEventSubscription?.unsubscribe();
   }
-
 
   fetchCourse(courseId: number) {
     this.courseService.getCourseById(courseId).subscribe({
       next: (course) => {
         this.course = course;
+        this.sectionBackup = course.sectionDtos;
       },
       error: (resp) => {
         this.alertService.error(resp.error.error);
         this.router.navigateByUrl('/courses');
+      },
+    });
+  }
+
+  fetchCourseSections(courseId: number) {
+    this.courseService.getCourseSections(courseId).subscribe({
+      next: (resp) => {
+        this.course!.sectionDtos = resp;
+        this.sectionBackup = resp;
+      },
+      error: (resp) => {
+        this.alertService.error(resp.error.error);
       },
     });
   }
@@ -113,5 +132,61 @@ export class CourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  createSection() {}
+  createSection(form: any) {
+    if (form.valid) {
+      let section = new Section();
+      section.name = this.createSectionName;
+
+      this.courseService.createSection(section, this.course!.id!).subscribe({
+        next: (resp) => {
+          this.alertService.success('Section created successfully!');
+          this.fetchCourse(this.course!.id!);
+        },
+        error: (resp) => this.alertService.error(resp.error.error),
+      });
+    }
+  }
+
+  onMaterialSearch() {
+    console.log(FILE_FORMATS[this.materialSearchFileFormat]);
+    this.course!.sectionDtos = JSON.parse(JSON.stringify(this.sectionBackup));
+
+    this.course!.sectionDtos = this.course!.sectionDtos!.filter((s) => {
+      if (
+        !this.materialSearchSectionName ||
+        s.name?.match(new RegExp(this.materialSearchSectionName, 'gi'))
+      ) {
+        s.materialDtos = s.materialDtos?.filter((m) => {
+          if (
+            (!this.materialSearchFileFormat ||
+              m.fileFormat?.match(
+                new RegExp(this.materialSearchFileFormat, 'gi')
+              )) &&
+            (!this.materialSearchName ||
+              m.fileName?.match(new RegExp(this.materialSearchName, 'gi')))
+          ) {
+            return true;
+          }
+          return false;
+        });
+
+        s.materialRequestDtos = s.materialRequestDtos?.filter((m) => {
+          if (
+            (!this.materialSearchFileFormat ||
+              m.fileFormat?.match(
+                new RegExp(this.materialSearchFileFormat, 'gi')
+              )) &&
+            (!this.materialSearchName ||
+              m.fileName?.match(new RegExp(this.materialSearchName, 'gi')))
+          ) {
+            return true;
+          }
+          return false;
+        });
+
+        return true;
+      }
+      return false;
+    });
+  }
 }

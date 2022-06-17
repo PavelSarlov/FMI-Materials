@@ -33,7 +33,7 @@ public interface CourseService {
 
     SectionDto patchSection(SectionDto sectionDto) throws IllegalAccessException;
 
-    MaterialDto createMaterial(String fileFormat, String fileName, byte[] data, Long sectionId) throws IOException;
+    MaterialDto createMaterial(MaterialDto materialDto, Long sectionid) throws IOException;
 
     ResponseDto deleteMaterial(Long materialId);
 
