@@ -38,7 +38,7 @@ public class User implements UserDetails {
     private Set<MaterialRequest> materialRequests;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users__user_roles",
+    @JoinTable(name = "users_user_roles",
             joinColumns = {
                     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
             },

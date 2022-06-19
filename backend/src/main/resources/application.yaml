@@ -7,19 +7,6 @@ spring:
     username: "${database.username}"
     password: "${database.password}"
     driver-class-name: "org.postgresql.Driver"
-  jpa:
-    hibernate:
-      ddl-auto: "update"
-    properties:
-      hibernate:
-        dialect: "org.hibernate.dialect.PostgreSQLDialect"
-  flyway:
-    url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
-    user: "${database.username}"
-    password: "${database.password}"
-    schemas: "public"
-    defaultSchema: "public"
-    createSchemas: "true"
   servlet:
     multipart:
       max-file-size: "1GB"

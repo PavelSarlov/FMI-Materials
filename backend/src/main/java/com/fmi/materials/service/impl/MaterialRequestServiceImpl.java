@@ -8,10 +8,8 @@ import com.fmi.materials.mapper.MaterialRequestDtoMapper;
 import com.fmi.materials.model.Material;
 import com.fmi.materials.model.MaterialRequest;
 import com.fmi.materials.repository.MaterialRequestRepository;
-import com.fmi.materials.repository.SectionRepository;
-import com.fmi.materials.repository.UserRepository;
-import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.MaterialRequestService;
+import com.fmi.materials.service.MaterialService;
 import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,23 +24,17 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     private MaterialRequestRepository materialRequestRepository;
     private MaterialRequestDtoMapper materialRequestDtoMapper;
     private MaterialDtoMapper materialDtoMapper;
-    private SectionRepository sectionRepository;
-    private UserRepository userRepository;
-    private CourseService courseService;
+    private MaterialService materialService;
 
     @Autowired
     public MaterialRequestServiceImpl(MaterialRequestRepository materialRequestRepository,
             MaterialRequestDtoMapper materialRequestDtoMapper,
             MaterialDtoMapper materialDtoMapper,
-            SectionRepository sectionRepository,
-            UserRepository userRepository,
-            CourseService courseService) {
+            MaterialService materialService) {
         this.materialRequestRepository = materialRequestRepository;
         this.materialRequestDtoMapper = materialRequestDtoMapper;
         this.materialDtoMapper = materialDtoMapper;
-        this.sectionRepository = sectionRepository;
-        this.userRepository = userRepository;
-        this.courseService = courseService;
+        this.materialService = materialService;
     }
 
     @Override
@@ -96,7 +88,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
                         ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
         if (status) {
-            this.courseService.createMaterial(this.materialRequestDtoMapper.convertToMaterialDto(materialRequest),
+            this.materialService.createMaterial(this.materialRequestDtoMapper.convertToMaterialDto(materialRequest),
                     materialRequest.getSection().getId());
         }
 

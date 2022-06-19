@@ -69,7 +69,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
     this.courseService.deleteMaterialById(this.material!.id!).subscribe({
       next: (resp) => {
         this.alertService.success('Material deleted successfully');
-        this.crossEventService.materialEvent.emit();
+        this.crossEventService.materialEvent.emit(this.sectionId);
       },
       error: (resp) => {
         this.alertService.success(resp.error.error);

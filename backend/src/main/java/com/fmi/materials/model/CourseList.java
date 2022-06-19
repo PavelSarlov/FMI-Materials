@@ -25,7 +25,7 @@ public class CourseList {
     private User user;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable(name = "courses__user_courses_lists",
+    @JoinTable(name = "courses_user_courses_lists",
             joinColumns = {
                     @JoinColumn(name = "user_courses_list_id", referencedColumnName = "id", nullable = false, updatable = false),
             },

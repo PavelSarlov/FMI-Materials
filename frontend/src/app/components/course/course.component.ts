@@ -69,9 +69,11 @@ export class CourseComponent implements OnInit, OnDestroy {
     }
 
     this.sectionEventSubscription =
-      this.crossEventService.sectionEvent.subscribe(() =>
-        this.fetchCourseSections(this.course?.id!)
-      );
+      this.crossEventService.sectionEvent.subscribe((courseId) => {
+        if (courseId === this.course?.id) {
+          this.fetchCourseSections(this.course?.id!);
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -148,7 +150,6 @@ export class CourseComponent implements OnInit, OnDestroy {
   }
 
   onMaterialSearch() {
-    console.log(FILE_FORMATS[this.materialSearchFileFormat]);
     this.course!.sectionDtos = JSON.parse(JSON.stringify(this.sectionBackup));
 
     this.course!.sectionDtos = this.course!.sectionDtos!.filter((s) => {

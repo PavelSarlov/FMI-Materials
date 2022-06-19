@@ -254,6 +254,7 @@
       <app-section
         *ngFor="let section of course.sectionDtos"
         [section]="section"
+        [courseId]="course?.id"
       ></app-section>
     </mat-accordion>
   </section>

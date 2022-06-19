@@ -9,6 +9,8 @@ import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.service.CourseService;
+import com.fmi.materials.service.MaterialService;
+import com.fmi.materials.service.SectionService;
 import com.fmi.materials.vo.CourseGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,10 @@ import java.util.Set;
 public class CourseController {
     @Autowired
     private CourseService courseService;
+    @Autowired
+    private SectionService sectionService;
+    @Autowired
+    private MaterialService materialService;
     @Autowired
     private Validator validator;
 
@@ -72,12 +78,12 @@ public class CourseController {
     @PatchMapping("sections")
     public ResponseEntity<SectionDto> patchSection(@RequestBody @Valid SectionDto sectionDto) throws IllegalAccessException {
         return new ResponseEntity<SectionDto>(
-                this.courseService.patchSection(sectionDto),
+                this.sectionService.patchSection(sectionDto),
                 HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<Object> findCourses(@RequestParam(defaultValue = "name") String filter, @RequestParam(defaultValue = "") String filterValue, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String sortBy, @RequestParam(required = false) Boolean desc) {
+    public ResponseEntity<Object> findCourses(@RequestParam(defaultValue = "name") String filter, @RequestParam(defaultValue = "") String filterValue, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "name") String sortBy, @RequestParam(defaultValue = "false") Boolean desc) {
 
         Sort sort = Sort.by((sortBy != null && sortBy != "" ? sortBy : "name"));
         if (desc != null && desc) sort = sort.descending();
@@ -98,7 +104,7 @@ public class CourseController {
     @GetMapping("/sections/{sectionId}")
     public ResponseEntity<SectionDto> getCourseSectionById(@PathVariable Long sectionId) {
         return new ResponseEntity<SectionDto>(
-                this.courseService.findSectionById(sectionId),
+                this.sectionService.findSectionById(sectionId),
                 HttpStatus.OK);
     }
 
@@ -106,20 +112,20 @@ public class CourseController {
     public ResponseEntity<SectionDto> createCourseSection(@PathVariable Long courseId,
                                                           @RequestBody SectionDto sectionDto) {
         return new ResponseEntity<SectionDto>(
-                this.courseService.createSection(sectionDto, courseId),
+                this.sectionService.createSection(sectionDto, courseId),
                 HttpStatus.OK);
     }
 
     @DeleteMapping("sections/{sectionId}")
     public ResponseEntity<ResponseDto> deleteCourseSection(@PathVariable Long sectionId) {
         return new ResponseEntity<ResponseDto>(
-                this.courseService.deleteSection(sectionId),
+                this.sectionService.deleteSection(sectionId),
                 HttpStatus.OK);
     }
 
     @GetMapping("sections/materials/{materialId}")
     public ResponseEntity<byte[]> getMaterialById(@PathVariable Long materialId) {
-        MaterialDtoWithData material = this.courseService.findMaterialById(materialId);
+        MaterialDtoWithData material = this.materialService.findMaterialById(materialId);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(material.getFileFormat()));
         headers.add("Content-Disposition", "inline; filename=" + material.getFileName());
@@ -133,7 +139,7 @@ public class CourseController {
 
     @GetMapping("sections/{sectionId}/materials/{materialName}")
     public ResponseEntity<byte[]> getMaterialByName(@PathVariable Long sectionId, @PathVariable String materialName) {
-        MaterialDtoWithData material = this.courseService.findCourseMaterialByName(sectionId, materialName);
+        MaterialDtoWithData material = this.materialService.findCourseMaterialByName(sectionId, materialName);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(material.getFileFormat()));
         headers.add("Content-Disposition", "inline; filename=" + material.getFileName());
@@ -156,7 +162,7 @@ public class CourseController {
         }
 
         return new ResponseEntity<MaterialDto>(
-                this.courseService.createMaterial(materialDto, sectionId),
+                this.materialService.createMaterial(materialDto, sectionId),
                 HttpStatus.CREATED
         );
     }
@@ -164,7 +170,7 @@ public class CourseController {
     @DeleteMapping("sections/materials/{materialId}")
     public ResponseEntity<ResponseDto> deleteMaterial(@PathVariable Long materialId) throws IOException {
         return new ResponseEntity<ResponseDto>(
-                this.courseService.deleteMaterial(materialId),
+                this.materialService.deleteMaterial(materialId),
                 HttpStatus.OK
         );
     }
