@@ -65,8 +65,6 @@ public class UserController {
         );
     }
 
-    @GetMapping("made")
-
     @PostMapping("lists")
     public ResponseEntity<CourseListDtoWithId> createCourseList(@PathVariable Long userId, @RequestBody CourseListDto courseListDto) {
         return new ResponseEntity<CourseListDtoWithId>(
