@@ -5,7 +5,6 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
-  EventEmitter,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Section } from '../../models/section';
@@ -32,6 +31,9 @@ export class SectionComponent implements OnInit, OnDestroy {
   FILE_FORMATS = FILE_FORMATS;
 
   @Input()
+  courseId?: number;
+
+  @Input()
   section?: Section;
 
   @ViewChild('material', { static: false })
@@ -52,8 +54,10 @@ export class SectionComponent implements OnInit, OnDestroy {
       this.user = user;
     });
 
-    this.crossEventService.materialEvent.subscribe(() => {
-      this.fetchSection();
+    this.crossEventService.materialEvent.subscribe((sectionId) => {
+      if (sectionId === this.section?.id) {
+        this.fetchSection();
+      }
     });
   }
 
@@ -69,7 +73,17 @@ export class SectionComponent implements OnInit, OnDestroy {
   fetchSection() {
     this.courseService.getSectionById(this.section!.id!).subscribe({
       next: (resp) => (this.section = resp),
-      error: (resp) => this.alertService.error(resp.error.error),
+      error: (resp) => {
+        if (typeof resp.error.error == 'object') {
+          for (let key of Object.keys(resp.error.error)) {
+            for (let err of resp.error.error[key]) {
+              this.alertService.error(err);
+            }
+          }
+        } else {
+          this.alertService.error(resp.error.error);
+        }
+      },
     });
   }
 
@@ -105,27 +119,35 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleSubmitClick(event: any) {
-    event.stopPropagation();
-  }
-
   patchSectionName(patchSectionForm: any) {
-    let section = new Section();
-    section.id = this.section?.id;
-    section.name = patchSectionForm.value.name;
+    if (patchSectionForm.valid) {
+      let section = new Section();
+      section.id = this.section?.id;
+      section.name = patchSectionForm.value.name;
 
-    this.courseService.patchSection(section).subscribe({
-      next: (resp) =>
-        this.alertService.success('Section updated successfully!'),
-      error: (resp) => this.alertService.error(resp.error.error),
-    });
+      this.courseService.patchSection(section).subscribe({
+        next: (resp) =>
+          this.alertService.success('Section updated successfully!'),
+        error: (resp) => {
+          if (typeof resp.error.error == 'object') {
+            for (let key of Object.keys(resp.error.error)) {
+              for (let err of resp.error.error[key]) {
+                this.alertService.error(err);
+              }
+            }
+          } else {
+            this.alertService.error(resp.error.error);
+          }
+        },
+      });
+    }
   }
 
   deleteSection() {
     this.courseService.deleteSectionById(this.section!.id!).subscribe({
       next: (resp) => {
         this.alertService.success('Section deleted successfully!');
-        this.crossEventService.sectionEvent.emit();
+        this.crossEventService.sectionEvent.emit(this.courseId);
       },
       error: (resp) => this.alertService.error(resp.error.error),
     });

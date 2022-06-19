@@ -19,7 +19,7 @@ import java.util.List;
 public class SectionDto {
 
     private Long id;
-    @SizeByteString(min=4,max=50, message="Section name should be between 4 and 50 characters")
+    @SizeByteString(min=1, max=50, message="Section name should be between 1 and 50 bytes")
     private String name;
     private List<MaterialDto> materialDtos;
     private List<MaterialRequestDto> materialRequestDtos;

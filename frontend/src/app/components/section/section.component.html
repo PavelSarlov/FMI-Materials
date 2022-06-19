@@ -88,7 +88,7 @@
               matTooltip="Upload selected"
               type="submit"
               class="primary-btn"
-              (click)="handleSubmitClick($event)"
+              (click)="$event.stopPropagation()"
             >
               <mat-icon>upload</mat-icon>
             </button>

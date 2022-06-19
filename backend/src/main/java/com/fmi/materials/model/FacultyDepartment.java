@@ -1,6 +1,5 @@
 package com.fmi.materials.model;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
