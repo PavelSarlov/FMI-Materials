@@ -11,7 +11,6 @@ import { CoursesListWithCourses } from 'src/app/models/coursesListWithCourses';
 })
 export class CoursesListService {
   coursesLists$: BehaviorSubject<CoursesList[]> = new BehaviorSubject<CoursesList[]>([]);
-  courses$: BehaviorSubject<Course[]> = new BehaviorSubject<Course[]>([]);
   coursesList$: BehaviorSubject<CoursesListWithCourses> = new BehaviorSubject<CoursesListWithCourses>({});
 
   constructor(private http: HttpClient) { }
@@ -40,18 +39,6 @@ export class CoursesListService {
       );
   }
 
-  public getFavouriteCourses(userId: number) {
-    this.http
-      .get<Course[]>(
-        `${environment.usersApi}/${userId}/favourite-courses`
-      )
-      .subscribe(
-        (resp) => {
-          this.courses$.next(resp);
-        }
-      );
-  }
-
   public deleteCourseList(userId: number, coursesListId: number) {
     this.http
       .delete(`${environment.usersApi}/${userId}/lists/${coursesListId}`)
@@ -67,15 +54,6 @@ export class CoursesListService {
       .subscribe(resp => {
           console.log(resp);
           this.getCoursesListById(userId, coursesListId);
-        });
-  }
-
-  public deleteCourseFromFavourites(userId: number, courseId: number) {
-    this.http
-      .delete(`${environment.usersApi}/${userId}/favourite-courses/${courseId}`)
-      .subscribe(resp => {
-          console.log(resp);
-          this.getFavouriteCourses(userId);
         });
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CoursesListService } from '../../services/courses-list.service';
+import { FavouriteCoursesService } from '../../services/favourite-courses.service';
 import { Course } from 'src/app/models/course';
 import { User } from '../../models/user';
 import { AuthService } from 'src/app/services/auth.service';
@@ -19,7 +19,7 @@ export class FavouriteCoursesComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
   courseListSubscription?: Subscription;
 
-  constructor(private coursesListService: CoursesListService, 
+  constructor(private favouriteCoursesService: FavouriteCoursesService, 
     private authService: AuthService,
     private router: Router) { }
 
@@ -31,8 +31,8 @@ export class FavouriteCoursesComponent implements OnInit, OnDestroy {
     );
 
     if (this.authService.isAuthenticated()){
-      this.coursesListService.getFavouriteCourses(this.currentUser!.id!);
-      this.courseListSubscription = this.coursesListService.courses$.subscribe(
+      this.favouriteCoursesService.getFavouriteCourses(this.currentUser!.id!);
+      this.courseListSubscription = this.favouriteCoursesService.courses$.subscribe(
         (resp) => {
           this.courses = resp;
         }
