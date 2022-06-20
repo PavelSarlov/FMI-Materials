@@ -28,6 +28,7 @@ import { FavouriteCoursesComponent } from './components/favourite-courses/favour
 import { MaterialRequestComponent } from './components/material-request/material-request.component';
 import { BlobErrorInterceptor } from './interceptors/blob-error-interceptor';
 import { MaterialRequestsListComponent } from './components/material-requests-list/material-requests-list.component';
+import { SaveCourseFormComponent } from './components/save-course-form/save-course-form.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { MaterialRequestsListComponent } from './components/material-requests-li
     FavouriteCoursesComponent,
     MaterialRequestComponent,
     MaterialRequestsListComponent,
+    SaveCourseFormComponent,
   ],
   imports: [
     BrowserModule,

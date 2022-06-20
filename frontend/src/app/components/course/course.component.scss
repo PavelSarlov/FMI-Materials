@@ -98,6 +98,7 @@ mat-card.course-card section.form-btns {
 .material-search {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   flex-wrap: wrap;
   align-self: center;
   width: 100%;
@@ -106,6 +107,11 @@ mat-card.course-card section.form-btns {
 
 .material-search .mat-form-field {
   margin: 0 1rem;
+}
+
+.rightSide {
+  display: flex;
+  align-items: center;
 }
 
 @media screen and (max-width: 900px) {
