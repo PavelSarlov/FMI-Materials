@@ -132,6 +132,11 @@ public class CourseListServiceImpl implements CourseListService {
         Course course = this.courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
 
+        Integer idx = this.courseListRepository.findCourseInList(userId, courseListId, courseId).orElse(null);
+        if(idx != null) {
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Course", "id", courseId));
+        }
+
         CourseList courseList = this.courseListDtoMapper.convertToEntityWithId(this.getCourseList(courseListId, userId));
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
@@ -148,6 +153,9 @@ public class CourseListServiceImpl implements CourseListService {
     @Override
     public void deleteCourseFromCourseList(Long userId, Long courseListId, Long courseId) {
         CustomUtils.authenticateCurrentUser(userId);
+
+        this.courseListRepository.findCourseInList(userId, courseListId, courseId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
 
         CourseList courseList = this.getCourseListFromRepository(courseListId, userId);
         Course course = this.courseRepository.findById(courseId)

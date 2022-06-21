@@ -27,6 +27,16 @@ export class FavouriteCoursesService {
       );
   }
 
+  public addCourseToFavourites(userId: number, courseId: number) {
+    this.http
+    .post(`${environment.usersApi}/${userId}/favourite-courses/${courseId}`, null)
+    .subscribe(resp => {
+      console.log(resp);
+      this.getFavouriteCourses(userId);
+    });
+  }
+
+
   public deleteCourseFromFavourites(userId: number, courseId: number) {
     this.http
       .delete(`${environment.usersApi}/${userId}/favourite-courses/${courseId}`)

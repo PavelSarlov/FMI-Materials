@@ -154,63 +154,71 @@
 
   <section class="material-search">
     <mat-card class="material-search">
-      <button
-        mat-mini-fab
-        color="primary"
-        class="form-btn"
-        matTooltip="Search material"
-        (click)="onMaterialSearch()"
-      >
-        <mat-icon>search</mat-icon>
-      </button>
-      <mat-form-field appearance="legacy">
-        <mat-label>Search material</mat-label>
-        <input
-          matInput
-          type="text"
-          name="material-search-name"
-          [(ngModel)]="materialSearchName"
-          #materialSearch="ngModel"
-          (input)="onMaterialSearch()"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="legacy">
-        <mat-label>File format</mat-label>
-        <mat-select
-          name="material-search-file-format"
-          [(ngModel)]="materialSearchFileFormat"
-          #materialSearchFormat="ngModel"
-          (selectionChange)="onMaterialSearch()"
+      <div class="leftSide">
+        <button
+          mat-mini-fab
+          color="primary"
+          class="form-btn"
+          matTooltip="Search material"
+          (click)="onMaterialSearch()"
         >
-          <mat-option>Clear</mat-option>
-          <mat-option
-            *ngFor="let fileFormat of FILE_FORMATS | keyvalue"
-            [value]="fileFormat.key"
-            ><mat-icon>{{ fileFormat.value.icon }}</mat-icon
-            >&nbsp;{{ fileFormat.value.name }}</mat-option
+          <mat-icon>search</mat-icon>
+        </button>
+        <mat-form-field appearance="legacy">
+          <mat-label>Search material</mat-label>
+          <input
+            matInput
+            type="text"
+            name="material-search-name"
+            [(ngModel)]="materialSearchName"
+            #materialSearch="ngModel"
+            (input)="onMaterialSearch()"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="legacy">
+          <mat-label>File format</mat-label>
+          <mat-select
+            name="material-search-file-format"
+            [(ngModel)]="materialSearchFileFormat"
+            #materialSearchFormat="ngModel"
+            (selectionChange)="onMaterialSearch()"
           >
-          <mat-select-trigger>
-            <mat-icon>{{ FILE_FORMATS[materialSearchFileFormat]?.icon }}</mat-icon>
-            {{ FILE_FORMATS[materialSearchFileFormat]?.name }}
-          </mat-select-trigger>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="legacy">
-        <mat-label>Section</mat-label>
-        <mat-select
-          name="material-search-file-format"
-          [(ngModel)]="materialSearchSectionName"
-          #materialSearchSection="ngModel"
-          (selectionChange)="onMaterialSearch()"
-        >
-          <mat-option>Clear</mat-option>
-          <mat-option
-            *ngFor="let section of sectionBackup"
-            [value]="section.name"
-            >{{ section.name }}</mat-option
+            <mat-option>Clear</mat-option>
+            <mat-option
+              *ngFor="let fileFormat of FILE_FORMATS | keyvalue"
+              [value]="fileFormat.key"
+              ><mat-icon>{{ fileFormat.value.icon }}</mat-icon
+              >&nbsp;{{ fileFormat.value.name }}</mat-option
+            >
+            <mat-select-trigger>
+              <mat-icon>{{ FILE_FORMATS[materialSearchFileFormat]?.icon }}</mat-icon>
+              {{ FILE_FORMATS[materialSearchFileFormat]?.name }}
+            </mat-select-trigger>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="legacy">
+          <mat-label>Section</mat-label>
+          <mat-select
+            name="material-search-file-format"
+            [(ngModel)]="materialSearchSectionName"
+            #materialSearchSection="ngModel"
+            (selectionChange)="onMaterialSearch()"
           >
-        </mat-select>
-      </mat-form-field>
+            <mat-option>Clear</mat-option>
+            <mat-option
+              *ngFor="let section of sectionBackup"
+              [value]="section.name"
+              >{{ section.name }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="rightSide">
+        <button mat-raised-button (click)="openDialog('0ms', '0ms')" class="saveToList">
+          <mat-icon>playlist_add</mat-icon> Save
+        </button>
+      </div>
     </mat-card>
   </section>
 

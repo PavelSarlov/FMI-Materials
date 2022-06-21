@@ -1,6 +1,7 @@
 package com.fmi.materials.service.impl;
 
 import com.fmi.materials.dto.course.CourseDtoWithId;
+import com.fmi.materials.exception.EntityAlreadyExistsException;
 import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.mapper.CourseDtoMapper;
 import com.fmi.materials.mapper.UserDtoMapper;
@@ -8,6 +9,7 @@ import com.fmi.materials.model.Course;
 import com.fmi.materials.model.User;
 import com.fmi.materials.repository.CourseListRepository;
 import com.fmi.materials.repository.CourseRepository;
+import com.fmi.materials.repository.FavouriteCoursesRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.FavouriteCoursesService;
 import com.fmi.materials.util.CustomUtils;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
     private CourseRepository courseRepository;
     private CourseListRepository courseListRepository;
+    private FavouriteCoursesRepository favouriteCoursesRepository;
     private UserRepository userRepository;
     private UserDtoMapper userDtoMapper;
     private CourseDtoMapper courseDtoMapper;
@@ -30,12 +33,14 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
     public FavouriteCoursesServiceImpl(
             CourseRepository courseRepository,
             CourseListRepository courseListRepository,
+            FavouriteCoursesRepository favouriteCoursesRepository,
             UserRepository userRepository,
             UserDtoMapper userDtoMapper,
             CourseDtoMapper courseDtoMapper
     ) {
         this.courseRepository = courseRepository;
         this.courseListRepository = courseListRepository;
+        this.favouriteCoursesRepository = favouriteCoursesRepository;
         this.userRepository = userRepository;
         this.userDtoMapper = userDtoMapper;
         this.courseDtoMapper = courseDtoMapper;
@@ -55,6 +60,9 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
     public void deleteFavouriteCourse(Long userId, Long courseId) {
         CustomUtils.authenticateCurrentUser(userId);
 
+        this.favouriteCoursesRepository.findCourseInFavourites(userId, courseId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId)));
+
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
         Course course = this.courseRepository.findById(courseId)
@@ -71,6 +79,10 @@ public class FavouriteCoursesServiceImpl implements FavouriteCoursesService {
     public List<CourseDtoWithId> addCourse(Long userId, Long courseId) {
         CustomUtils.authenticateCurrentUser(userId);
 
+        Integer idx = this.favouriteCoursesRepository.findCourseInFavourites(userId, courseId).orElse(null);
+        if(idx != null) {
+            throw new EntityAlreadyExistsException(ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("Course", "id", courseId));
+        }
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
         Course course = this.courseRepository.findById(courseId)

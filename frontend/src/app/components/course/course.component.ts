@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -13,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
 import { CrossEventService } from '../../services/cross-event.service';
 import { FacultyDepartmentService } from '../../services/faculty-department.service';
+import { SaveCourseFormComponent } from '../save-course-form/save-course-form.component';
 
 @Component({
   selector: 'app-course',
@@ -48,7 +50,8 @@ export class CourseComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private crossEventService: CrossEventService,
     private fb: FormBuilder,
-    private facultyDepartmentService: FacultyDepartmentService
+    private facultyDepartmentService: FacultyDepartmentService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -79,6 +82,14 @@ export class CourseComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.authSubscription?.unsubscribe();
     this.sectionEventSubscription?.unsubscribe();
+  }
+
+  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+    this.dialog.open(SaveCourseFormComponent, {
+      width: '25%',
+      enterAnimationDuration,
+      exitAnimationDuration,
+    });
   }
 
   fetchCourse(courseId: number) {
