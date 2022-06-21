@@ -1,0 +1,75 @@
+.wrapper {
+    width: 100%;
+}
+
+.popupHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.popupHeader button {
+    background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.lists {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    height: 200px;
+    overflow: auto;
+}
+
+.createSectionButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-top: 1rem;
+    width: 90%;
+}
+
+.createSectionButton button {
+    background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	outline: inherit;
+    margin-right: 0.5rem;
+}
+
+.createSection {
+    display: none;
+    flex-direction: column;
+}
+
+.example-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .example-full-width {
+    width: 100%;
+  }
+
+  .footerSection {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+
+  .footerSection button {
+    background: none;
+	color: #4e86ee;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	outline: inherit;
+  }

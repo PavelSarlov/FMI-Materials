@@ -11,6 +11,7 @@ import { CoursesListWithCourses } from 'src/app/models/coursesListWithCourses';
 })
 export class CoursesListService {
   coursesLists$: BehaviorSubject<CoursesList[]> = new BehaviorSubject<CoursesList[]>([]);
+  coursesListsWithCourses$: BehaviorSubject<CoursesListWithCourses[]> = new BehaviorSubject<CoursesListWithCourses[]>([]);
   coursesList$: BehaviorSubject<CoursesListWithCourses> = new BehaviorSubject<CoursesListWithCourses>({});
 
   constructor(private http: HttpClient) { }
@@ -23,6 +24,18 @@ export class CoursesListService {
       .subscribe(
         (resp) => {
           this.coursesLists$.next(resp);
+        }
+      );
+  }
+
+  public getCoursesListsWithCourses(userId: number) {
+    this.http
+      .get<CoursesListWithCourses[]>(
+        `${environment.usersApi}/${userId}/lists`
+      )
+      .subscribe(
+        (resp) => {
+          this.coursesListsWithCourses$.next(resp);
         }
       );
   }
@@ -66,6 +79,14 @@ export class CoursesListService {
     .subscribe(resp => {
       console.log(resp);
       this.getCoursesLists(userId);
+    });
+  }
+
+  public addCourseToCoursesList(userId: number, coursesListId: number, courseId: number) {
+    this.http
+    .post(`${environment.usersApi}/${userId}/lists/${coursesListId}/${courseId}`, null)
+    .subscribe(resp => {
+      console.log(resp);
     });
   }
 
