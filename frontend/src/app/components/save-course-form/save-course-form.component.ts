@@ -6,7 +6,7 @@ import { Course } from '../../models/course';
 import { User } from '../../models/user';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-save-course-form',
@@ -30,7 +30,6 @@ export class SaveCourseFormComponent implements OnInit, OnDestroy {
   constructor(private coursesListService: CoursesListService,
     private favouriteCoursesService: FavouriteCoursesService, 
     private authService: AuthService,
-    private activatedRoute: ActivatedRoute,
     private router: Router) { }
 
   ngOnInit(): void {
@@ -47,20 +46,18 @@ export class SaveCourseFormComponent implements OnInit, OnDestroy {
       this.courseListSubscription = this.coursesListService.coursesListsWithCourses$.subscribe(
         (resp) => {
           this.coursesLists = resp;
+          console.log(resp);
 
-          let isPresent = false;
+          this.isCoursePresentInList = new Array(this.coursesLists.length);
           for (let i = 0; i < this.coursesLists.length; i++) {
+            let isPresent = false;
             for (let j = 0; j < this.coursesLists[i]!.courses!.length; j++) {
               if (this.coursesLists[i]!.courses![j].id === this.courseId) {
                 isPresent = true;
                 break;
               }
-              else {
-                isPresent = false;
-              }
             }
-            this.isCoursePresentInList.push(isPresent);
-            isPresent = false;
+            this.isCoursePresentInList[i] = isPresent;
           }
         }
       );
@@ -70,13 +67,11 @@ export class SaveCourseFormComponent implements OnInit, OnDestroy {
         (resp) => {
           this.favouriteCourses = resp;
 
+          this.isCoursePresentInFavourites = false;
           for (let i = 0; i < this.favouriteCourses.length; i++) {
             if (this.favouriteCourses[i].id === this.courseId) {
               this.isCoursePresentInFavourites = true;
               break;
-            }
-            else {
-              this.isCoursePresentInFavourites = false;
             }
           }
         }
@@ -94,28 +89,24 @@ export class SaveCourseFormComponent implements OnInit, OnDestroy {
   }
 
   addList() {
-    this.coursesListService.addCourseList(this.currentUser!.id!, this.inputValue);
+    this.coursesListService.addCourseListWithCourse(this.currentUser!.id!, this.inputValue, this.courseId);
     this.inputValue = '';
   }
 
   processCheckList(indexCheckBox: number) {
     if (this.isCoursePresentInList[indexCheckBox] == false) {
-      this.isCoursePresentInList[indexCheckBox] = true;
       this.coursesListService.addCourseToCoursesList(this.currentUser!.id!, this.coursesLists[indexCheckBox].id!, this.courseId);
     }
     else {
-      this.isCoursePresentInList[indexCheckBox] = false;
       this.coursesListService.deleteCourseFromCoursesList(this.currentUser!.id!, this.coursesLists[indexCheckBox].id!, this.courseId);
     }
   }
 
   processCheckFavourites() {
     if (this.isCoursePresentInFavourites == false) {
-      this.isCoursePresentInFavourites = true;
       this.favouriteCoursesService.addCourseToFavourites(this.currentUser!.id!, this.courseId);
     }
     else {
-      this.isCoursePresentInFavourites = false;
       this.favouriteCoursesService.deleteCourseFromFavourites(this.currentUser!.id!, this.courseId);
     }
   }

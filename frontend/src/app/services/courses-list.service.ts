@@ -67,6 +67,7 @@ export class CoursesListService {
       .subscribe(resp => {
           console.log(resp);
           this.getCoursesListById(userId, coursesListId);
+          this.getCoursesListsWithCourses(userId);
         });
   }
 
@@ -82,11 +83,28 @@ export class CoursesListService {
     });
   }
 
+  public addCourseListWithCourse(userId: number, listName: string, courseId: number) {
+    let course = new Course();
+    course.id = courseId;
+    let courseList = new CoursesListWithCourses();
+    courseList.listName = listName;
+    courseList.courses = new Array();
+    courseList.courses?.push(course);
+
+    this.http
+    .post(`${environment.usersApi}/${userId}/lists`, courseList)
+    .subscribe(resp => {
+      console.log(resp);
+      this.getCoursesListsWithCourses(userId);
+    });
+  }
+
   public addCourseToCoursesList(userId: number, coursesListId: number, courseId: number) {
     this.http
     .post(`${environment.usersApi}/${userId}/lists/${coursesListId}/${courseId}`, null)
     .subscribe(resp => {
       console.log(resp);
+      this.getCoursesListsWithCourses(userId);
     });
   }
 

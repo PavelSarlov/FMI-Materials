@@ -32,6 +32,7 @@ export class FavouriteCoursesService {
     .post(`${environment.usersApi}/${userId}/favourite-courses/${courseId}`, null)
     .subscribe(resp => {
       console.log(resp);
+      this.getFavouriteCourses(userId);
     });
   }
 
