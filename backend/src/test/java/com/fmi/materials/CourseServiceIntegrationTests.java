@@ -28,7 +28,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class CourseServiceUnitTests {
+public class CourseServiceIntegrationTests {
 
     @Autowired
     private FacultyDepartmentService facultyDepartmentService;
