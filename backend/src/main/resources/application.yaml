@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: "dev"
+    active: "test"
     include: "private"
   datasource:
     url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
