@@ -1,15 +1,17 @@
 package com.fmi.materials.dto.courselist;
 
+import java.util.List;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.validator.SizeByteString;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Getter
 @Setter

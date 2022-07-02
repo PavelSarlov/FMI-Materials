@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
+import {filter} from 'rxjs/operators';
+import {Alert, AlertType} from '../models/alert';
 
-import { Alert, AlertType } from '../models/alert';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class AlertService {
   private subject = new Subject<Alert>();
   private defaultId = 'default-alert';
@@ -15,20 +15,48 @@ export class AlertService {
   }
 
   // convenience methods
-  success(message: string, options?: any) {
-    this.alert(new Alert({ ...options, type: AlertType.Success, message }));
+  success(message: any, options?: any) {
+    if (typeof message === 'string') {
+      this.alert(new Alert({...options, type: AlertType.Success, message}));
+    }
+    else {
+      for (let key of Object.keys(message)) {
+        this.alert(new Alert({...options, type: AlertType.Success, message: message[key]}));
+      }
+    }
   }
 
-  error(message: string, options?: any) {
-    this.alert(new Alert({ ...options, type: AlertType.Error, message }));
+  error(message: any, options?: any) {
+    if (typeof message === 'string') {
+      this.alert(new Alert({...options, type: AlertType.Error, message}));
+    }
+    else {
+      for (let key of Object.keys(message)) {
+        this.alert(new Alert({...options, type: AlertType.Error, message: message[key]}));
+      }
+    }
   }
 
-  info(message: string, options?: any) {
-    this.alert(new Alert({ ...options, type: AlertType.Info, message }));
+  info(message: any, options?: any) {
+    if (typeof message === 'string') {
+      this.alert(new Alert({...options, type: AlertType.Info, message}));
+    }
+    else {
+      for (let key of Object.keys(message)) {
+        this.alert(new Alert({...options, type: AlertType.Info, message: message[key]}));
+      }
+    }
   }
 
-  warn(message: string, options?: any) {
-    this.alert(new Alert({ ...options, type: AlertType.Warning, message }));
+  warn(message: any, options?: any) {
+    if (typeof message === 'string') {
+      this.alert(new Alert({...options, type: AlertType.Warning, message}));
+    }
+    else {
+      for (let key of Object.keys(message)) {
+        this.alert(new Alert({...options, type: AlertType.Warning, message: message[key]}));
+      }
+    }
   }
 
   // main alert method
@@ -39,6 +67,6 @@ export class AlertService {
 
   // clear alerts
   clear(id = this.defaultId) {
-    this.subject.next(new Alert({ id }));
+    this.subject.next(new Alert({id}));
   }
 }

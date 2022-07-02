@@ -1,13 +1,9 @@
-import { Injectable } from '@angular/core';
 import {
-  HttpInterceptor,
-  HttpHandler,
-  HttpRequest,
-  HttpEvent,
-  HttpErrorResponse,
+  HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {Observable, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 
 @Injectable()
 export class BlobErrorInterceptor implements HttpInterceptor {
@@ -24,7 +20,7 @@ export class BlobErrorInterceptor implements HttpInterceptor {
         ) {
           // https://github.com/angular/angular/issues/19888
           // When request of type Blob, the error is also in Blob instead of object of the json data
-          return new Promise<any>((resolve, reject) => {
+          return new Promise<any>((_resolve, reject) => {
             let reader = new FileReader();
             reader.onload = (e: Event) => {
               try {
@@ -42,13 +38,13 @@ export class BlobErrorInterceptor implements HttpInterceptor {
                 reject(err);
               }
             };
-            reader.onerror = (e) => {
+            reader.onerror = () => {
               reject(err);
             };
             reader.readAsText(err.error);
           });
         }
-        return throwError(err);
+        return throwError(() => err);
       })
     );
   }

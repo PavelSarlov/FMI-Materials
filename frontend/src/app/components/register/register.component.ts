@@ -1,21 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  ValidationErrors,
+  AbstractControl, FormBuilder,
+  FormGroup, ValidationErrors, Validators
 } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { AlertService } from '../../services/alert.service';
+import {Router} from '@angular/router';
+import {AlertService} from '../../services/alert.service';
+import {AuthService} from '../../services/auth.service';
 
 const checkPasswordsMatch = (
   control: AbstractControl
 ): ValidationErrors | null => {
   return control.get('password')?.value !==
     control.get('repeatedPassword')?.value
-    ? { passwordsDontMatch: true }
+    ? {passwordsDontMatch: true}
     : null;
 };
 
@@ -26,6 +23,8 @@ const checkPasswordsMatch = (
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
+
+  showPassword: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -75,20 +74,14 @@ export class RegisterComponent implements OnInit {
           this.registerForm.get('repeatedPassword')?.value
         )
         .subscribe({
-          next: (resp) => {
+          next: () => {
             this.alertService.success('Registration successful!', {
               keepAfterRouteChange: true,
             });
             this.router.navigateByUrl('/auth/login');
           },
           error: (resp) => {
-            if (typeof resp.error.error === 'object') {
-              for (let error of resp.error.error) {
-                this.alertService.error(error);
-              }
-            } else {
-              this.alertService.error(resp.error.error);
-            }
+            this.alertService.error(resp.error.error);
           },
         });
     } else {

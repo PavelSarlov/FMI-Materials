@@ -2,20 +2,14 @@
   <form class="filter" (submit)="onSubmitSearch()">
     <mat-form-field appearance="legacy">
       <mat-label>Search</mat-label>
-      <input
-        matInput
-        type="text"
-        name="filterValue"
-        placeholder="Search"
-        [(ngModel)]="filterValue"
-      />
+      <input matInput type="text" name="filterValue" placeholder="Search" [(ngModel)]="filterValue" />
     </mat-form-field>
     <mat-form-field appearance="legacy">
       <mat-label>Filter</mat-label>
       <mat-select [(ngModel)]="filter" name="filter">
         <mat-option *ngFor="let filter of filterKeys" [value]="filter">{{
           filters[filter]
-        }}</mat-option>
+          }}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="legacy">
@@ -23,25 +17,21 @@
       <mat-select [(ngModel)]="sortBy" name="sortBy">
         <mat-option *ngFor="let filter of filterKeys" [value]="filter">{{
           filters[filter]
-        }}</mat-option>
+          }}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-checkbox [(ngModel)]="desc" name="desc">Descending</mat-checkbox>
     <button mat-raised-button color="primary" type="submit" class="form-btn">
       <mat-icon>search</mat-icon>Search
     </button>
-    <mat-paginator
-      #paginator
-      [length]="totalItems"
-      [pageSize]="itemsPerPage"
-      [pageIndex]="currentPage"
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      (page)="handlePageEvent($event)"
-    >
+    <mat-paginator #paginator [length]="totalItems" [pageSize]="itemsPerPage" [pageIndex]="currentPage"
+      [pageSizeOptions]="[5, 10, 25, 100]" (page)="handlePageEvent($event)">
     </mat-paginator>
   </form>
   <div *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)" class="add-course-link">
-    <a routerLink="/create-course" mat-fab matTooltip="Add course"><mat-icon>add</mat-icon></a>
+    <a routerLink="/create-course" mat-fab matTooltip="Add course">
+      <mat-icon>add</mat-icon>
+    </a>
     <span>Create course</span>
   </div>
   <mat-list>

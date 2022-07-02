@@ -1,11 +1,12 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { User } from '../../models/user';
-import { Course } from '../../models/course';
-import { CoursesListService } from '../../services/courses-list.service';
-import { FavouriteCoursesService } from '../../services/favourite-courses.service';
-import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router'
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {Course} from '../../models/course';
+import {User} from '../../models/user';
+import {AlertService} from '../../services/alert.service';
+import {AuthService} from '../../services/auth.service';
+import {CoursesListService} from '../../services/courses-list.service';
+import {FavouriteCoursesService} from '../../services/favourite-courses.service';
 
 @Component({
   selector: 'app-course-card',
@@ -19,10 +20,11 @@ export class CourseCardComponent implements OnInit, OnDestroy {
   currentUser?: User | null;
   url: string = window.location.pathname;
 
-  constructor(private coursesListService: CoursesListService, 
+  constructor(private coursesListService: CoursesListService,
     private favouriteCoursesService: FavouriteCoursesService,
     private authService: AuthService,
-    private activatedRoute: ActivatedRoute) { }
+    private alertService: AlertService,
+    private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe(
@@ -38,10 +40,17 @@ export class CourseCardComponent implements OnInit, OnDestroy {
 
   deleteCourseFromList() {
     let coursesListId = parseInt(this.activatedRoute.snapshot.paramMap.get('coursesListId')!);
-    this.coursesListService.deleteCourseFromCoursesList(this.currentUser!.id!, coursesListId, this.course.id!)
+
+    this.coursesListService.deleteCourseFromCoursesList(this.currentUser!.id!, coursesListId, this.course.id!).subscribe({
+      next: () => this.alertService.success('Course removed from list successfully'),
+      error: (err) => this.alertService.error(err.error.error)
+    });
   }
 
   deleteCourseFromFavourites() {
-    this.favouriteCoursesService.deleteCourseFromFavourites(this.currentUser!.id!, this.course.id!)
+    this.favouriteCoursesService.deleteCourseFromFavourites(this.currentUser!.id!, this.course.id!).subscribe({
+      next: () => this.alertService.success('Course removed from favourites successfully'),
+      error: (err) => this.alertService.error(err.error.error)
+    });
   }
 }

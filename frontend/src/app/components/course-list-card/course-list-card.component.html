@@ -1,14 +1,15 @@
 <button #listButton routerLink="{{list.id}}" class="parent">
-    <mat-card>
-        <section class="left-side">
-            <mat-card-title>
-                {{list.listName}}
-            </mat-card-title>
-        </section>
-        <section class="right-side">
-            <button mat-fab color="primary" (click)="$event.stopPropagation(); deleteList(list.id!)" aria-label="Example icon button with a delete icon">
-                <mat-icon>delete_outline</mat-icon>
-            </button>
-        </section>
-    </mat-card>
+  <mat-card>
+    <section class="left-side">
+      <mat-card-title>
+        {{list.listName}}
+      </mat-card-title>
+    </section>
+    <section class="right-side">
+      <button mat-fab color="primary" (click)="$event.stopPropagation(); deleteList(list.id!)"
+        aria-label="Example icon button with a delete icon">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </section>
+  </mat-card>
 </button>

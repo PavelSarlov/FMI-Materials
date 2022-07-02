@@ -1,12 +1,13 @@
 package com.fmi.materials.mapper;
 
+import java.util.stream.Collectors;
+
 import com.fmi.materials.dto.user.UserDto;
 import com.fmi.materials.dto.user.UserDtoRegistration;
 import com.fmi.materials.dto.user.UserDtoWithId;
 import com.fmi.materials.model.User;
-import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 @Component
 public class UserDtoMapper {
@@ -22,8 +23,7 @@ public class UserDtoMapper {
                 user.getEmail(),
                 user.getRoles() != null ? user.getRoles().stream()
                         .map(r -> r.getName())
-                        .collect(Collectors.toList()) : null
-                );
+                        .collect(Collectors.toList()) : null);
     }
 
     public UserDtoWithId convertToDtoWithId(User user) {
@@ -38,8 +38,7 @@ public class UserDtoMapper {
                 user.getEmail(),
                 user.getRoles() != null ? user.getRoles().stream()
                         .map(r -> r.getName())
-                        .collect(Collectors.toList()) : null
-                );
+                        .collect(Collectors.toList()) : null);
     }
 
     public User convertToEntity(UserDtoRegistration userDto) {
@@ -50,8 +49,7 @@ public class UserDtoMapper {
         return new User(
                 userDto.getName(),
                 userDto.getPassword(),
-                userDto.getEmail()
-        );
+                userDto.getEmail());
     }
 
     public User convertToEntity(UserDto userDto) {
@@ -61,8 +59,7 @@ public class UserDtoMapper {
 
         return new User(userDto.getName(),
                 userDto.getPassword(),
-                userDto.getEmail()
-                );
+                userDto.getEmail());
     }
 
     public User convertToEntityWithId(UserDtoWithId userDto) {
@@ -74,7 +71,6 @@ public class UserDtoMapper {
                 userDto.getId(),
                 userDto.getName(),
                 userDto.getPassword(),
-                userDto.getEmail()
-                );
+                userDto.getEmail());
     }
 }

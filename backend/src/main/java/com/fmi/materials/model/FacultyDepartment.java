@@ -1,10 +1,19 @@
 package com.fmi.materials.model;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -23,7 +32,8 @@ public class FacultyDepartment {
     @OneToMany(mappedBy = "facultyDepartment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Course> courses;
 
-    public FacultyDepartment() {}
+    public FacultyDepartment() {
+    }
 
     public FacultyDepartment(String name) {
         this(null, name);

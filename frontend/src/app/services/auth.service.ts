@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
-import { User } from '../models/user';
-import { tap, Subject, BehaviorSubject } from 'rxjs';
-import { environment } from '../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {CookieService} from 'ngx-cookie-service';
+import {BehaviorSubject, Subject, tap} from 'rxjs';
+import {environment} from '../../environments/environment';
+import {User} from '../models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -68,7 +68,9 @@ export class AuthService {
       name: name,
       password: password,
       repeatedPassword: repeatedPassword,
-    });
+    }).pipe(tap({
+      error: err => console.log(err)
+    }));
   }
 
   logout() {

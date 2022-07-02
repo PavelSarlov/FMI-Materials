@@ -1,5 +1,5 @@
-import { Section } from './section';
-import { User } from './user';
+import {Section} from './section';
+import {User} from './user';
 
 export class MaterialRequest {
   id?: number;

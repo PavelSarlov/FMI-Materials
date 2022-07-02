@@ -9,23 +9,19 @@ import javax.transaction.Transactional;
 
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
 import com.fmi.materials.exception.EntityNotFoundException;
-import com.fmi.materials.mapper.FacultyDepartmentDtoMapper;
-import com.fmi.materials.repository.FacultyDepartmentRepository;
 import com.fmi.materials.service.FacultyDepartmentService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import lombok.RequiredArgsConstructor;
+
 @SpringBootTest
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FacultyDepartmentServiceIntegrationTests {
 
-    @Autowired
-    private FacultyDepartmentService facultyDepartmentService;
-    @Autowired
-    private FacultyDepartmentDtoMapper facultyDepartmentDtoMapper;
-    @Autowired
-    private FacultyDepartmentRepository facultyDepartmentRepository;
+    private final FacultyDepartmentService facultyDepartmentService;
 
     @Test
     @Transactional
@@ -46,7 +42,8 @@ public class FacultyDepartmentServiceIntegrationTests {
 
         this.facultyDepartmentService.deleteFacultyDepartment(toDelete.getId());
 
-        assertThrows(EntityNotFoundException.class, () -> this.facultyDepartmentService.deleteFacultyDepartment(toDelete.getId()));
+        assertThrows(EntityNotFoundException.class,
+                () -> this.facultyDepartmentService.deleteFacultyDepartment(toDelete.getId()));
     }
 
     @Test
@@ -81,4 +78,3 @@ public class FacultyDepartmentServiceIntegrationTests {
         assertThat(departments.size()).isNotEqualTo(0);
     }
 }
-

@@ -1,16 +1,17 @@
 package com.fmi.materials.dto.courselist;
 
+import java.util.List;
+
 import com.fmi.materials.dto.course.CourseDtoWithId;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @ToString
 public class CourseListDtoWithId extends CourseListDto {
     private Long id;

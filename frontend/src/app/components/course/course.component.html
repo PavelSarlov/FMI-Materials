@@ -1,38 +1,19 @@
 <div *ngIf="course" class="course-wrapper">
   <mat-card class="course-card">
-    <ng-container
-      *ngIf="user?.roles?.includes(USER_ROLES.ADMIN); else notAdmin"
-    >
-      <form
-        class="edit-form"
-        #editForm="ngForm"
-        (submit)="updateCourse(editForm)"
-      >
+    <ng-container *ngIf="user?.roles?.includes(USER_ROLES.ADMIN); else notAdmin">
+      <form class="edit-form" #editForm="ngForm" (submit)="updateCourse(editForm)">
         <section class="course-details">
           <section class="left-side">
             <mat-card-title>
               <mat-form-field class="input-field" appearance="fill">
                 <mat-label>Name</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  placeholder="Name"
-                  name="name"
-                  required
-                  #name="ngModel"
-                  [(ngModel)]="course.name"
-                  minlength="4"
-                  maxlength="50"
-                />
+                <input matInput type="text" placeholder="Name" name="name" required #name="ngModel"
+                  [(ngModel)]="course.name" minlength="4" maxlength="50" />
                 <mat-hint>{{ name?.value?.length }}/50</mat-hint>
-                <mat-error
-                  *ngIf="name.errors?.['minlength'] && !name.errors?.['required']"
-                >
+                <mat-error *ngIf="name.errors?.['minlength'] && !name.errors?.['required']">
                   Name should be at least 4 characters
                 </mat-error>
-                <mat-error
-                  *ngIf="name.errors?.['maxlength'] && !name.errors?.['required']"
-                >
+                <mat-error *ngIf="name.errors?.['maxlength'] && !name.errors?.['required']">
                   Name should be maximum 50 characters
                 </mat-error>
                 <mat-error *ngIf="name.errors?.['required']">
@@ -46,16 +27,8 @@
             <mat-card-content>
               <mat-form-field class="input-field" appearance="fill">
                 <mat-label>Description</mat-label>
-                <textarea
-                  matInput
-                  type="text"
-                  placeholder="Description"
-                  name="description"
-                  required
-                  #description="ngModel"
-                  [(ngModel)]="course.description"
-                  maxlength="255"
-                ></textarea>
+                <textarea matInput type="text" placeholder="Description" name="description" required
+                  #description="ngModel" [(ngModel)]="course.description" maxlength="255"></textarea>
                 <mat-hint>{{ description?.value?.length }}/255</mat-hint>
                 <mat-error *ngIf="description.errors?.['maxlength']">
                   Description should be maximum 255 characters
@@ -67,34 +40,19 @@
             <mat-card-title>
               <mat-form-field class="input-field" appearance="fill">
                 <mat-label>Faculty department</mat-label>
-                <mat-select
-                  name="facultyDepartment"
-                  [(ngModel)]="course.facultyDepartmentDto!.id"
-                  required
-                  #facultyDepartment
-                >
-                  <mat-option
-                    *ngFor="let faculty of facultyDepartments"
-                    [value]="faculty.id!"
-                    >{{ faculty.name! }}</mat-option
-                  >
+                <mat-select name="facultyDepartment" [(ngModel)]="course.facultyDepartmentDto!.id" required
+                  #facultyDepartment>
+                  <mat-option *ngFor="let faculty of facultyDepartments" [value]="faculty.id!">{{ faculty.name! }}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
             </mat-card-title>
             <mat-card-subtitle>
               <mat-form-field appearance="fill">
                 <mat-label>Group</mat-label>
-                <mat-select
-                  name="courseGroup"
-                  [(ngModel)]="course.courseGroup!.id"
-                  required
-                  #courseGroup
-                >
-                  <mat-option
-                    *ngFor="let group of COURSE_GROUPS | keyvalue"
-                    [value]="group.key"
-                    >{{ group.value }}</mat-option
-                  >
+                <mat-select name="courseGroup" [(ngModel)]="course.courseGroup!.id" required #courseGroup>
+                  <mat-option *ngFor="let group of COURSE_GROUPS | keyvalue" [value]="group.key">{{ group.value }}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
             </mat-card-subtitle>
@@ -104,23 +62,11 @@
           </section>
         </section>
         <section class="form-btns">
-          <button
-            mat-fab
-            color="primary"
-            type="submit"
-            class="form-btn"
-            matTooltip="Save changes"
-          >
+          <button mat-fab color="primary" type="submit" class="form-btn" matTooltip="Save changes">
             <mat-icon>save</mat-icon>
           </button>
-          <button
-            mat-fab
-            color="warn"
-            type="button"
-            class="form-btn"
-            (click)="deleteCourse()"
-            matTooltip="Delete course"
-          >
+          <button mat-fab color="warn" type="button" class="form-btn" (click)="deleteCourse()"
+            matTooltip="Delete course">
             <mat-icon>delete</mat-icon>
           </button>
         </section>
@@ -155,41 +101,22 @@
   <section class="material-search">
     <mat-card class="material-search">
       <div class="leftSide">
-        <button
-          mat-mini-fab
-          color="primary"
-          class="form-btn"
-          matTooltip="Search material"
-          (click)="onMaterialSearch()"
-        >
+        <button mat-mini-fab color="primary" class="form-btn" matTooltip="Search material" (click)="onMaterialSearch()">
           <mat-icon>search</mat-icon>
         </button>
         <mat-form-field appearance="legacy">
           <mat-label>Search material</mat-label>
-          <input
-            matInput
-            type="text"
-            name="material-search-name"
-            [(ngModel)]="materialSearchName"
-            #materialSearch="ngModel"
-            (input)="onMaterialSearch()"
-          />
+          <input matInput type="text" name="material-search-name" [(ngModel)]="materialSearchName"
+            #materialSearch="ngModel" (input)="onMaterialSearch()" />
         </mat-form-field>
         <mat-form-field appearance="legacy">
           <mat-label>File format</mat-label>
-          <mat-select
-            name="material-search-file-format"
-            [(ngModel)]="materialSearchFileFormat"
-            #materialSearchFormat="ngModel"
-            (selectionChange)="onMaterialSearch()"
-          >
+          <mat-select name="material-search-file-format" [(ngModel)]="materialSearchFileFormat"
+            #materialSearchFormat="ngModel" (selectionChange)="onMaterialSearch()">
             <mat-option>Clear</mat-option>
-            <mat-option
-              *ngFor="let fileFormat of FILE_FORMATS | keyvalue"
-              [value]="fileFormat.key"
-              ><mat-icon>{{ fileFormat.value.icon }}</mat-icon
-              >&nbsp;{{ fileFormat.value.name }}</mat-option
-            >
+            <mat-option *ngFor="let fileFormat of FILE_FORMATS | keyvalue" [value]="fileFormat.key">
+              <mat-icon>{{ fileFormat.value.icon }}</mat-icon>&nbsp;{{ fileFormat.value.name }}
+            </mat-option>
             <mat-select-trigger>
               <mat-icon>{{ FILE_FORMATS[materialSearchFileFormat]?.icon }}</mat-icon>
               {{ FILE_FORMATS[materialSearchFileFormat]?.name }}
@@ -198,18 +125,10 @@
         </mat-form-field>
         <mat-form-field appearance="legacy">
           <mat-label>Section</mat-label>
-          <mat-select
-            name="material-search-file-format"
-            [(ngModel)]="materialSearchSectionName"
-            #materialSearchSection="ngModel"
-            (selectionChange)="onMaterialSearch()"
-          >
+          <mat-select name="material-search-file-format" [(ngModel)]="materialSearchSectionName"
+            #materialSearchSection="ngModel" (selectionChange)="onMaterialSearch()">
             <mat-option>Clear</mat-option>
-            <mat-option
-              *ngFor="let section of sectionBackup"
-              [value]="section.name"
-              >{{ section.name }}</mat-option
-            >
+            <mat-option *ngFor="let section of sectionBackup" [value]="section.name">{{ section.name }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -223,47 +142,24 @@
   </section>
 
   <section class="section-list">
-    <form
-      *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)"
-      (submit)="createSection(createSectionForm)"
-      class="create-section-form"
-      #createSectionForm="ngForm"
-    >
-      <button
-        mat-mini-fab
-        color="primary"
-        type="submit"
-        matTooltip="Create section"
-        class="form-btn"
-      >
+    <form *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)" (submit)="createSection(createSectionForm)"
+      class="create-section-form" #createSectionForm="ngForm">
+      <button mat-mini-fab color="primary" type="submit" matTooltip="Create section" class="form-btn">
         <mat-icon>add</mat-icon>
       </button>
       <mat-form-field appearance="fill">
         <mat-label>Section name</mat-label>
-        <input
-          matInput
-          type="text"
-          name="create-section-name"
-          required
-          [(ngModel)]="createSectionName"
-          minlength="1"
-          maxlength="50"
-          #sectionName="ngModel"
-        />
+        <input matInput type="text" name="create-section-name" required [(ngModel)]="createSectionName" minlength="1"
+          maxlength="50" #sectionName="ngModel" />
         <mat-hint>{{ sectionName?.value?.length }}/50</mat-hint>
         <mat-error
-          *ngIf="sectionName.errors?.['minlength'] || sectionName.errors?.['maxlength'] || sectionName.errors?.['required']"
-        >
+          *ngIf="sectionName.errors?.['minlength'] || sectionName.errors?.['maxlength'] || sectionName.errors?.['required']">
           Section name should be between 1 and 50 characters
         </mat-error>
       </mat-form-field>
     </form>
     <mat-accordion multi>
-      <app-section
-        *ngFor="let section of course.sectionDtos"
-        [section]="section"
-        [courseId]="course?.id"
-      ></app-section>
+      <app-section *ngFor="let section of course.sectionDtos" [section]="section" [courseId]="course?.id"></app-section>
     </mat-accordion>
   </section>
 </div>

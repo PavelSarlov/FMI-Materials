@@ -6,13 +6,16 @@ import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDtoWithCourseId;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDtoWithData;
 import com.fmi.materials.model.MaterialRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class MaterialRequestDtoMapper {
-    @Autowired
-    private UserDtoMapper userDtoMapper;
+
+    private final UserDtoMapper userDtoMapper;
 
     public MaterialRequest convertToEntity(MaterialRequestDto materialDto) {
         if (materialDto == null) {
@@ -23,10 +26,10 @@ public class MaterialRequestDtoMapper {
                 materialDto.getId(),
                 materialDto.getFileFormat(),
                 materialDto.getFileName(),
-                ((MaterialRequestDtoWithData)materialDto).getData(),
+                materialDto instanceof MaterialRequestDtoWithData ? ((MaterialRequestDtoWithData) materialDto).getData()
+                        : null,
                 this.userDtoMapper.convertToEntity(materialDto.getUserDto()),
-                null
-        );
+                null);
     }
 
     public MaterialRequestDto convertToDto(MaterialRequest material) {
@@ -39,8 +42,7 @@ public class MaterialRequestDtoMapper {
                 material.getFileFormat(),
                 material.getFileName(),
                 this.userDtoMapper.convertToDto(material.getUser()),
-                material.getSection().getId()
-        );
+                material.getSection().getId());
     }
 
     public MaterialDto convertToMaterialDto(MaterialRequest material) {
@@ -52,8 +54,7 @@ public class MaterialRequestDtoMapper {
                 material.getId(),
                 material.getFileFormat(),
                 material.getFileName(),
-                material.getData()
-        );
+                material.getData());
     }
 
     public MaterialRequestDtoWithData convertToDtoWithData(MaterialRequest material) {
@@ -67,8 +68,7 @@ public class MaterialRequestDtoMapper {
                 material.getFileName(),
                 this.userDtoMapper.convertToDto(material.getUser()),
                 material.getSection().getId(),
-                material.getData()
-        );
+                material.getData());
     }
 
     public MaterialRequestDtoWithCourseId convertToDtoWithCourseId(MaterialRequest material, Long courseId) {
@@ -82,7 +82,6 @@ public class MaterialRequestDtoMapper {
                 material.getFileName(),
                 this.userDtoMapper.convertToDto(material.getUser()),
                 material.getSection().getId(),
-                courseId
-        );
+                courseId);
     }
 }

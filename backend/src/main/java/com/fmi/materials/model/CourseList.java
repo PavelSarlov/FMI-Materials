@@ -1,11 +1,23 @@
 package com.fmi.materials.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -25,16 +37,15 @@ public class CourseList {
     private User user;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable(name = "courses_user_courses_lists",
-            joinColumns = {
-                    @JoinColumn(name = "user_courses_list_id", referencedColumnName = "id", nullable = false, updatable = false),
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false, updatable = false),
-            })
+    @JoinTable(name = "courses_user_courses_lists", joinColumns = {
+            @JoinColumn(name = "user_courses_list_id", referencedColumnName = "id", nullable = false, updatable = false),
+    }, inverseJoinColumns = {
+            @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false, updatable = false),
+    })
     private Set<Course> courses;
 
-    public CourseList() {}
+    public CourseList() {
+    }
 
     public CourseList(String listName, Set<Course> courses) {
         this(null, listName, courses);

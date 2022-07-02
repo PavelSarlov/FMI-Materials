@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CoursesListService } from '../../services/courses-list.service';
-import { CoursesList } from '../../models/coursesList';
-import { User } from '../../models/user';
-import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router'
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {AuthService} from 'src/app/services/auth.service';
+import {CoursesList} from '../../models/coursesList';
+import {User} from '../../models/user';
+import {CoursesListService} from '../../services/courses-list.service';
 
 @Component({
   selector: 'app-profile',
@@ -17,10 +17,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   currentUser?: User | null;
   authSubscription?: Subscription;
   courseListSubscription?: Subscription;
-  
-  constructor(private coursesListService: CoursesListService, 
-    private authService: AuthService, 
-    private router: Router) { }
+
+  constructor(private coursesListService: CoursesListService,
+    private authService: AuthService,
+    private router: Router) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe(
@@ -28,7 +28,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.currentUser = resp;
       }
     );
-    if (this.authService.isAuthenticated()){
+    if (this.authService.isAuthenticated()) {
       this.coursesListService.getCoursesLists(this.currentUser!.id!);
       this.courseListSubscription = this.coursesListService.coursesLists$.subscribe(
         (resp) => {

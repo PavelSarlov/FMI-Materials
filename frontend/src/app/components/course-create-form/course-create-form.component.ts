@@ -1,15 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { CourseGroup, COURSE_GROUPS } from '../../models/course-group';
-import { FacultyDepartment } from '../../models/faculty-department';
-import { User, USER_ROLES } from '../../models/user';
-import { Course } from '../../models/course';
-import { FacultyDepartmentService } from '../../services/faculty-department.service';
-import { CourseService } from '../../services/course.service';
-import { AlertService } from '../../services/alert.service';
-import { AuthService } from '../../services/auth.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {Course} from '../../models/course';
+import {CourseGroup, COURSE_GROUPS} from '../../models/course-group';
+import {FacultyDepartment} from '../../models/faculty-department';
+import {User, USER_ROLES} from '../../models/user';
+import {AlertService} from '../../services/alert.service';
+import {AuthService} from '../../services/auth.service';
+import {CourseService} from '../../services/course.service';
+import {FacultyDepartmentService} from '../../services/faculty-department.service';
 
 @Component({
   selector: 'app-course-create-form',
@@ -49,7 +49,7 @@ export class CourseCreateFormComponent implements OnInit, OnDestroy {
     ) {
       this.alertService.warn(
         'You do not have the necessary permission to do that',
-        { keepAfterRouteChange: true }
+        {keepAfterRouteChange: true}
       );
       this.router.navigateByUrl('courses');
     } else {

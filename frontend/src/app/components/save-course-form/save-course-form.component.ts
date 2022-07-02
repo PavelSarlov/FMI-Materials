@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CoursesListService } from '../../services/courses-list.service';
-import { FavouriteCoursesService } from '../../services/favourite-courses.service';
-import { CoursesListWithCourses } from '../../models/coursesListWithCourses';
-import { Course } from '../../models/course';
-import { User } from '../../models/user';
-import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router'
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {AuthService} from 'src/app/services/auth.service';
+import {Course} from '../../models/course';
+import {CoursesListWithCourses} from '../../models/coursesListWithCourses';
+import {User} from '../../models/user';
+import {AlertService} from '../../services/alert.service';
+import {CoursesListService} from '../../services/courses-list.service';
+import {FavouriteCoursesService} from '../../services/favourite-courses.service';
 
 @Component({
   selector: 'app-save-course-form',
@@ -28,9 +29,10 @@ export class SaveCourseFormComponent implements OnInit, OnDestroy {
   favouritesSubscription?: Subscription;
 
   constructor(private coursesListService: CoursesListService,
-    private favouriteCoursesService: FavouriteCoursesService, 
+    private favouriteCoursesService: FavouriteCoursesService,
     private authService: AuthService,
-    private router: Router) { }
+    private alertService: AlertService,
+    private router: Router) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe(
@@ -41,7 +43,7 @@ export class SaveCourseFormComponent implements OnInit, OnDestroy {
 
     this.courseId = parseInt(window.location.href.split('/').pop()!);
 
-    if (this.authService.isAuthenticated()){
+    if (this.authService.isAuthenticated()) {
       this.coursesListService.getCoursesListsWithCourses(this.currentUser!.id!);
       this.courseListSubscription = this.coursesListService.coursesListsWithCourses$.subscribe(
         (resp) => {
@@ -89,25 +91,40 @@ export class SaveCourseFormComponent implements OnInit, OnDestroy {
   }
 
   addList() {
-    this.coursesListService.addCourseListWithCourse(this.currentUser!.id!, this.inputValue, this.courseId);
+    this.coursesListService.addCourseListWithCourse(this.currentUser!.id!, this.inputValue, this.courseId).subscribe({
+      next: () => this.alertService.success('Course list added successfully'),
+      error: (err) => this.alertService.error(err.error.error)
+    });
     this.inputValue = '';
   }
 
   processCheckList(indexCheckBox: number) {
     if (this.isCoursePresentInList[indexCheckBox] == false) {
-      this.coursesListService.addCourseToCoursesList(this.currentUser!.id!, this.coursesLists[indexCheckBox].id!, this.courseId);
+      this.coursesListService.addCourseToCoursesList(this.currentUser!.id!, this.coursesLists[indexCheckBox].id!, this.courseId).subscribe({
+        next: () => this.alertService.success('Course added to list successfully'),
+        error: (err) => this.alertService.error(err.error.error)
+      });
     }
     else {
-      this.coursesListService.deleteCourseFromCoursesList(this.currentUser!.id!, this.coursesLists[indexCheckBox].id!, this.courseId);
+      this.coursesListService.deleteCourseFromCoursesList(this.currentUser!.id!, this.coursesLists[indexCheckBox].id!, this.courseId).subscribe({
+        next: () => this.alertService.success('Course removed from list successfully'),
+        error: (err) => this.alertService.error(err.error.error)
+      });
     }
   }
 
   processCheckFavourites() {
     if (this.isCoursePresentInFavourites == false) {
-      this.favouriteCoursesService.addCourseToFavourites(this.currentUser!.id!, this.courseId);
+      this.favouriteCoursesService.addCourseToFavourites(this.currentUser!.id!, this.courseId).subscribe({
+        next: () => this.alertService.success('Course added to favourites successfully'),
+        error: (err) => this.alertService.error(err.error.error)
+      });
     }
     else {
-      this.favouriteCoursesService.deleteCourseFromFavourites(this.currentUser!.id!, this.courseId);
+      this.favouriteCoursesService.deleteCourseFromFavourites(this.currentUser!.id!, this.courseId).subscribe({
+        next: () => this.alertService.success('Course removed from favourites successfully'),
+        error: (err) => this.alertService.error(err.error.error)
+      });
     }
   }
 

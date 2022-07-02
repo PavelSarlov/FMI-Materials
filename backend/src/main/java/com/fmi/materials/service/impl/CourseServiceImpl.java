@@ -1,5 +1,13 @@
 package com.fmi.materials.service.impl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.transaction.Transactional;
+
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.pagedresult.PagedResultDto;
@@ -10,50 +18,37 @@ import com.fmi.materials.exception.EntityAlreadyExistsException;
 import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.mapper.CourseDtoMapper;
 import com.fmi.materials.mapper.FacultyDepartmentDtoMapper;
-import com.fmi.materials.mapper.MaterialDtoMapper;
 import com.fmi.materials.mapper.SectionDtoMapper;
 import com.fmi.materials.model.Course;
 import com.fmi.materials.model.FacultyDepartment;
 import com.fmi.materials.model.Section;
 import com.fmi.materials.repository.CourseRepository;
-import com.fmi.materials.repository.MaterialRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.FacultyDepartmentService;
 import com.fmi.materials.specification.CourseSpecification;
 import com.fmi.materials.vo.ExceptionMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
-    @Autowired
-    private FacultyDepartmentService facultyDepartmentService;
-    @Autowired
-    private SectionRepository sectionRepository;
-    @Autowired
-    private CourseRepository courseRepository;
-    @Autowired
-    private MaterialRepository materialRepository;
-    @Autowired
-    private CourseDtoMapper courseDtoMapper;
-    @Autowired
-    private FacultyDepartmentDtoMapper facultyDepartmentDtoMapper;
-    @Autowired
-    private SectionDtoMapper sectionDtoMapper;
-    @Autowired
-    private MaterialDtoMapper materialDtoMapper;
+
+    private final FacultyDepartmentService facultyDepartmentService;
+    private final SectionRepository sectionRepository;
+    private final CourseRepository courseRepository;
+    private final CourseDtoMapper courseDtoMapper;
+    private final FacultyDepartmentDtoMapper facultyDepartmentDtoMapper;
+    private final SectionDtoMapper sectionDtoMapper;
 
     @Override
+    @Transactional
     public CourseDto createCourse(CourseDto courseDto) {
 
         List<String> courseNames = this.courseRepository.findAll().stream()
@@ -80,6 +75,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public ResponseDto deleteCourse(Long courseId) {
         if (!this.courseRepository.existsById(courseId)) {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId));
@@ -91,6 +87,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public CourseDto updateCourse(CourseDtoWithId courseDto) {
         if (!this.courseRepository.existsById(courseDto.getId())) {
             throw new EntityNotFoundException(
@@ -102,6 +99,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public CourseDto findById(Long courseId) {
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -109,6 +107,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public PagedResultDto<CourseDto> findCourses(String filter, String filterValue, Pageable pageable) {
         List<String> keyWords = Arrays.stream(filterValue.split("[\\p{Punct}\\p{Blank}]"))
                 .collect(Collectors.toList());
@@ -133,6 +132,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public List<SectionDto> findAllCourseSections(Long courseId) {
         return this.courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundException(

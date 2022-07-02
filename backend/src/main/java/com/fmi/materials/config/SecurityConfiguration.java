@@ -1,6 +1,7 @@
 package com.fmi.materials.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,13 +17,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    @Autowired
-    UserDetailsService userDetailsService;
+
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -33,10 +35,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/courses/**").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.DELETE,"/api/courses/**").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.PUT,"/api/courses/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/courses/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/courses/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/courses/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/courses/**").hasAuthority("ADMIN")
                 .antMatchers("/api/departments/**").hasAuthority("ADMIN")
                 .antMatchers("/api/admins/**").hasAuthority("ADMIN")
                 .antMatchers("/api/users/**").hasAnyAuthority("ADMIN", "USER")

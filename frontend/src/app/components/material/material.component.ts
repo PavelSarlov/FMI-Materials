@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Material } from '../../models/material';
-import { User, USER_ROLES } from '../../models/user';
-import { CourseService } from '../../services/course.service';
-import { AuthService } from '../../services/auth.service';
-import { AlertService } from '../../services/alert.service';
-import { CrossEventService } from '../../services/cross-event.service';
-import { Subscription } from 'rxjs';
-import { FILE_FORMATS } from '../../vo/file-formats';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {Material} from '../../models/material';
+import {User, USER_ROLES} from '../../models/user';
+import {AlertService} from '../../services/alert.service';
+import {AuthService} from '../../services/auth.service';
+import {CourseService} from '../../services/course.service';
+import {CrossEventService} from '../../services/cross-event.service';
+import {FILE_FORMATS} from '../../vo/file-formats';
 
 @Component({
   selector: 'app-material',
@@ -67,7 +67,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
 
   deleteMaterial() {
     this.courseService.deleteMaterialById(this.material!.id!).subscribe({
-      next: (resp) => {
+      next: () => {
         this.alertService.success('Material deleted successfully');
         this.crossEventService.materialEvent.emit(this.sectionId);
       },

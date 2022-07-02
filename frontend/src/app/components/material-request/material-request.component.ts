@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { MaterialRequest } from '../../models/material-request';
-import { User, USER_ROLES } from '../../models/user';
-import { Subscription } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-import { AlertService } from '../../services/alert.service';
-import { CrossEventService } from '../../services/cross-event.service';
-import { AdminService } from '../../services/admin.service';
-import { FILE_FORMATS } from '../../vo/file-formats';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {MaterialRequest} from '../../models/material-request';
+import {User, USER_ROLES} from '../../models/user';
+import {AdminService} from '../../services/admin.service';
+import {AlertService} from '../../services/alert.service';
+import {AuthService} from '../../services/auth.service';
+import {CrossEventService} from '../../services/cross-event.service';
+import {FILE_FORMATS} from '../../vo/file-formats';
 
 @Component({
   selector: 'app-material-request',
@@ -23,6 +23,9 @@ export class MaterialRequestComponent implements OnInit, OnDestroy {
 
   @Input()
   materialRequest?: MaterialRequest;
+
+  @Input()
+  sectionId?: number;
 
   constructor(
     private authService: AuthService,
@@ -70,9 +73,9 @@ export class MaterialRequestComponent implements OnInit, OnDestroy {
     this.adminService
       .processMaterialRequest(this.user!.id!, this.materialRequest!.id!, status)
       .subscribe({
-        next: (resp) => {
+        next: () => {
           this.alertService.success('Material processed successfully!');
-          this.crossEventService.materialEvent.emit();
+          this.crossEventService.materialEvent.emit(this.sectionId!);
         },
         error: (resp) => {
           this.alertService.success(resp.error.error);

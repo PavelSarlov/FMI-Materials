@@ -1,16 +1,17 @@
 package com.fmi.materials.dto.material;
 
+import javax.validation.constraints.NotNull;
+
 import com.fmi.materials.validator.SizeByte;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @ToString
 public class MaterialDtoWithData extends MaterialDto {
     @NotNull

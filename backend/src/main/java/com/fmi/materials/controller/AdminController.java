@@ -1,29 +1,33 @@
 package com.fmi.materials.controller;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
 import com.fmi.materials.service.MaterialRequestService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/admins/{adminId}")
 public class AdminController {
-    private MaterialRequestService materialRequestService;
 
-    @Autowired
-    public AdminController(MaterialRequestService materialRequestService) {
-        this.materialRequestService = materialRequestService;
-    }
+    private final MaterialRequestService materialRequestService;
 
     @GetMapping("material-requests")
     public ResponseEntity<List<MaterialRequestDto>> getAllMaterialRequests(@PathVariable Long adminId) {

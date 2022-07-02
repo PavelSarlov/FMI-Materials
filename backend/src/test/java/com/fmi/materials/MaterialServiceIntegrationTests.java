@@ -10,23 +10,19 @@ import javax.transaction.Transactional;
 import com.fmi.materials.dto.material.MaterialDto;
 import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.exception.EntityNotFoundException;
-import com.fmi.materials.mapper.MaterialDtoMapper;
-import com.fmi.materials.repository.MaterialRepository;
 import com.fmi.materials.service.MaterialService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import lombok.RequiredArgsConstructor;
+
 @SpringBootTest
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MaterialServiceIntegrationTests {
 
-    @Autowired
-    private MaterialService materialService;
-    @Autowired
-    private MaterialDtoMapper materialDtoMapper;
-    @Autowired
-    private MaterialRepository materialRepository;
+    private final MaterialService materialService;
 
     @Test
     @Transactional

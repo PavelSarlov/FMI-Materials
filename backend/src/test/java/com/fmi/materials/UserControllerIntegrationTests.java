@@ -1,10 +1,15 @@
 package com.fmi.materials;
 
-import com.fmi.materials.mapper.CourseDtoMapper;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import javax.transaction.Transactional;
+
 import com.fmi.materials.model.User;
-import com.fmi.materials.repository.CourseRepository;
-import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.FavouriteCoursesService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,26 +24,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.transaction.Transactional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import lombok.RequiredArgsConstructor;
 
 @SpringBootTest
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserControllerIntegrationTests {
-    @Autowired
-    private FavouriteCoursesService favouriteCoursesService;
-    @Autowired
-    private CourseRepository courseRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CourseDtoMapper courseDtoMapper;
-    @Autowired
-    private WebApplicationContext context;
+
+    private final FavouriteCoursesService favouriteCoursesService;
+    private final WebApplicationContext context;
 
     private MockMvc mockMvc;
 
@@ -48,7 +41,7 @@ public class UserControllerIntegrationTests {
                 .webAppContextSetup(this.context)
                 .build();
 
-        User userDetails = new User(1L,"U1", "pass", "u1@email.com");
+        User userDetails = new User(1L, "U1", "pass", "u1@email.com");
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -68,7 +61,7 @@ public class UserControllerIntegrationTests {
                 .accept(MediaType.APPLICATION_JSON));
         Integer sizeAfterDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
 
-        assertThat(sizeAfterDeletion+1).isEqualTo(sizeBeforeDeletion);
+        assertThat(sizeAfterDeletion + 1).isEqualTo(sizeBeforeDeletion);
     }
 
     @Test

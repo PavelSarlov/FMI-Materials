@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 
 import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.exception.EntityNotFoundException;
-import com.fmi.materials.mapper.SectionDtoMapper;
 import com.fmi.materials.model.Section;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.service.SectionService;
@@ -20,15 +19,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import lombok.RequiredArgsConstructor;
+
 @SpringBootTest
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SectionServiceIntegrationTests {
 
-    @Autowired
-    private SectionService sectionService;
-    @Autowired
-    private SectionDtoMapper sectionDtoMapper;
-    @Autowired
-    private SectionRepository sectionRepository;
+    private final SectionService sectionService;
+    private final SectionRepository sectionRepository;
 
     @Test
     @Transactional

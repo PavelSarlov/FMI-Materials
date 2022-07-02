@@ -1,27 +1,28 @@
 <div class="list-wrapper">
-    <p class="title">Course Lists</p>
+  <p class="title">Course Lists</p>
 
-    <div class="inputField">
-        <form class="example-form">
-            <mat-form-field class="example-full-width" appearance="fill">
-              <mat-label>List name</mat-label>
-              <input matInput #message [(ngModel)]="value" name="inputValue" maxlength="50" placeholder="Ex. I need help with...">
-              <mat-hint align="start"><strong>Name of course</strong> </mat-hint>
-              <mat-hint align="end">{{message.value.length}} / 50</mat-hint>
-              <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-                <mat-icon>close</mat-icon>
-              </button>
-            </mat-form-field>
-        </form>   
-
-        <button mat-fab color="primary" (click)="addList()" aria-label="Example icon button with a add icon">
-            <mat-icon>playlist_add</mat-icon>
+  <div class="inputField">
+    <form class="example-form">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>List name</mat-label>
+        <input matInput #message [(ngModel)]="value" name="inputValue" maxlength="50"
+          placeholder="Ex. I need help with...">
+        <mat-hint align="start"><strong>Name of course</strong> </mat-hint>
+        <mat-hint align="end">{{message.value.length}} / 50</mat-hint>
+        <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+          <mat-icon>close</mat-icon>
         </button>
-    </div>
+      </mat-form-field>
+    </form>
 
-    <mat-list>
-        <mat-list-item class="coursesLists" *ngFor="let list of coursesLists">
-            <app-course-list-card [list]="list"></app-course-list-card>
-        </mat-list-item>
-    </mat-list>
+    <button mat-fab color="primary" (click)="addList()" aria-label="Example icon button with a add icon">
+      <mat-icon>playlist_add</mat-icon>
+    </button>
+  </div>
+
+  <mat-list>
+    <mat-list-item class="coursesLists" *ngFor="let list of coursesLists">
+      <app-course-list-card [list]="list"></app-course-list-card>
+    </mat-list-item>
+  </mat-list>
 </div>

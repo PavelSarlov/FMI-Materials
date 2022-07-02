@@ -5,18 +5,18 @@
       <mat-card class="userInfo">
         <p class="sub-title">User data</p>
 
-          <div>
-            <mat-card-title>Name</mat-card-title>
-            <mat-card-subtitle>{{currentUser?.name}}</mat-card-subtitle>
-          </div>
-          <div>
-            <mat-card-title>Email</mat-card-title>
-            <mat-card-subtitle>{{currentUser?.email}}</mat-card-subtitle>
-          </div>
-          <div>
-            <mat-card-title>Role</mat-card-title>
-            <mat-card-subtitle>{{currentUser?.roles}}</mat-card-subtitle>
-          </div>     
+        <div>
+          <mat-card-title>Name</mat-card-title>
+          <mat-card-subtitle>{{currentUser?.name}}</mat-card-subtitle>
+        </div>
+        <div>
+          <mat-card-title>Email</mat-card-title>
+          <mat-card-subtitle>{{currentUser?.email}}</mat-card-subtitle>
+        </div>
+        <div>
+          <mat-card-title>Role</mat-card-title>
+          <mat-card-subtitle>{{currentUser?.roles}}</mat-card-subtitle>
+        </div>
 
       </mat-card>
 
@@ -24,26 +24,20 @@
         <p class="sub-title">Others</p>
 
         <div>
-          <a
-          routerLink="/user/favourite-courses"
-          routerLinkActive="active"
-          >
+          <a routerLink="/user/favourite-courses" routerLinkActive="active">
             Favourite courses
           </a>
         </div>
 
       </mat-card>
     </div>
-  
+
     <div class="rightSide">
       <mat-card class="coursesLists">
         <p class="sub-title">Lists of courses</p>
 
         <div class="coursesLists" *ngFor="let list of coursesLists">
-          <a
-          routerLink="/user/course-lists/{{list.id}}"
-          routerLinkActive="active"
-          >
+          <a routerLink="/user/course-lists/{{list.id}}" routerLinkActive="active">
             {{list.listName}}
           </a>
         </div>

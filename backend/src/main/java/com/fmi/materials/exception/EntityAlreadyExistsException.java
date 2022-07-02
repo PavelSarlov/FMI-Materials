@@ -1,14 +1,15 @@
 package com.fmi.materials.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
 
 @Getter
 public class EntityAlreadyExistsException extends CustomException {
 
     protected HttpStatus status = HttpStatus.CONFLICT;
 
-    public EntityAlreadyExistsException()  {
+    public EntityAlreadyExistsException() {
         super();
     }
 
@@ -18,10 +19,9 @@ public class EntityAlreadyExistsException extends CustomException {
 
     public EntityAlreadyExistsException(String message) {
         super(message);
-    } 
+    }
 
     public EntityAlreadyExistsException(Throwable cause) {
         super(cause);
     }
 }
-

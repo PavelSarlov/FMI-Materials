@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { CrossEventService } from '../../services/cross-event.service';
-import { AuthService } from '../../services/auth.service';
-import { User, USER_ROLES } from '../../models/user';
-import { Subscription } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {User, USER_ROLES} from '../../models/user';
+import {AuthService} from '../../services/auth.service';
+import {CrossEventService} from '../../services/cross-event.service';
 
 @Component({
   selector: 'app-sidenav',

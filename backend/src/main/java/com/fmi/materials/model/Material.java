@@ -1,9 +1,17 @@
 package com.fmi.materials.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
@@ -29,7 +37,8 @@ public class Material {
     @JoinColumn(name = "section_id")
     private Section section;
 
-    public Material() {}
+    public Material() {
+    }
 
     public Material(String fileFormat, String fileName, byte[] data, Section section) {
         this(null, fileFormat, fileName, data, section);
