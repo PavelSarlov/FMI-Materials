@@ -1,12 +1,27 @@
 package com.fmi.materials.model;
 
-import com.fmi.materials.vo.CourseGroup;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.fmi.materials.vo.CourseGroup;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -45,13 +60,16 @@ public class Course {
     @ManyToMany(mappedBy = "favouriteCourses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<User> users;
 
-    public Course() {}
+    public Course() {
+    }
 
-    public Course(String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup) {
+    public Course(String name, String description, String createdBy, FacultyDepartment facultyDepartment,
+            CourseGroup courseGroup) {
         this(null, name, description, createdBy, facultyDepartment, courseGroup);
     }
 
-    public Course(Long id, String name, String description, String createdBy, FacultyDepartment facultyDepartment, CourseGroup courseGroup) {
+    public Course(Long id, String name, String description, String createdBy, FacultyDepartment facultyDepartment,
+            CourseGroup courseGroup) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -1,9 +1,14 @@
 package com.fmi.materials.dto.response;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
 @Getter
+@EqualsAndHashCode(callSuper = true)
+@ToString
 public class ResponseDtoSuccess extends ResponseDto {
 
     private String message;

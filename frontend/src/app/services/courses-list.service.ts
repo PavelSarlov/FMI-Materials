@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { CoursesList } from '../models/coursesList';
-import { Course } from '../models/course';
-import { CoursesListWithCourses } from 'src/app/models/coursesListWithCourses';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, tap} from 'rxjs';
+import {CoursesListWithCourses} from 'src/app/models/coursesListWithCourses';
+import {environment} from '../../environments/environment';
+import {Course} from '../models/course';
+import {CoursesList} from '../models/coursesList';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class CoursesListService {
   coursesListsWithCourses$: BehaviorSubject<CoursesListWithCourses[]> = new BehaviorSubject<CoursesListWithCourses[]>([]);
   coursesList$: BehaviorSubject<CoursesListWithCourses> = new BehaviorSubject<CoursesListWithCourses>({});
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   public getCoursesLists(userId: number) {
     this.http
@@ -53,34 +53,43 @@ export class CoursesListService {
   }
 
   public deleteCourseList(userId: number, coursesListId: number) {
-    this.http
+    return this.http
       .delete(`${environment.usersApi}/${userId}/lists/${coursesListId}`)
-      .subscribe(resp => {
+      .pipe(tap({
+        next: resp => {
           console.log(resp);
           this.getCoursesLists(userId);
-        });
+        },
+        error: err => console.log(err)
+      }));
   }
 
   public deleteCourseFromCoursesList(userId: number, coursesListId: number, courseId: number) {
-    this.http
+    return this.http
       .delete(`${environment.usersApi}/${userId}/lists/${coursesListId}/${courseId}`)
-      .subscribe(resp => {
+      .pipe(tap({
+        next: resp => {
           console.log(resp);
           this.getCoursesListById(userId, coursesListId);
           this.getCoursesListsWithCourses(userId);
-        });
+        },
+        error: err => console.log(err)
+      }));
   }
 
   public addCourseList(userId: number, listName: string) {
     let courseList = new CoursesList();
     courseList.listName = listName;
 
-    this.http
-    .post(`${environment.usersApi}/${userId}/lists`, courseList)
-    .subscribe(resp => {
-      console.log(resp);
-      this.getCoursesLists(userId);
-    });
+    return this.http
+      .post(`${environment.usersApi}/${userId}/lists`, courseList)
+      .pipe(tap({
+        next: resp => {
+          console.log(resp);
+          this.getCoursesLists(userId);
+        },
+        error: err => console.log(err)
+      }));
   }
 
   public addCourseListWithCourse(userId: number, listName: string, courseId: number) {
@@ -91,29 +100,38 @@ export class CoursesListService {
     courseList.courses = new Array();
     courseList.courses?.push(course);
 
-    this.http
-    .post(`${environment.usersApi}/${userId}/lists`, courseList)
-    .subscribe(resp => {
-      console.log(resp);
-      this.getCoursesListsWithCourses(userId);
-    });
+    return this.http
+      .post(`${environment.usersApi}/${userId}/lists`, courseList)
+      .pipe(tap({
+        next: resp => {
+          console.log(resp);
+          this.getCoursesListsWithCourses(userId);
+        },
+        error: err => console.log(err)
+      }));
   }
 
   public addCourseToCoursesList(userId: number, coursesListId: number, courseId: number) {
-    this.http
-    .post(`${environment.usersApi}/${userId}/lists/${coursesListId}/${courseId}`, null)
-    .subscribe(resp => {
-      console.log(resp);
-      this.getCoursesListsWithCourses(userId);
-    });
+    return this.http
+      .post(`${environment.usersApi}/${userId}/lists/${coursesListId}/${courseId}`, null)
+      .pipe(tap({
+        next: resp => {
+          console.log(resp);
+          this.getCoursesListsWithCourses(userId);
+        },
+        error: err => console.log(err)
+      }));
   }
 
   public changeCoursesListName(userId: number, coursesListId: number, listName: string) {
-    this.http
-    .put(`${environment.usersApi}/${userId}/lists/${coursesListId}?listName=${listName}`, undefined)
-    .subscribe(resp => {
-      console.log(resp);
-      this.getCoursesLists(userId);
-    });
+    return this.http
+      .put(`${environment.usersApi}/${userId}/lists/${coursesListId}?listName=${listName}`, undefined)
+      .pipe(tap({
+        next: resp => {
+          console.log(resp);
+          this.getCoursesListById(userId, coursesListId);
+        },
+        error: err => console.log(err)
+      }));
   }
 }

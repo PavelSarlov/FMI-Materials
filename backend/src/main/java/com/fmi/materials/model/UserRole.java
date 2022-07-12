@@ -1,10 +1,19 @@
 package com.fmi.materials.model;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -22,7 +31,8 @@ public class UserRole {
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<User> users;
 
-    public UserRole() {}
+    public UserRole() {
+    }
 
     public UserRole(String name) {
         this(null, name);

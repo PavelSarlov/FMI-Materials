@@ -1,5 +1,14 @@
 package com.fmi.materials.controller;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.Validator;
+
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
@@ -12,8 +21,7 @@ import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.MaterialService;
 import com.fmi.materials.service.SectionService;
 import com.fmi.materials.vo.CourseGroup;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,29 +29,29 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
-import javax.validation.Validator;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
+import lombok.RequiredArgsConstructor;
 
 @RestController
-@Slf4j
+@RequiredArgsConstructor
 @RequestMapping(value = "api/courses")
 public class CourseController {
-    @Autowired
-    private CourseService courseService;
-    @Autowired
-    private SectionService sectionService;
-    @Autowired
-    private MaterialService materialService;
-    @Autowired
-    private Validator validator;
+
+    private final CourseService courseService;
+    private final SectionService sectionService;
+    private final MaterialService materialService;
+    private final Validator validator;
 
     @PostMapping
     public ResponseEntity<CourseDto> createCourse(@RequestBody @Valid CourseDto courseDto) {

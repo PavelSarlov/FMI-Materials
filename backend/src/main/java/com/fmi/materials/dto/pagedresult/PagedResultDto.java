@@ -1,10 +1,11 @@
 package com.fmi.materials.dto.pagedresult;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @Builder

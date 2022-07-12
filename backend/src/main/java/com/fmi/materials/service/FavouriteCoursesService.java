@@ -1,8 +1,8 @@
 package com.fmi.materials.service;
 
-import com.fmi.materials.dto.course.CourseDtoWithId;
-
 import java.util.List;
+
+import com.fmi.materials.dto.course.CourseDtoWithId;
 
 public interface FavouriteCoursesService {
     List<CourseDtoWithId> getFavouriteCourses(Long userId);

@@ -1,11 +1,11 @@
 package com.fmi.materials.dto.user;
 
+import java.util.List;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,7 +14,8 @@ import java.util.List;
 public class UserDtoRegistration extends UserDto {
     private String repeatedPassword;
 
-    public UserDtoRegistration(String repeatedPassword, String name, String password, String email, List<String> roles) {
+    public UserDtoRegistration(String repeatedPassword, String name, String password, String email,
+            List<String> roles) {
         super(name, password, email, roles);
         this.repeatedPassword = repeatedPassword;
     }

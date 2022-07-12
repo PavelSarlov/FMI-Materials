@@ -1,19 +1,20 @@
 package com.fmi.materials.mapper;
 
-import com.fmi.materials.dto.section.SectionDto;
-import com.fmi.materials.model.Section;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.stream.Collectors;
 
+import com.fmi.materials.dto.section.SectionDto;
+import com.fmi.materials.model.Section;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class SectionDtoMapper {
 
-    @Autowired
-    private MaterialDtoMapper materialDtoMapper;
-    @Autowired
-    private MaterialRequestDtoMapper materialRequestDtoMapper;
+    private final MaterialDtoMapper materialDtoMapper;
+    private final MaterialRequestDtoMapper materialRequestDtoMapper;
 
     public Section convertToEntity(SectionDto sectionDto) {
         if (sectionDto == null) {

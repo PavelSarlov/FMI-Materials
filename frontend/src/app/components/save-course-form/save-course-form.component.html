@@ -1,41 +1,44 @@
 <div class="wrapper">
-    <section class="popupHeader">
-        <header>
-            Save
-        </header>
-       <button mat-dialog-close>
-            <mat-icon>close</mat-icon>
-       </button>
-    </section>
-    <mat-divider></mat-divider>
-    <section class="lists">
-        <mat-checkbox class="example-margin" [checked]="isCoursePresentInFavourites" (click)="processCheckFavourites()">Favourite courses</mat-checkbox>
-        <mat-list-item class="course" *ngFor="let list of coursesLists; let i = index">
-            <mat-checkbox class="example-margin" [checked]="isCoursePresentInList[i]" (click)="processCheckList(i)">{{list.listName}}</mat-checkbox>
-        </mat-list-item>
-    </section>
-     <mat-divider></mat-divider>
-     <section class="createSectionButton">
-        <button (click)="showContent()">
-            <mat-icon>add</mat-icon>
-       </button>
-        <header>
-            Create new courses list
-        </header>
-    </section>
-    <section class="createSection">
-        <form class="example-form">
-            <mat-form-field class="example-full-width" appearance="fill">
-              <mat-label>List name</mat-label>
-              <input matInput #message [(ngModel)]="inputValue" name="inputValue" maxlength="50" placeholder="Ex. I need help with...">
-              <mat-hint align="start"><strong>Name of course</strong> </mat-hint>
-              <mat-hint align="end">{{message.value.length}} / 50</mat-hint>
-            </mat-form-field>
-        </form>   
-        <div class="footerSection">
-            <button (click)="addList()">
-                Create
-            </button>    
-        </div>   
-    </section>
+  <section class="popupHeader">
+    <header>
+      Save
+    </header>
+    <button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </section>
+  <mat-divider></mat-divider>
+  <section class="lists">
+    <mat-checkbox class="example-margin" [checked]="isCoursePresentInFavourites" (click)="processCheckFavourites()">
+      Favourite courses</mat-checkbox>
+    <mat-list-item class="course" *ngFor="let list of coursesLists; let i = index">
+      <mat-checkbox class="example-margin" [checked]="isCoursePresentInList[i]" (click)="processCheckList(i)">
+        {{list.listName}}</mat-checkbox>
+    </mat-list-item>
+  </section>
+  <mat-divider></mat-divider>
+  <section class="createSectionButton">
+    <button (click)="showContent()">
+      <mat-icon>add</mat-icon>
+    </button>
+    <header>
+      Create new courses list
+    </header>
+  </section>
+  <section class="createSection">
+    <form class="example-form">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>List name</mat-label>
+        <input matInput #message [(ngModel)]="inputValue" name="inputValue" maxlength="50"
+          placeholder="Ex. I need help with...">
+        <mat-hint align="start"><strong>Name of course</strong> </mat-hint>
+        <mat-hint align="end">{{message.value.length}} / 50</mat-hint>
+      </mat-form-field>
+    </form>
+    <div class="footerSection">
+      <button (click)="addList()">
+        Create
+      </button>
+    </div>
+  </section>
 </div>

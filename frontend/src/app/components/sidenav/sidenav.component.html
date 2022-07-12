@@ -1,30 +1,25 @@
 <mat-drawer #drawer mode="side" class="drawer" opened>
-  <a routerLink="/courses" routerLinkActive="active"
-    ><mat-card class="sidenav-card">
+  <a routerLink="/courses" routerLinkActive="active">
+    <mat-card class="sidenav-card">
       <mat-icon>dashboard</mat-icon>
       <mat-card-content>Dashboard</mat-card-content>
     </mat-card>
   </a>
   <ng-container *ngIf="user">
-    <a
-      routerLink="/user/course-lists"
-      routerLinkActive="active"
-      ><mat-card class="sidenav-card">
+    <a routerLink="/user/course-lists" routerLinkActive="active">
+      <mat-card class="sidenav-card">
         <mat-icon>view_list</mat-icon>
         <mat-card-content>Course Lists</mat-card-content>
       </mat-card>
     </a>
-    <a routerLink="/user/favourite-courses" routerLinkActive="active"
-      ><mat-card class="sidenav-card">
+    <a routerLink="/user/favourite-courses" routerLinkActive="active">
+      <mat-card class="sidenav-card">
         <mat-icon>favorite</mat-icon>
         <mat-card-content>Favourites</mat-card-content>
       </mat-card>
     </a>
-    <a
-      *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)"
-      routerLink="/material-requests"
-      routerLinkActive="active"
-      ><mat-card class="sidenav-card">
+    <a *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)" routerLink="/material-requests" routerLinkActive="active">
+      <mat-card class="sidenav-card">
         <mat-icon>contact_support</mat-icon>
         <mat-card-content>Material Requests</mat-card-content>
       </mat-card>

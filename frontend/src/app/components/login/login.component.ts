@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { AlertService } from '../../services/alert.service';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {AlertService} from '../../services/alert.service';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +11,8 @@ import { AlertService } from '../../services/alert.service';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
+
+  showPassword: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -51,20 +53,14 @@ export class LoginComponent implements OnInit {
           this.loginForm.get('password')?.value
         )
         .subscribe({
-          next: (resp) => {
+          next: () => {
             this.alertService.success('Login successful!', {
               keepAfterRouteChange: true,
             });
             this.router.navigateByUrl('courses');
           },
           error: (resp) => {
-            if (typeof resp.error.error === 'object') {
-              for (let error of resp.error.error) {
-                this.alertService.error(error);
-              }
-            } else {
-              this.alertService.error(resp.error.error);
-            }
+            this.alertService.error(resp.error.error);
           },
         });
     } else {

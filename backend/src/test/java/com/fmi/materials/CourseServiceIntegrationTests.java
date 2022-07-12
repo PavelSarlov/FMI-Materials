@@ -1,19 +1,21 @@
 package com.fmi.materials;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
+
+import javax.transaction.Transactional;
+
 import com.fmi.materials.dto.course.CourseDto;
 import com.fmi.materials.dto.course.CourseDtoWithId;
 import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
 import com.fmi.materials.dto.pagedresult.PagedResultDto;
 import com.fmi.materials.dto.section.SectionDto;
 import com.fmi.materials.exception.EntityNotFoundException;
-import com.fmi.materials.mapper.CourseDtoMapper;
-import com.fmi.materials.repository.CourseRepository;
-import com.fmi.materials.repository.FacultyDepartmentRepository;
-import com.fmi.materials.repository.MaterialRepository;
-import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.service.CourseService;
-import com.fmi.materials.service.FacultyDepartmentService;
 import com.fmi.materials.vo.CourseGroup;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,30 +23,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import javax.transaction.Transactional;
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import lombok.RequiredArgsConstructor;
 
 @SpringBootTest
-public class CourseServiceUnitTests {
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class CourseServiceIntegrationTests {
 
-    @Autowired
-    private FacultyDepartmentService facultyDepartmentService;
-    @Autowired
-    private CourseService courseService;
-    @Autowired
-    private CourseDtoMapper courseDtoMapper;
-
-    @Autowired
-    private FacultyDepartmentRepository facultyDepartmentRepository;
-    @Autowired
-    private CourseRepository courseRepository;
-    @Autowired
-    private SectionRepository sectionRepository;
-    @Autowired
-    private MaterialRepository materialRepository;
+    private final CourseService courseService;
 
     @Test
     @Transactional
@@ -62,7 +47,7 @@ public class CourseServiceUnitTests {
 
         CourseDtoWithId created = (CourseDtoWithId) this.courseService.createCourse(toCreate);
 
-        assertThat(created.getId()).isEqualTo(2L);
+        assertThat(created.getName()).isEqualTo("Some new course");
         assertThat(created.getFacultyDepartmentDto().getName()).isEqualTo("Algebra");
     }
 
@@ -97,14 +82,15 @@ public class CourseServiceUnitTests {
         Boolean desc = false;
 
         Sort sort = Sort.by((sortBy != null && sortBy != "" ? sortBy : "name"));
-        if (desc != null && desc) sort = sort.descending();
+        if (desc != null && desc)
+            sort = sort.descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        PagedResultDto pagedResultDto = this.courseService.findCourses(filter, filterValue, pageable);
+        PagedResultDto<CourseDto> pagedResultDto = this.courseService.findCourses(filter, filterValue, pageable);
 
         assertThat(pagedResultDto).isNotNull();
         assertThat(pagedResultDto.getCurrentPage()).isEqualTo(0);
-        assertThat(pagedResultDto.getItems().stream().count()).isEqualTo(1);
+        assertThat(pagedResultDto.getItems().stream().count()).isNotEqualTo(0);
     }
 
     @Test

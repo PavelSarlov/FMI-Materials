@@ -1,7 +1,8 @@
 package com.fmi.materials.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
 
 @Getter
 public class InvalidArgumentException extends CustomException {
@@ -14,13 +15,13 @@ public class InvalidArgumentException extends CustomException {
 
     public InvalidArgumentException(String message, Throwable cause) {
         super(message, cause);
-    } 
+    }
 
     public InvalidArgumentException(String message) {
         super(message);
-    } 
+    }
 
     public InvalidArgumentException(Throwable cause) {
         super(cause);
-    } 
+    }
 }

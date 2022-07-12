@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { User, USER_ROLES } from '../../models/user';
-import { MaterialRequest } from '../../models/material-request';
-import { AuthService } from '../../services/auth.service';
-import { AlertService } from '../../services/alert.service';
-import { AdminService } from '../../services/admin.service';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {MaterialRequest} from '../../models/material-request';
+import {User, USER_ROLES} from '../../models/user';
+import {AdminService} from '../../services/admin.service';
+import {AlertService} from '../../services/alert.service';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-material-requests-list',
@@ -35,7 +35,7 @@ export class MaterialRequestsListComponent implements OnInit, OnDestroy {
       if (!this.user?.roles?.includes(USER_ROLES.ADMIN)) {
         this.alertService.warn(
           'You do not have the necessary permissions to do that.',
-          { keepAfterRouteChange: true }
+          {keepAfterRouteChange: true}
         );
         this.router.navigateByUrl('/courses');
       }

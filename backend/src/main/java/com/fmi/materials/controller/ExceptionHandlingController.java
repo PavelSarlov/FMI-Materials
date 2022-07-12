@@ -62,7 +62,7 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
     }
 
     private ResponseEntity<Object> buildResponseEntity(Object error, HttpStatus status) {
-        ResponseDto responseDto = new ResponseDtoError(status, error);
+        ResponseDto responseDto = new ResponseDtoError<Object>(status, error);
         return new ResponseEntity<Object>(responseDto, status);
     }
 }

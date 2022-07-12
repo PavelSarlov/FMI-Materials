@@ -1,20 +1,15 @@
 import {
-  Component,
-  Input,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
+  Component, ElementRef, Input, OnDestroy, OnInit, ViewChild
 } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Section } from '../../models/section';
-import { User, USER_ROLES } from '../../models/user';
-import { AlertService } from '../../services/alert.service';
-import { AuthService } from '../../services/auth.service';
-import { CourseService } from '../../services/course.service';
-import { CrossEventService } from '../../services/cross-event.service';
-import { UserService } from '../../services/user.service';
-import { FILE_FORMATS } from '../../vo/file-formats';
+import {Subscription} from 'rxjs';
+import {Section} from '../../models/section';
+import {User, USER_ROLES} from '../../models/user';
+import {AlertService} from '../../services/alert.service';
+import {AuthService} from '../../services/auth.service';
+import {CourseService} from '../../services/course.service';
+import {CrossEventService} from '../../services/cross-event.service';
+import {UserService} from '../../services/user.service';
+import {FILE_FORMATS} from '../../vo/file-formats';
 
 @Component({
   selector: 'app-section',
@@ -36,7 +31,7 @@ export class SectionComponent implements OnInit, OnDestroy {
   @Input()
   section?: Section;
 
-  @ViewChild('material', { static: false })
+  @ViewChild('material', {static: false})
   material!: ElementRef;
 
   fileToUpload?: File;
@@ -96,7 +91,7 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.courseService
           .createMaterial(formData, this.section!.id!)
           .subscribe({
-            next: (resp: any) => {
+            next: () => {
               this.alertService.success('File uploaded successfully');
               this.fetchSection();
             },
@@ -106,7 +101,7 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.userService
           .createMaterialRequest(formData, this.section!.id!, this.user!.id!)
           .subscribe({
-            next: (resp: any) => {
+            next: () => {
               this.alertService.success('Request send successfully!');
               this.fetchSection();
             },
@@ -126,18 +121,10 @@ export class SectionComponent implements OnInit, OnDestroy {
       section.name = patchSectionForm.value.name;
 
       this.courseService.patchSection(section).subscribe({
-        next: (resp) =>
+        next: () =>
           this.alertService.success('Section updated successfully!'),
         error: (resp) => {
-          if (typeof resp.error.error == 'object') {
-            for (let key of Object.keys(resp.error.error)) {
-              for (let err of resp.error.error[key]) {
-                this.alertService.error(err);
-              }
-            }
-          } else {
-            this.alertService.error(resp.error.error);
-          }
+          this.alertService.error(resp.error.error);
         },
       });
     }
@@ -145,7 +132,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
   deleteSection() {
     this.courseService.deleteSectionById(this.section!.id!).subscribe({
-      next: (resp) => {
+      next: () => {
         this.alertService.success('Section deleted successfully!');
         this.crossEventService.sectionEvent.emit(this.courseId);
       },

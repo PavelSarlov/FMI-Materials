@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CoursesListService } from '../../services/courses-list.service';
-import { CoursesList } from '../../models/coursesList';
-import { User } from '../../models/user';
-import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router'
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {CoursesList} from '../../models/coursesList';
+import {User} from '../../models/user';
+import {AlertService} from '../../services/alert.service';
+import {AuthService} from '../../services/auth.service';
+import {CoursesListService} from '../../services/courses-list.service';
 
 @Component({
   selector: 'app-list-of-courses',
@@ -19,9 +20,10 @@ export class ListOfCoursesComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
   courseListSubscription?: Subscription;
 
-  constructor(private coursesListService: CoursesListService, 
-    private authService: AuthService, 
-    private router: Router) { }
+  constructor(private coursesListService: CoursesListService,
+    private authService: AuthService,
+    private alertService: AlertService,
+    private router: Router) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe(
@@ -29,7 +31,7 @@ export class ListOfCoursesComponent implements OnInit, OnDestroy {
         this.currentUser = resp;
       }
     );
-    if (this.authService.isAuthenticated()){
+    if (this.authService.isAuthenticated()) {
       this.coursesListService.getCoursesLists(this.currentUser!.id!);
       this.courseListSubscription = this.coursesListService.coursesLists$.subscribe(
         (resp) => {
@@ -48,7 +50,10 @@ export class ListOfCoursesComponent implements OnInit, OnDestroy {
   }
 
   addList() {
-    this.coursesListService.addCourseList(this.currentUser!.id!, this.value);
+    this.coursesListService.addCourseList(this.currentUser!.id!, this.value).subscribe({
+      next: () => this.alertService.success('Course list created successfully'),
+      error: (err) => this.alertService.error(err.error.error)
+    });
     this.value = '';
   }
 }

@@ -1,8 +1,8 @@
-import { Course } from './course';
+import {Course} from './course';
 
 export class CoursesListWithCourses {
-    id?: number;
-    listName?: string;
-    courses?: Course[];
-  }
-  
+  id?: number;
+  listName?: string;
+  courses?: Course[];
+}
+

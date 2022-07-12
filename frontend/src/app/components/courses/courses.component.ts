@@ -1,10 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Course } from '../../models/course';
-import { User, USER_ROLES } from '../../models/user';
-import { CourseService } from '../../services/course.service';
-import { AlertService } from '../../services/alert.service';
-import { AuthService } from '../../services/auth.service';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {Course} from '../../models/course';
+import {User, USER_ROLES} from '../../models/user';
+import {AuthService} from '../../services/auth.service';
+import {CourseService} from '../../services/course.service';
 
 @Component({
   selector: 'app-courses',
@@ -37,7 +36,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   constructor(
     private courseService: CourseService,
-    private alertService: AlertService,
     private authService: AuthService
   ) {}
 

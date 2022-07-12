@@ -16,9 +16,8 @@ public class MaterialDtoMapper {
                 materialDto.getId(),
                 materialDto.getFileFormat(),
                 materialDto.getFileName(),
-                ((MaterialDtoWithData)materialDto).getData(),
-               null
-        );
+                materialDto instanceof MaterialDtoWithData ? ((MaterialDtoWithData) materialDto).getData() : null,
+                null);
     }
 
     public MaterialDto convertToDto(Material material) {
@@ -29,8 +28,7 @@ public class MaterialDtoMapper {
         return new MaterialDto(
                 material.getId(),
                 material.getFileFormat(),
-                material.getFileName()
-        );
+                material.getFileName());
     }
 
     public MaterialDtoWithData convertToDtoWithData(Material material) {
@@ -42,7 +40,6 @@ public class MaterialDtoMapper {
                 material.getId(),
                 material.getFileFormat(),
                 material.getFileName(),
-                material.getData()
-        );
+                material.getData());
     }
 }

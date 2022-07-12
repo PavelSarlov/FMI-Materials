@@ -1,9 +1,9 @@
 package com.fmi.materials.service;
 
+import java.util.List;
+
 import com.fmi.materials.dto.courselist.CourseListDto;
 import com.fmi.materials.dto.courselist.CourseListDtoWithId;
-
-import java.util.List;
 
 public interface CourseListService {
     CourseListDtoWithId createCourseList(CourseListDto courseListDto, Long userId);

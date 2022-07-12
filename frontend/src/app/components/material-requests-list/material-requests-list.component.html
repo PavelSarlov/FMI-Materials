@@ -1,10 +1,9 @@
 <div class="material-requests-list">
-  <div
-    *ngFor="let materialRequest of materialRequests ?? []"
-    class="material-requests-list-item"
-  >
+  <div *ngFor="let materialRequest of materialRequests ?? []" class="material-requests-list-item">
     <app-material-request [materialRequest]="materialRequest">
     </app-material-request>
-    <a routerLink="/courses/{{materialRequest?.courseId}}" matTooltip="Checkout in course" class="course-redirect"><mat-icon>launch</mat-icon></a>
+    <a routerLink="/courses/{{materialRequest?.courseId}}" matTooltip="Checkout in course" class="course-redirect">
+      <mat-icon>launch</mat-icon>
+    </a>
   </div>
 </div>

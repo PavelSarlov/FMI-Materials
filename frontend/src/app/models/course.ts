@@ -1,6 +1,6 @@
-import { FacultyDepartment } from './faculty-department';
-import { CourseGroup } from './course-group';
-import { Section } from './section';
+import {CourseGroup} from './course-group';
+import {FacultyDepartment} from './faculty-department';
+import {Section} from './section';
 
 export class Course {
   id?: number;

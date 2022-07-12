@@ -1,8 +1,8 @@
 package com.fmi.materials.service;
 
-import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
-
 import java.util.List;
+
+import com.fmi.materials.dto.facultydepartment.FacultyDepartmentDto;
 
 public interface FacultyDepartmentService {
 

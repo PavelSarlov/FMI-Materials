@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CoursesListService } from '../../services/courses-list.service';
-import { CoursesListWithCourses } from 'src/app/models/coursesListWithCourses';
-import { User } from '../../models/user';
-import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router'
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {CoursesListWithCourses} from 'src/app/models/coursesListWithCourses';
+import {AuthService} from 'src/app/services/auth.service';
+import {User} from '../../models/user';
+import {AlertService} from '../../services/alert.service';
+import {CoursesListService} from '../../services/courses-list.service';
 
 @Component({
   selector: 'app-course-list',
@@ -20,10 +21,11 @@ export class CourseListComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
   courseListSubscription?: Subscription;
 
-  constructor(private coursesListService: CoursesListService, 
-    private authService: AuthService, 
+  constructor(private coursesListService: CoursesListService,
+    private authService: AuthService,
     private activatedRoute: ActivatedRoute,
-    private router: Router) { }
+    private alertService: AlertService,
+    private router: Router) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe(
@@ -34,7 +36,7 @@ export class CourseListComponent implements OnInit, OnDestroy {
 
     let courseListId = parseInt(this.activatedRoute.snapshot.paramMap.get('coursesListId')!);
 
-    if (this.authService.isAuthenticated()){
+    if (this.authService.isAuthenticated()) {
       this.coursesListService.getCoursesListById(this.currentUser!.id!, courseListId);
       this.courseListSubscription = this.coursesListService.coursesList$.subscribe(
         (resp) => {
@@ -74,7 +76,9 @@ export class CourseListComponent implements OnInit, OnDestroy {
   }
 
   changeListName() {
-    this.coursesListService.changeCoursesListName(this.currentUser!.id!, this.coursesList.id!, this.inputValue);
-    this.coursesListService.getCoursesListById(this.currentUser!.id!, this.coursesList.id!);
+    this.coursesListService.changeCoursesListName(this.currentUser!.id!, this.coursesList.id!, this.inputValue).subscribe({
+      next: () => this.alertService.success('Course list renamed successfully'),
+      error: (err) => this.alertService.error(err.error.error)
+    });
   }
 }

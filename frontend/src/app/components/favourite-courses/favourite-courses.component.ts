@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FavouriteCoursesService } from '../../services/favourite-courses.service';
-import { Course } from 'src/app/models/course';
-import { User } from '../../models/user';
-import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router'
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {Course} from 'src/app/models/course';
+import {AuthService} from 'src/app/services/auth.service';
+import {User} from '../../models/user';
+import {FavouriteCoursesService} from '../../services/favourite-courses.service';
 
 
 @Component({
@@ -19,9 +19,9 @@ export class FavouriteCoursesComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
   courseListSubscription?: Subscription;
 
-  constructor(private favouriteCoursesService: FavouriteCoursesService, 
+  constructor(private favouriteCoursesService: FavouriteCoursesService,
     private authService: AuthService,
-    private router: Router) { }
+    private router: Router) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe(
@@ -30,7 +30,7 @@ export class FavouriteCoursesComponent implements OnInit, OnDestroy {
       }
     );
 
-    if (this.authService.isAuthenticated()){
+    if (this.authService.isAuthenticated()) {
       this.favouriteCoursesService.getFavouriteCourses(this.currentUser!.id!);
       this.courseListSubscription = this.favouriteCoursesService.courses$.subscribe(
         (resp) => {
