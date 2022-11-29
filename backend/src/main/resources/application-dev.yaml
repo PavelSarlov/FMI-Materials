@@ -7,6 +7,7 @@ config:
     username: "${database.username}"
     password: "${database.password}"
 
+
 spring:
   jpa:
     hibernate:
