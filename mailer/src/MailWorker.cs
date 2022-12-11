@@ -5,7 +5,7 @@ public class MailWorker : BackgroundService
     private readonly ILogger<MailWorker> _logger;
     private readonly IConfiguration _config;
 
-    public MailWorker(ILogger<MailWorker> logger, DatabaseConfig dbConfig, IConfiguration config)
+    public MailWorker(ILogger<MailWorker> logger, IConfiguration config)
     {
         _logger = logger;
         _config = config;

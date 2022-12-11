@@ -11,9 +11,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((hostContext, services) =>
     {
-        var config = hostContext.Configuration.GetSection("Database").Get<DatabaseConfig>();
         services
-            .AddSingleton(config)
             .AddHostedService<MailWorker>()
             .AddDbContext<FmiMaterialsContext>();
     })
