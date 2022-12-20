@@ -37,9 +37,7 @@ public class UserControllerIntegrationTests {
 
     @BeforeEach
     public void setup() {
-        this.mockMvc = MockMvcBuilders
-                .webAppContextSetup(this.context)
-                .build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 
         User userDetails = new User(1L, "U1", "pass", "u1@email.com");
 
@@ -55,8 +53,9 @@ public class UserControllerIntegrationTests {
     @Test
     @Transactional
     public void whenDeleteFavouriteCourseWithValidUserIdAndCourseId_thenListSizeIsOneLess() throws Exception {
-        Integer sizeBeforeDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
+        this.favouriteCoursesService.addCourse(1L, 1L);
 
+        Integer sizeBeforeDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
         this.mockMvc.perform(delete("/api/users/1/favourite-courses/1").contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
         Integer sizeAfterDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
@@ -68,8 +67,9 @@ public class UserControllerIntegrationTests {
     @Transactional
     @WithMockUser(username = "u1@email.com", password = "pass", authorities = "USER")
     public void whenDeleteFavouriteCourseWithInvalidUserId_thenThrowUnauthorized() throws Exception {
-        this.mockMvc.perform(delete("/api/users/0/favourite-courses/1").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+        this.mockMvc
+                .perform(delete("/api/users/0/favourite-courses/1").contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(status().isBadRequest(), jsonPath("$.error").value("User authentication failed"));
     }
 
@@ -77,8 +77,9 @@ public class UserControllerIntegrationTests {
     @Transactional
     @WithMockUser(username = "u1@email.com", password = "pass", authorities = "USER")
     public void whenDeleteFavouriteCourseWithInvalidCourseId_thenThrowEntityNotFoundException() throws Exception {
-        this.mockMvc.perform(delete("/api/users/1/favourite-courses/0").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+        this.mockMvc
+                .perform(delete("/api/users/1/favourite-courses/0").contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(status().isNotFound(), jsonPath("$.error").value("Course with id = \'0\' not found"));
     }
 }

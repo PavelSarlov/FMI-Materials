@@ -48,9 +48,10 @@ public class FavouriteCoursesServiceIntegrationTests {
     @Test
     @Transactional
     public void whenGetFavouriteCoursesWithValidUserId_thenReturnListWithCourseDtoWithId() {
+        this.favouriteCoursesService.addCourse(1L, 1L);
         List<CourseDtoWithId> found = this.favouriteCoursesService.getFavouriteCourses(1L);
 
-        assertThat(found.size() == 1);
+        assertThat(found.size()).isEqualTo(1);
         assertThat(found.get(0).getName()).isEqualTo("Web Development with Java");
     }
 
@@ -65,8 +66,9 @@ public class FavouriteCoursesServiceIntegrationTests {
     @Test
     @Transactional
     public void whenDeleteFavouriteCourseWithValidUserIdAndCourseId_thenListSizeIsOneLess() {
-        Integer sizeBeforeDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
+        this.favouriteCoursesService.addCourse(1L, 1L);
 
+        Integer sizeBeforeDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
         this.favouriteCoursesService.deleteFavouriteCourse(1L, 1L);
         Integer sizeAfterDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
 
@@ -122,8 +124,10 @@ public class FavouriteCoursesServiceIntegrationTests {
     @Test
     @Transactional
     public void whenAddFavouriteCourseWithValidCourseId_thenThrowntityAlreadyExistsException() {
-        Exception exception = assertThrows(EntityAlreadyExistsException.class,
-                () -> this.favouriteCoursesService.addCourse(1L, 1L));
+        Exception exception = assertThrows(EntityAlreadyExistsException.class, () -> {
+            this.favouriteCoursesService.addCourse(1L, 1L);
+            this.favouriteCoursesService.addCourse(1L, 1L);
+        });
         assertThat(exception.getMessage()).isEqualTo("Course with id = '1' already exists");
     }
 }
