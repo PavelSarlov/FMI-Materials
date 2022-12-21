@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace mailer;
+namespace mailer.src.model;
 
 public partial class MaterialRequest
 {

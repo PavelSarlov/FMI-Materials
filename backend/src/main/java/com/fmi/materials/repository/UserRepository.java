@@ -18,4 +18,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query(value = "SELECT users.id FROM users\n" +
             "WHERE users.name = ?1 and users.email = ?2 and users.passwordHash = ?3", nativeQuery = true)
     Long findUserByNameAndEmailAndPassword(String name, String email, String password);
+
+    Optional<User> findByName(String name);
 }

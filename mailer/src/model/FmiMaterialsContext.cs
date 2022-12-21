@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace mailer;
+namespace mailer.src.model;
 
 public partial class FmiMaterialsContext : DbContext
 {
@@ -42,9 +40,10 @@ public partial class FmiMaterialsContext : DbContext
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
+    public virtual DbSet<WorkerJob> WorkerJobs { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder
-        .UseNpgsql($"Host={Config["Database:Host"]};Port={Config["Database:Port"]};Username={Config["Database:Username"]};Password={Config["Database:Password"]};Database={Config["Database:Database"]}");
+        => optionsBuilder.UseNpgsql($"Host={Config["Database:Host"]};Port={Config["Database:Port"]};Username={Config["Database:Username"]};Password={Config["Database:Password"]};Database={Config["Database:Database"]}");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -294,6 +293,24 @@ public partial class FmiMaterialsContext : DbContext
                         j.HasKey("RoleId", "UserId").HasName("pk_users_user_roles");
                         j.ToTable("users_user_roles");
                     });
+        });
+
+        modelBuilder.Entity<WorkerJob>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_worker_jobs");
+
+            entity.ToTable("worker_jobs");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Data)
+                .HasColumnType("jsonb")
+                .HasColumnName("data");
+            entity.Property(e => e.Type)
+                .HasColumnType("character varying")
+                .HasColumnName("type");
+            entity.Property(e => e.Status)
+                .HasColumnType("integer")
+                .HasColumnName("status");
         });
 
         OnModelCreatingPartial(modelBuilder);
