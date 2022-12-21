@@ -28,7 +28,9 @@ public class MailWorker : BackgroundService
             await using var ctx = FmiMaterialsContext.New(_config);
             await ctx.Database.EnsureCreatedAsync();
 
-            var jobs = ctx.WorkerJobs.Where(job => job.Type == "email" && job.Status == (int)src.vo.WorkerJobStatus.Pending);
+            var jobs = ctx.WorkerJobs
+                .Where(job => job.Type == "email" && job.Status == (int)src.vo.WorkerJobStatus.Pending)
+                .Take(100);
 
             foreach (var job in jobs)
             {
@@ -36,8 +38,7 @@ public class MailWorker : BackgroundService
                 {
                     JObject data = JsonConvert.DeserializeObject<dynamic>(job.Data ?? "") ?? new JObject();
 
-                    /* _mailService.SendMail((string)data["to"], (string)data["subject"], (string)data["type"], data); */
-                    bool success = await _mailService.SendMail("sarlovpavel@gmail.com", (string)data["subject"], (string)data["type"], data);
+                    bool success = await _mailService.SendMail((string)data["to"]!, (string)data["subject"]!, (string)data["type"]!, data);
 
                     if (success)
                     {
