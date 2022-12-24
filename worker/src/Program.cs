@@ -1,6 +1,6 @@
-using mailer;
-using mailer.src.model;
-using mailer.src.service;
+using worker;
+using worker.src.model;
+using worker.src.service;
 
 using System.Net;
 using System.Net.Mail;
@@ -23,10 +23,10 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         var client = new SmtpClient
         {
-            Host = config["Mailer:Smtp:Host"] ?? "localhost",
-            Port = Int32.Parse(config["Mailer:Smtp:Port"]?.ToString() ?? "25"),
+            Host = config["Worker:Smtp:Host"] ?? "localhost",
+            Port = Int32.Parse(config["Worker:Smtp:Port"]?.ToString() ?? "25"),
             UseDefaultCredentials = false,
-            Credentials = new NetworkCredential(config["Mailer:Smtp:Username"], config["Mailer:Smtp:Password"]),
+            Credentials = new NetworkCredential(config["Worker:Smtp:Username"], config["Worker:Smtp:Password"]),
             EnableSsl = true
         };
 
@@ -35,7 +35,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             .AddHostedService<MailWorker>()
             .AddTransient<IMailService, MailService>()
             .AddDbContext<FmiMaterialsContext>()
-            .AddFluentEmail(config["Mailer:Sender"])
+            .AddFluentEmail(config["Worker:Sender"])
             .AddRazorRenderer();
     })
     .Build();

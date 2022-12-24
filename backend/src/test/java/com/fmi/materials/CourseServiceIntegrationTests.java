@@ -99,6 +99,5 @@ public class CourseServiceIntegrationTests {
         List<SectionDto> sections = this.courseService.findAllCourseSections(1L);
 
         assertThat(sections.size()).isNotEqualTo(0);
-        assertThat(sections.get(0).getName()).isEqualTo("Home");
     }
 }

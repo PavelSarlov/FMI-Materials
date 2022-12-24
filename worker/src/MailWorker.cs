@@ -1,12 +1,12 @@
-using mailer.src.service;
-using mailer.src.model;
+using worker.src.service;
+using worker.src.model;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using mailer.src.vo;
+using worker.src.vo;
 
-namespace mailer;
+namespace worker;
 
 public class MailWorker : BackgroundService
 {

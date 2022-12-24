@@ -1,4 +1,4 @@
-namespace mailer.src.vo;
+namespace worker.src.vo;
 
 public enum WorkerJobStatus {
     Pending,

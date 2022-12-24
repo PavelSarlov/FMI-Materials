@@ -118,8 +118,8 @@
               <mat-icon>{{ fileFormat.value.icon }}</mat-icon>&nbsp;{{ fileFormat.value.name }}
             </mat-option>
             <mat-select-trigger>
-              <mat-icon>{{ FILE_FORMATS[materialSearchFileFormat]?.icon }}</mat-icon>
-              {{ FILE_FORMATS[materialSearchFileFormat]?.name }}
+              <mat-icon>{{ FILE_FORMATS[materialSearchFileFormat].icon }}</mat-icon>
+              {{ FILE_FORMATS[materialSearchFileFormat].name }}
             </mat-select-trigger>
           </mat-select>
         </mat-form-field>
@@ -159,7 +159,7 @@
       </mat-form-field>
     </form>
     <mat-accordion multi>
-      <app-section *ngFor="let section of course.sectionDtos" [section]="section" [courseId]="course?.id"></app-section>
+      <app-section *ngFor="let section of course.sectionDtos" [section]="section" [courseId]="course.id"></app-section>
     </mat-accordion>
   </section>
 </div>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace mailer.src.model;
+namespace worker.src.model;
 
 public partial class UserCoursesList
 {

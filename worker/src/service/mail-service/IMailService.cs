@@ -1,4 +1,4 @@
-namespace mailer.src.service;
+namespace worker.src.service;
 
 public interface IMailService
 {

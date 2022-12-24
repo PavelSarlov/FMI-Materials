@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace mailer.src.model;
+namespace worker.src.model;
 
 public partial class FmiMaterialsContext : DbContext
 {

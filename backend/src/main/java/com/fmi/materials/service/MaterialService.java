@@ -14,5 +14,5 @@ public interface MaterialService {
 
     MaterialDtoWithData findMaterialById(Long materialId);
 
-    MaterialDtoWithData findCourseMaterialByName(Long courseId, String name);
+    MaterialDtoWithData findCourseMaterialByName(Long sectionId, String name);
 }

@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-mailer-16b83561-122a-4f07-9105-f4a8031ef99f</UserSecretsId>
+    <UserSecretsId>dotnet-worker-16b83561-122a-4f07-9105-f4a8031ef99f</UserSecretsId>
     <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
 

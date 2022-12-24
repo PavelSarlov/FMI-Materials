@@ -12,6 +12,7 @@ import com.fmi.materials.exception.EntityAlreadyExistsException;
 import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.exception.InvalidArgumentException;
 import com.fmi.materials.model.User;
+import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.FavouriteCoursesService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class FavouriteCoursesServiceIntegrationTests {
 
     private final FavouriteCoursesService favouriteCoursesService;
+    private final CourseService coursesService;
 
     @BeforeEach
     public void setup() {
@@ -98,7 +100,7 @@ public class FavouriteCoursesServiceIntegrationTests {
     public void whenAddFavouriteCourseWithValidUserIdAndCourseId_thenListSizeIsOneGreater() {
         Integer sizeBeforeAddition = this.favouriteCoursesService.getFavouriteCourses(1L).size();
 
-        this.favouriteCoursesService.addCourse(1L, 2L);
+        this.favouriteCoursesService.addCourse(1L, 1L);
         Integer sizeAfterAddition = this.favouriteCoursesService.getFavouriteCourses(1L).size();
 
         assertThat(sizeAfterAddition).isEqualTo(sizeBeforeAddition + 1);

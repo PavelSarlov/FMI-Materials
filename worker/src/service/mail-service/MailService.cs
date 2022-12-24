@@ -1,6 +1,6 @@
 using FluentEmail.Core;
 
-namespace mailer.src.service;
+namespace worker.src.service;
 
 public class MailService : IMailService
 {
