@@ -6,6 +6,7 @@ export interface FileFormat {
 }
 
 export const FILE_FORMATS: FileFormat = {
+  '': { icon: '', name: 'All' },
   'text/plain': { icon: 'text_snippet', name: 'Text' },
   'text/html': { icon: 'html', name: 'HTML' },
   'text/css': { icon: 'css', name: 'CSS' },

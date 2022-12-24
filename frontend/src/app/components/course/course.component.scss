@@ -114,6 +114,15 @@ mat-card.course-card section.form-btns {
   align-items: center;
 }
 
+.file-format-select {
+  display: flex;
+  align-items: center;
+}
+
+.file-format-icon {
+  margin-right: 5px;
+}
+
 @media screen and (max-width: 900px) {
   mat-card.course-card section.course-details {
     flex-direction: column;

@@ -113,12 +113,11 @@
           <mat-label>File format</mat-label>
           <mat-select name="material-search-file-format" [(ngModel)]="materialSearchFileFormat"
             #materialSearchFormat="ngModel" (selectionChange)="onMaterialSearch()">
-            <mat-option>Clear</mat-option>
             <mat-option *ngFor="let fileFormat of FILE_FORMATS | keyvalue" [value]="fileFormat.key">
-              <mat-icon>{{ fileFormat.value.icon }}</mat-icon>&nbsp;{{ fileFormat.value.name }}
+              <mat-icon class="file-format-icon" *ngIf="fileFormat.value.icon !== ''">{{ fileFormat.value.icon }}</mat-icon>{{ fileFormat.value.name }}
             </mat-option>
-            <mat-select-trigger>
-              <mat-icon>{{ FILE_FORMATS[materialSearchFileFormat].icon }}</mat-icon>
+            <mat-select-trigger class="file-format-select">
+              <mat-icon class="file-format-icon" *ngIf="FILE_FORMATS[materialSearchFileFormat].icon !== ''">{{ FILE_FORMATS[materialSearchFileFormat].icon }}</mat-icon>
               {{ FILE_FORMATS[materialSearchFileFormat].name }}
             </mat-select-trigger>
           </mat-select>
