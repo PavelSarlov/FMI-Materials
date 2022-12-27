@@ -7,7 +7,6 @@ config:
     username: "${database.username}"
     password: "${database.password}"
 
-
 spring:
   jpa:
     hibernate:
@@ -16,7 +15,7 @@ spring:
       hibernate:
         dialect: "org.hibernate.dialect.PostgreSQLDialect"
   flyway:
-    locations: ["classpath:db/migration/{vendor}"]
+    locations: ["classpath:db/migration"]
     url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
     user: "${config.database.username}"
     password: "${config.database.password}"

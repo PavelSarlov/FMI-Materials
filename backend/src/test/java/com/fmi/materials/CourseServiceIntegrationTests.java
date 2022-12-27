@@ -22,10 +22,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
 
 import lombok.RequiredArgsConstructor;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CourseServiceIntegrationTests {
 

@@ -1,19 +1,26 @@
+config:
+  database:
+    dialect: "postgresql"
+    host: "localhost"
+    port: 5432
+    name: "fmi_materials_test"
+    username: "${database.username}"
+    password: "${database.password}"
+
 spring:
-  h2:
-    console:
-      enabled: true
-  datasource:
-    url: "jdbc:h2:mem:fmi_materials;DB_CLOSE_ON_EXIT=FALSE"
-    username: "sa"
-    password: ""
-    driver-class-name: "org.h2.Driver"
   jpa:
     hibernate:
       enable_lazy_load_no_trans: "true"
       ddl-auto: "update"
     properties:
       hibernate:
-        dialect: "org.hibernate.dialect.H2Dialect"
+        dialect: "org.hibernate.dialect.PostgreSQLDialect"
   flyway:
-    locations: ["classpath:db/migration/{vendor}"]
+    locations: ["classpath:db/migration"]
     baseline-on-migrate: "true"
+    url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
+    user: "${config.database.username}"
+    password: "${config.database.password}"
+    schemas: "public"
+    defaultSchema: "public"
+    createSchemas: "true"
