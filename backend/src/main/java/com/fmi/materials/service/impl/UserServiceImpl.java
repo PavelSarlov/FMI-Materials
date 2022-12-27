@@ -17,17 +17,15 @@ import com.fmi.materials.model.MaterialRequest;
 import com.fmi.materials.model.Section;
 import com.fmi.materials.model.User;
 import com.fmi.materials.model.UserRole;
-import com.fmi.materials.model.WorkerJob;
 import com.fmi.materials.repository.MaterialRepository;
 import com.fmi.materials.repository.MaterialRequestRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.repository.UserRolesRepository;
-import com.fmi.materials.repository.WorkerJobRepository;
 import com.fmi.materials.service.UserService;
+import com.fmi.materials.service.WorkerJobService;
 import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
-import com.fmi.materials.vo.WorkerJobStatus;
 
 import org.json.JSONObject;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,7 +45,7 @@ public class UserServiceImpl implements UserService {
     private final MaterialRepository materialRepository;
     private final MaterialRequestDtoMapper materialRequestDtoMapper;
     private final UserRolesRepository userRolesRepository;
-    private final WorkerJobRepository workerJobRepository;
+    private final WorkerJobService workerJobService;
 
     @Override
     @Transactional
@@ -134,15 +132,13 @@ public class UserServiceImpl implements UserService {
 
         materialRequest = this.materialRequestRepository.save(materialRequest);
 
-        this.userRepository.findByName(section.getCourse().getCreatedBy()).ifPresentOrElse( u -> {
+        this.userRepository.findByName(section.getCourse().getCreatedBy()).ifPresentOrElse(u -> {
             JSONObject workerJobData = new JSONObject();
-            workerJobData.put("to", u.getEmail());
-            workerJobData.put("subject", "Material Request");
-            workerJobData.put("type", "MaterialRequest");
             workerJobData.put("requester", user.getName());
             workerJobData.put("sectionId", section.getId());
             workerJobData.put("courseId", section.getCourse().getId());
-            this.workerJobRepository.save(new WorkerJob("email", workerJobData, WorkerJobStatus.PENDING));
+
+            this.workerJobService.createEmailJob(u.getEmail(), "Material Request", "MaterialRequest", workerJobData);
         }, null);
 
         return this.materialRequestDtoMapper.convertToDto(materialRequest);

@@ -14,6 +14,8 @@ public class MailWorker : BackgroundService
     private readonly IConfiguration _config;
     private readonly IMailService _mailService;
 
+    private readonly int _MAX_TRIES = 5;
+
     public MailWorker(ILogger<MailWorker> logger, IConfiguration config, IMailService mailService)
     {
         _logger = logger;
@@ -34,21 +36,32 @@ public class MailWorker : BackgroundService
 
             foreach (var job in jobs)
             {
-                try
+                int currentTry = 0;
+
+                while (currentTry++ < _MAX_TRIES)
                 {
-                    JObject data = JsonConvert.DeserializeObject<dynamic>(job.Data ?? "") ?? new JObject();
-
-                    bool success = await _mailService.SendMail((string)data["to"]!, (string)data["subject"]!, (string)data["type"]!, data);
-
-                    if (success)
+                    try
                     {
-                        job.Status = (int)WorkerJobStatus.Completed;
+                        JObject data = JsonConvert.DeserializeObject<dynamic>(job.Data ?? "") ?? new JObject();
+
+                        bool success = await _mailService.SendMail((string)data["to"]!, (string)data["subject"]!, (string)data["type"]!, data);
+
+                        if (success)
+                        {
+                            job.Status = (int)WorkerJobStatus.Completed;
+                            break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e.Message);
+                        _logger.LogError(e.StackTrace);
                     }
                 }
-                catch (Exception e)
+
+                if (job.Status != (int)WorkerJobStatus.Completed)
                 {
-                    _logger.LogError(e.Message);
-                    _logger.LogError(e.StackTrace);
+                    job.Status = (int)WorkerJobStatus.Failed;
                 }
             }
 

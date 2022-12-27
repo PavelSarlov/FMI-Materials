@@ -29,7 +29,7 @@ public class MailService : IMailService
 
         if (email.Successful)
         {
-            _logger.LogInformation("Email send successfully to " + to);
+            _logger.LogInformation("Email sent successfully to " + to);
             return true;
         }
         else
