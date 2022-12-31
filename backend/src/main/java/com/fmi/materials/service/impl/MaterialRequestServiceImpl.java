@@ -14,8 +14,10 @@ import com.fmi.materials.mapper.MaterialRequestDtoMapper;
 import com.fmi.materials.model.Material;
 import com.fmi.materials.model.MaterialRequest;
 import com.fmi.materials.repository.MaterialRequestRepository;
+import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.service.MaterialRequestService;
 import com.fmi.materials.service.MaterialService;
+import com.fmi.materials.service.WebSocketService;
 import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
 
@@ -28,9 +30,11 @@ import lombok.RequiredArgsConstructor;
 public class MaterialRequestServiceImpl implements MaterialRequestService {
 
     private final MaterialRequestRepository materialRequestRepository;
+    private final UserRepository userRepository;
     private final MaterialRequestDtoMapper materialRequestDtoMapper;
     private final MaterialDtoMapper materialDtoMapper;
     private final MaterialService materialService;
+    private final WebSocketService webSocketService;
 
     @Override
     @Transactional
@@ -88,6 +92,12 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
                         ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
         this.materialRequestRepository.deleteById(materialRequestId);
+
+        String courseAdmin = this.userRepository.findById(userId)
+            .orElseThrow(() -> new EntityNotFoundException(
+            ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId))).getName();
+
+        this.webSocketService.notifyFrontedUser(courseAdmin, "request");
 
         if (status) {
             this.materialService.createMaterial(this.materialRequestDtoMapper.convertToMaterialDto(materialRequest),

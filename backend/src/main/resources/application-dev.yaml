@@ -4,8 +4,8 @@ config:
     host: "localhost"
     port: 5432
     name: "fmi_materials"
-    username: "${database.username}"
-    password: "${database.password}"
+    username: "postgres"
+    password: "45010101Mm"
 
 spring:
   jpa:
@@ -17,8 +17,8 @@ spring:
   flyway:
     locations: ["classpath:db/migration/{vendor}"]
     url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
-    user: "${config.database.username}"
-    password: "${config.database.password}"
+    user: "postgres"
+    password: "45010101Mm"
     schemas: "public"
     defaultSchema: "public"
     createSchemas: "true"

@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+import { StompService } from 'src/app/services/stomp.service';
 import {MaterialRequest} from '../../models/material-request';
 import {User, USER_ROLES} from '../../models/user';
 import {AdminService} from '../../services/admin.service';
@@ -23,7 +24,8 @@ export class MaterialRequestsListComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     private alertService: AlertService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private stompService: StompService,
   ) {}
 
   ngOnInit(): void {
@@ -43,6 +45,13 @@ export class MaterialRequestsListComponent implements OnInit, OnDestroy {
       this.adminService.getAllMaterialRequests(this.user!.id!).subscribe({
         next: (resp) => (this.materialRequests = resp),
         error: (resp) => this.alertService.error(resp.error.error),
+      });
+
+      this.stompService.subscribe(`/user/${this.user?.name}/queue/request`, (): void => {
+        this.adminService.getAllMaterialRequests(this.user!.id!).subscribe({
+          next: (resp) => (this.materialRequests = resp),
+          error: (resp) => this.alertService.error(resp.error.error),
+        });
       });
     } else {
       this.alertService.warn('You need to login in order to do this.', {

@@ -26,6 +26,7 @@ import com.fmi.materials.repository.CourseRepository;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.FacultyDepartmentService;
+import com.fmi.materials.service.WebSocketService;
 import com.fmi.materials.specification.CourseSpecification;
 import com.fmi.materials.vo.ExceptionMessage;
 
@@ -46,6 +47,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseDtoMapper courseDtoMapper;
     private final FacultyDepartmentDtoMapper facultyDepartmentDtoMapper;
     private final SectionDtoMapper sectionDtoMapper;
+    private final WebSocketService webSocketService;
 
     @Override
     @Transactional
@@ -71,6 +73,8 @@ public class CourseServiceImpl implements CourseService {
 
         course.setSections(Stream.of(defaultSection).collect(Collectors.toSet()));
 
+        this.webSocketService.notifyFronted("course");
+
         return this.courseDtoMapper.convertToDtoWithId(course);
     }
 
@@ -81,6 +85,8 @@ public class CourseServiceImpl implements CourseService {
             throw new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseId));
         }
         this.courseRepository.deleteById(courseId);
+
+        this.webSocketService.notifyFronted("course");
 
         return new ResponseDtoSuccess(HttpStatus.OK,
                 String.format("Course with id = '%s' deleted successfully", courseId));
@@ -94,6 +100,8 @@ public class CourseServiceImpl implements CourseService {
                     ExceptionMessage.NOT_FOUND.getFormattedMessage("Course", "id", courseDto.getId()));
         }
         Course course = this.courseDtoMapper.convertToEntityWithId(courseDto);
+
+        this.webSocketService.notifyFronted("course");
 
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.save(course));
     }
