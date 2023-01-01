@@ -34,16 +34,6 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
 
     @Override
     @Transactional
-    public List<MaterialRequestDto> getAllUserMaterialRequests(Long userId) {
-        CustomUtils.authenticateCurrentUser(userId);
-
-        return this.materialRequestRepository.findAllByUserId(userId).stream()
-                .map(r -> this.materialRequestDtoMapper.convertToDtoWithCourseId(r, r.getSection().getCourse().getId()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
     public List<MaterialRequestDto> getAllAdminMaterialRequests(Long adminId) {
         CustomUtils.authenticateCurrentUser(adminId);
 
@@ -54,11 +44,21 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
 
     @Override
     @Transactional
+    public List<MaterialRequestDto> getAllMaterialRequests(Long adminId) {
+        CustomUtils.authenticateCurrentUser(adminId);
+
+        return this.materialRequestRepository.findAll().stream()
+                .map(r -> this.materialRequestDtoMapper.convertToDtoWithCourseId(r, r.getSection().getCourse().getId()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
     public MaterialRequestDto getMaterialRequestById(Long userId, Long materialRequestId) {
         CustomUtils.authenticateCurrentUser(userId);
 
         return this.materialRequestDtoMapper
-                .convertToDto(this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
+                .convertToDto(this.materialRequestRepository.findById(materialRequestId)
                         .orElseThrow(() -> new EntityNotFoundException(
                                 ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId))));
     }
@@ -68,7 +68,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     public MaterialDtoWithData getMaterialFromMaterialRequest(Long userId, Long materialRequestId) {
         CustomUtils.authenticateCurrentUser(userId);
 
-        MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
+        MaterialRequest materialRequest = this.materialRequestRepository.findById(materialRequestId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
@@ -83,7 +83,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     public void processRequest(Long userId, Long materialRequestId, Boolean status) throws IOException {
         CustomUtils.authenticateCurrentUser(userId);
 
-        MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
+        MaterialRequest materialRequest = this.materialRequestRepository.findById(materialRequestId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 

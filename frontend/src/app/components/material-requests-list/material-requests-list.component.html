@@ -1,9 +1,21 @@
 <div class="material-requests-list">
-  <div *ngFor="let materialRequest of materialRequests ?? []" class="material-requests-list-item">
-    <app-material-request [materialRequest]="materialRequest">
-    </app-material-request>
-    <a routerLink="/courses/{{materialRequest?.courseId}}" matTooltip="Checkout in course" class="course-redirect">
-      <mat-icon>launch</mat-icon>
-    </a>
-  </div>
+  <h1 *ngIf="!materialRequests || materialRequests.length === 0; else materials">
+    No material requests found
+  </h1>
+  <ng-template #materials>
+    <div
+      *ngFor="let materialRequest of materialRequests ?? []"
+      class="material-requests-list-item"
+    >
+      <app-material-request [materialRequest]="materialRequest">
+      </app-material-request>
+      <a
+        routerLink="/courses/{{ materialRequest?.courseId }}"
+        matTooltip="Checkout in course"
+        class="course-redirect"
+      >
+        <mat-icon>launch</mat-icon>
+      </a>
+    </div>
+  </ng-template>
 </div>

@@ -15,8 +15,10 @@ import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDtoWithData;
 import com.fmi.materials.dto.response.ResponseDto;
 import com.fmi.materials.dto.response.ResponseDtoSuccess;
+import com.fmi.materials.dto.subscription.SubscriptionDto;
 import com.fmi.materials.service.CourseListService;
 import com.fmi.materials.service.FavouriteCoursesService;
+import com.fmi.materials.service.SubscriptionService;
 import com.fmi.materials.service.UserService;
 
 import org.springframework.http.HttpStatus;
@@ -41,6 +43,7 @@ public class UserController {
 
     private final CourseListService courseListService;
     private final FavouriteCoursesService favouriteCoursesService;
+    private final SubscriptionService subscriptionService;
     private final UserService userService;
     private final Validator validator;
 
@@ -153,6 +156,30 @@ public class UserController {
             @PathVariable Long listId, @RequestParam(name = "listName") String courseListName) {
         return new ResponseEntity<CourseListDtoWithId>(
                 this.courseListService.changeCourseListName(userId, listId, courseListName),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("subscriptions")
+    public ResponseEntity<SubscriptionDto> createSubscription(@PathVariable Long userId,
+            @RequestBody SubscriptionDto subscriptionDto) {
+        return new ResponseEntity<>(this.subscriptionService.createSubscription(userId, subscriptionDto),
+                HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("subscriptions/{subscriptionId}")
+    public ResponseEntity<ResponseDto> deleteSubscriptionById(@PathVariable Long userId,
+            @PathVariable Long subscriptionId) {
+        this.subscriptionService.deleteSubscriptionById(userId, subscriptionId);
+
+        return new ResponseEntity<>(
+                new ResponseDtoSuccess(HttpStatus.OK,
+                        String.format("Subscription with id = '%s' deleted successfully", subscriptionId)),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("subscriptions")
+    public ResponseEntity<List<SubscriptionDto>> findSubscriptionsByUserId(@PathVariable Long userId) {
+        return new ResponseEntity<>(this.subscriptionService.findSubscriptionsByUserId(userId),
                 HttpStatus.OK);
     }
 }

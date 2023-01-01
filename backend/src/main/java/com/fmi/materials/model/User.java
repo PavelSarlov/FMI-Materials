@@ -52,33 +52,34 @@ public class User implements UserDetails {
     private Set<MaterialRequest> materialRequests;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_user_roles",
-            joinColumns = {
-                    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false, updatable = false),
-            })
+    @JoinTable(name = "users_user_roles", joinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
+    }, inverseJoinColumns = {
+            @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false, updatable = false),
+    })
     private Set<UserRole> roles;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_favourite_courses",
-            joinColumns = {
-                    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false, updatable = false)
-            })
+    @JoinTable(name = "user_favourite_courses", joinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
+    }, inverseJoinColumns = {
+            @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false, updatable = false)
+    })
     private Set<Course> favouriteCourses;
 
-    public User() {}
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Subscription> subscriptions;
+
+    public User() {
+    }
 
     public User(String name, String passwordHash, String email) {
         this(null, name, passwordHash, email);
     }
 
-    public User(String name, String passwordHash, String email, Set<CourseList> courseLists, Set<Course> favouriteCourses) {
-        this(null, name, passwordHash, email, courseLists, favouriteCourses);
+    public User(String name, String passwordHash, String email, Set<CourseList> courseLists,
+            Set<Course> favouriteCourses, Set<Subscription> subscriptions) {
+        this(null, name, passwordHash, email, courseLists, favouriteCourses, subscriptions);
     }
 
     public User(Long id, String name, String passwordHash, String email) {
@@ -88,13 +89,15 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public User(Long id, String name, String passwordHash, String email, Set<CourseList> courseLists, Set<Course> favouriteCourses) {
+    public User(Long id, String name, String passwordHash, String email, Set<CourseList> courseLists,
+            Set<Course> favouriteCourses, Set<Subscription> subscriptions) {
         this.id = id;
         this.name = name;
         this.passwordHash = passwordHash;
         this.email = email;
         this.courseLists = courseLists;
         this.favouriteCourses = favouriteCourses;
+        this.subscriptions = subscriptions;
     }
 
     public void addCourse(Course course) {
@@ -150,8 +153,8 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
-            .map(r -> new SimpleGrantedAuthority(r.getName()))
-            .collect(Collectors.toList());
+                .map(r -> new SimpleGrantedAuthority(r.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override

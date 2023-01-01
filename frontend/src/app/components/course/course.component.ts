@@ -1,19 +1,21 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {Course} from '../../models/course';
-import {COURSE_GROUPS} from '../../models/course-group';
-import {FacultyDepartment} from '../../models/faculty-department';
-import {Section} from '../../models/section';
-import {User, USER_ROLES} from '../../models/user';
-import {AlertService} from '../../services/alert.service';
-import {AuthService} from '../../services/auth.service';
-import {CourseService} from '../../services/course.service';
-import {CrossEventService} from '../../services/cross-event.service';
-import {FacultyDepartmentService} from '../../services/faculty-department.service';
-import {FILE_FORMATS} from '../../vo/file-formats';
-import {SaveCourseFormComponent} from '../save-course-form/save-course-form.component';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription as RXJSSubscription } from 'rxjs';
+import { Subscription } from 'src/app/models/subscription';
+import { UserService } from 'src/app/services/user.service';
+import { Course } from '../../models/course';
+import { COURSE_GROUPS } from '../../models/course-group';
+import { FacultyDepartment } from '../../models/faculty-department';
+import { Section } from '../../models/section';
+import { User, USER_ROLES } from '../../models/user';
+import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { CourseService } from '../../services/course.service';
+import { CrossEventService } from '../../services/cross-event.service';
+import { FacultyDepartmentService } from '../../services/faculty-department.service';
+import { FILE_FORMATS } from '../../vo/file-formats';
+import { SaveCourseFormComponent } from '../save-course-form/save-course-form.component';
 
 @Component({
   selector: 'app-course',
@@ -21,8 +23,9 @@ import {SaveCourseFormComponent} from '../save-course-form/save-course-form.comp
   styleUrls: ['./course.component.scss'],
 })
 export class CourseComponent implements OnInit, OnDestroy {
-  authSubscription?: Subscription;
-  sectionEventSubscription?: Subscription;
+  authSubscription?: RXJSSubscription;
+  sectionEventSubscription?: RXJSSubscription;
+  userSubscription?: RXJSSubscription;
 
   user?: User | null;
   USER_ROLES = USER_ROLES;
@@ -41,9 +44,14 @@ export class CourseComponent implements OnInit, OnDestroy {
   materialSearchFileFormat: string = '';
   materialSearchSectionName: string = '';
 
+  requestsSubscription: Subscription & { checked: boolean } = {
+    checked: false,
+  };
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
+    private userService: UserService,
     private courseService: CourseService,
     private alertService: AlertService,
     private authService: AuthService,
@@ -57,6 +65,14 @@ export class CourseComponent implements OnInit, OnDestroy {
       this.user = user;
     });
     this.authService.isAuthenticated();
+
+    this.userSubscription = this.userService.subscriptions$.subscribe(
+      (value) => {
+        const result = value.find((sub) => sub.type === 'materialRequests');
+        this.requestsSubscription = { ...result, checked: !!result };
+      }
+    );
+    this.userService.findSubscriptionsByUserId(this.user!.id!);
 
     this.fetchCourse(
       parseInt(this.activatedRoute.snapshot.paramMap.get('courseId')!)
@@ -80,9 +96,13 @@ export class CourseComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.authSubscription?.unsubscribe();
     this.sectionEventSubscription?.unsubscribe();
+    this.userSubscription?.unsubscribe();
   }
 
-  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+  openDialog(
+    enterAnimationDuration: string,
+    exitAnimationDuration: string
+  ): void {
     this.dialog.open(SaveCourseFormComponent, {
       width: '25%',
       enterAnimationDuration,
@@ -198,5 +218,19 @@ export class CourseComponent implements OnInit, OnDestroy {
       }
       return false;
     });
+  }
+
+  onUpdateRequestsSubscription() {
+    if (this.requestsSubscription.checked) {
+      this.userService.createSubscription(this.user!.id!, {
+        targetId: this.course!.id!,
+        type: 'materialRequests',
+      });
+    } else {
+      this.userService.deleteSubscriptionById(
+        this.user!.id!,
+        this.requestsSubscription
+      );
+    }
   }
 }

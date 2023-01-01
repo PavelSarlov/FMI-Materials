@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MaterialRequestRepository extends CrudRepository<MaterialRequest, Long> {
+    List<MaterialRequest> findAll();
+
     List<MaterialRequest> findAllByUserId(Long userId);
 
     @Query(value = "SELECT mr.* FROM material_requests mr\n" +
