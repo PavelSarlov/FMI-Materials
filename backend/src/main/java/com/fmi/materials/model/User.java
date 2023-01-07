@@ -1,5 +1,6 @@
 package com.fmi.materials.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -136,6 +137,14 @@ public class User implements UserDetails {
             return;
         }
         this.materialRequests.remove(materialRequest);
+    }
+
+    public void addRole(UserRole role) {
+        if (this.roles == null) {
+            this.roles = new HashSet<UserRole>(Arrays.asList(role));
+            return;
+        }
+        this.roles.add(role);
     }
 
     @Override

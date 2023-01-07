@@ -1,6 +1,11 @@
 package com.fmi.materials.service.impl;
 
+import java.io.Console;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -16,10 +21,8 @@ import com.fmi.materials.mapper.UserDtoMapper;
 import com.fmi.materials.model.MaterialRequest;
 import com.fmi.materials.model.Section;
 import com.fmi.materials.model.User;
-import com.fmi.materials.repository.MaterialRepository;
-import com.fmi.materials.repository.MaterialRequestRepository;
-import com.fmi.materials.repository.SectionRepository;
-import com.fmi.materials.repository.UserRepository;
+import com.fmi.materials.model.UserRole;
+import com.fmi.materials.repository.*;
 import com.fmi.materials.service.UserService;
 import com.fmi.materials.service.WebSocketService;
 import com.fmi.materials.util.CustomUtils;
@@ -42,6 +45,7 @@ public class UserServiceImpl implements UserService {
     private final MaterialRepository materialRepository;
     private final MaterialRequestDtoMapper materialRequestDtoMapper;
     private final WebSocketService webSocketService;
+    private final UserRolesRepository userRolesRepository;
 
     @Override
     @Transactional
@@ -53,8 +57,11 @@ public class UserServiceImpl implements UserService {
                     ExceptionMessage.ALREADY_EXISTS.getFormattedMessage("User", "email", userDto.getEmail()));
         }
         userDto.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
-
         User user = this.userDtoMapper.convertToEntity(userDto);
+        UserRole role = this.userRolesRepository.findByName("USER").orElseThrow(() -> new EntityNotFoundException(
+            ExceptionMessage.NOT_FOUND.getFormattedMessage("User role", "name", "USER")
+        ));
+        user.addRole(role);
         return this.userDtoMapper.convertToDto(this.userRepository.save(user));
     }
 
