@@ -15,6 +15,7 @@ import com.fmi.materials.model.Section;
 import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.SectionService;
+import com.fmi.materials.service.WebSocketService;
 import com.fmi.materials.vo.ExceptionMessage;
 
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ public class SectionServiceImpl implements SectionService {
     private final SectionRepository sectionRepository;
     private final SectionDtoMapper sectionDtoMapper;
     private final CourseDtoMapper courseDtoMapper;
+    private final WebSocketService webSocketService;
 
     @Override
     @Transactional
@@ -39,6 +41,9 @@ public class SectionServiceImpl implements SectionService {
         section.setCourse(
                 courseDtoMapper.convertToEntityWithId((CourseDtoWithId) this.courseService.findById(courseId)));
         section = this.sectionRepository.save(section);
+
+        this.webSocketService.notifyFronted("section");
+
         return this.sectionDtoMapper.convertToDto(section);
     }
 
@@ -58,6 +63,8 @@ public class SectionServiceImpl implements SectionService {
                     ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId));
         }
         this.sectionRepository.deleteById(sectionId);
+
+        this.webSocketService.notifyFronted("section");
 
         return new ResponseDtoSuccess(HttpStatus.OK,
                 String.format("Section with id = '%s' deleted successfully", sectionId));
@@ -81,6 +88,8 @@ public class SectionServiceImpl implements SectionService {
                 ReflectionUtils.setField(fieldEntity, section, field.get(sectionDto));
             }
         }
+
+        this.webSocketService.notifyFronted("section");
 
         return this.sectionDtoMapper.convertToDto(this.sectionRepository.save(section));
     }

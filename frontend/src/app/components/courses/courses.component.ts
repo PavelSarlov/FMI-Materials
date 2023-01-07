@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
+import { StompService } from 'src/app/services/stomp.service';
 import {Course} from '../../models/course';
 import {User, USER_ROLES} from '../../models/user';
 import {AuthService} from '../../services/auth.service';
@@ -36,7 +37,8 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   constructor(
     private courseService: CourseService,
-    private authService: AuthService
+    private authService: AuthService,
+    private stompService: StompService,
   ) {}
 
   ngOnInit(): void {
@@ -55,6 +57,10 @@ export class CoursesComponent implements OnInit, OnDestroy {
       }
     );
     this.courseService.getCourses();
+
+    this.stompService.subscribe('/topic/course', (): void => {
+      this.fetchCourses();
+    });
   }
 
   ngOnDestroy() {

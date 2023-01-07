@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+import { StompService } from 'src/app/services/stomp.service';
 import {Course} from '../../models/course';
 import {COURSE_GROUPS} from '../../models/course-group';
 import {FacultyDepartment} from '../../models/faculty-department';
@@ -49,6 +50,7 @@ export class CourseComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private crossEventService: CrossEventService,
     private facultyDepartmentService: FacultyDepartmentService,
+    private stompService: StompService,
     public dialog: MatDialog
   ) {}
 
@@ -75,6 +77,10 @@ export class CourseComponent implements OnInit, OnDestroy {
           this.fetchCourseSections(this.course?.id!);
         }
       });
+
+    this.stompService.subscribe('/topic/section', (): void => {
+      this.fetchCourseSections(this.course?.id!);
+    });
   }
 
   ngOnDestroy() {

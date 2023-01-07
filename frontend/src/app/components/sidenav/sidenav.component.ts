@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
+import { AdminService } from 'src/app/services/admin.service';
+import { AlertService } from 'src/app/services/alert.service';
+import { StompService } from 'src/app/services/stomp.service';
 import {User, USER_ROLES} from '../../models/user';
 import {AuthService} from '../../services/auth.service';
 import {CrossEventService} from '../../services/cross-event.service';
@@ -17,9 +20,14 @@ export class SidenavComponent implements OnInit {
   user?: User | null;
   USER_ROLES = USER_ROLES;
 
+  requestsCount: number = 0
+
   constructor(
     private crossEventService: CrossEventService,
-    private authService: AuthService
+    private authService: AuthService,
+    private stompService: StompService,
+    private adminService: AdminService,
+    private alertService: AlertService,
   ) {}
 
   ngOnInit(): void {
@@ -34,6 +42,20 @@ export class SidenavComponent implements OnInit {
         this.sidenavToggled = status;
         this.toggleSidenav();
       });
+
+    if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
+      this.adminService.getAllMaterialRequests(this.user!.id!).subscribe({
+        next: (resp) => (this.requestsCount = resp.length),
+        error: (resp) => this.alertService.error(resp.error.error),
+      });
+
+      this.stompService.subscribe(`/user/${this.user?.name}/queue/request`, (): void => {
+        this.adminService.getAllMaterialRequests(this.user!.id!).subscribe({
+          next: (resp) => (this.requestsCount = resp.length),
+          error: (resp) => this.alertService.error(resp.error.error),
+        });
+      });
+    }
   }
 
   ngOnDestroy() {

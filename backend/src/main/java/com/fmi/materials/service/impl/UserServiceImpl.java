@@ -24,6 +24,7 @@ import com.fmi.materials.model.User;
 import com.fmi.materials.model.UserRole;
 import com.fmi.materials.repository.*;
 import com.fmi.materials.service.UserService;
+import com.fmi.materials.service.WebSocketService;
 import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
 
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final MaterialRequestRepository materialRequestRepository;
     private final MaterialRepository materialRepository;
     private final MaterialRequestDtoMapper materialRequestDtoMapper;
+    private final WebSocketService webSocketService;
     private final UserRolesRepository userRolesRepository;
 
     @Override
@@ -132,6 +134,10 @@ public class UserServiceImpl implements UserService {
         MaterialRequest materialRequest = this.materialRequestDtoMapper.convertToEntity(materialRequestDto);
         materialRequest.setSection(section);
         materialRequest.setUser(user);
+
+        String courseAdmin = section.getCourse().getCreatedBy();
+
+        this.webSocketService.notifyFrontedUser(courseAdmin, "request");
 
         return this.materialRequestDtoMapper.convertToDto(this.materialRequestRepository.save(materialRequest));
     }

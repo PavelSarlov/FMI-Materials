@@ -20,6 +20,7 @@
     </a>
     <a *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)" routerLink="/material-requests" routerLinkActive="active">
       <mat-card class="sidenav-card">
+        <div class="notification">{{requestsCount}}</div>
         <mat-icon>contact_support</mat-icon>
         <mat-card-content>Material Requests</mat-card-content>
       </mat-card>
