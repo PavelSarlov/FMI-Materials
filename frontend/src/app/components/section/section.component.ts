@@ -1,15 +1,20 @@
 import {
-  Component, ElementRef, Input, OnDestroy, OnInit, ViewChild
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Section} from '../../models/section';
-import {User, USER_ROLES} from '../../models/user';
-import {AlertService} from '../../services/alert.service';
-import {AuthService} from '../../services/auth.service';
-import {CourseService} from '../../services/course.service';
-import {CrossEventService} from '../../services/cross-event.service';
-import {UserService} from '../../services/user.service';
-import {FILE_FORMATS} from '../../vo/file-formats';
+import { Subject, Subscription, takeUntil } from 'rxjs';
+import { Section } from '../../models/section';
+import { User, USER_ROLES } from '../../models/user';
+import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { CourseService } from '../../services/course.service';
+import { CrossEventService } from '../../services/cross-event.service';
+import { UserService } from '../../services/user.service';
+import { FILE_FORMATS } from '../../vo/file-formats';
 
 @Component({
   selector: 'app-section',
@@ -20,10 +25,11 @@ export class SectionComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
   materialEventSubscription?: Subscription;
 
-  user?: User | null;
+  user?: User;
   USER_ROLES = USER_ROLES;
 
   FILE_FORMATS = FILE_FORMATS;
+  Object = Object;
 
   @Input()
   courseId?: number;
@@ -31,10 +37,12 @@ export class SectionComponent implements OnInit, OnDestroy {
   @Input()
   section?: Section;
 
-  @ViewChild('material', {static: false})
+  @ViewChild('material', { static: false })
   material!: ElementRef;
 
   fileToUpload?: File;
+
+  private unsubscribe$ = new Subject();
 
   constructor(
     private authService: AuthService,
@@ -45,20 +53,24 @@ export class SectionComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe((user) => {
-      this.user = user;
-    });
+    this.authService.user$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((user) => {
+        this.user = user;
+      });
 
-    this.crossEventService.materialEvent.subscribe((sectionId) => {
-      if (sectionId === this.section?.id) {
-        this.fetchSection();
-      }
-    });
+    this.crossEventService.materialEvent
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((sectionId) => {
+        if (sectionId === this.section?.id) {
+          this.fetchSection();
+        }
+      });
   }
 
   ngOnDestroy() {
-    this.authSubscription?.unsubscribe();
-    this.materialEventSubscription?.unsubscribe();
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.complete();
   }
 
   onMaterialSelected(event: any) {
@@ -121,8 +133,7 @@ export class SectionComponent implements OnInit, OnDestroy {
       section.name = patchSectionForm.value.name;
 
       this.courseService.patchSection(section).subscribe({
-        next: () =>
-          this.alertService.success('Section updated successfully!'),
+        next: () => this.alertService.success('Section updated successfully!'),
         error: (resp) => {
           this.alertService.error(resp.error.error);
         },
@@ -138,5 +149,9 @@ export class SectionComponent implements OnInit, OnDestroy {
       },
       error: (resp) => this.alertService.error(resp.error.error),
     });
+  }
+
+  fileFormatSupported(format: string | undefined) {
+    return format === undefined ? false : format in this.FILE_FORMATS;
   }
 }

@@ -1,12 +1,12 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Material} from '../../models/material';
-import {User, USER_ROLES} from '../../models/user';
-import {AlertService} from '../../services/alert.service';
-import {AuthService} from '../../services/auth.service';
-import {CourseService} from '../../services/course.service';
-import {CrossEventService} from '../../services/cross-event.service';
-import {FILE_FORMATS} from '../../vo/file-formats';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
+import { Material } from '../../models/material';
+import { User, USER_ROLES } from '../../models/user';
+import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { CourseService } from '../../services/course.service';
+import { CrossEventService } from '../../services/cross-event.service';
+import { FILE_FORMATS } from '../../vo/file-formats';
 
 @Component({
   selector: 'app-material',
@@ -14,9 +14,7 @@ import {FILE_FORMATS} from '../../vo/file-formats';
   styleUrls: ['./material.component.scss'],
 })
 export class MaterialComponent implements OnInit, OnDestroy {
-  authSubscription?: Subscription;
-
-  user?: User | null;
+  user?: User;
   USER_ROLES = USER_ROLES;
 
   FILE_FORMATS = FILE_FORMATS;
@@ -27,6 +25,8 @@ export class MaterialComponent implements OnInit, OnDestroy {
   @Input()
   sectionId?: number;
 
+  private unsubscribe$ = new Subject();
+
   constructor(
     private courseService: CourseService,
     private authService: AuthService,
@@ -35,13 +35,16 @@ export class MaterialComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe(
-      (user) => (this.user = user)
-    );
+    this.authService.user$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((user) => {
+        this.user = user;
+      });
   }
 
   ngOnDestroy() {
-    this.authSubscription?.unsubscribe();
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.complete();
   }
 
   openMaterial() {

@@ -22,13 +22,6 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.authService.isAuthenticated()) {
-      this.alertService.warn('You are already logged in!', {
-        keepAfterRouteChange: true,
-      });
-      this.router.navigateByUrl('courses');
-    }
-
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: [

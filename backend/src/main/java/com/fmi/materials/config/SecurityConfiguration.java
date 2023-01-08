@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,8 +30,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     CORSFilter corsFilter() {
-        CORSFilter filter = new CORSFilter();
-        return filter;
+        return new CORSFilter();
     }
 
     @Override
@@ -38,29 +38,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .addFilterBefore(corsFilter(), SessionManagementFilter.class)
                 .httpBasic()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().authorizeRequests()
                 .antMatchers("/websocket/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/courses/**").permitAll()
+                .antMatchers("/api/auth/is-authenticated").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/courses/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/courses/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/courses/**").hasAuthority("ADMIN")
                 .antMatchers("/api/departments/**").hasAuthority("ADMIN")
                 .antMatchers("/api/admins/**").hasAuthority("ADMIN")
                 .antMatchers("/api/users/**").hasAnyAuthority("ADMIN", "USER")
-                .and()
-                .cors().configurationSource(this.corsConfigurationSource())
-                .and()
-                .csrf().disable();
+                .and().cors().configurationSource(corsConfigurationSource())
+                .and().csrf().disable();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(userDetailsService);
+        authenticationManagerBuilder.userDetailsService(userDetailsService);
     }
 
     @Bean

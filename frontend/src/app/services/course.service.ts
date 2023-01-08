@@ -1,12 +1,12 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, Subject, tap} from 'rxjs';
-import {environment} from '../../environments/environment';
-import {Course} from '../models/course';
-import {Material} from '../models/material';
-import {Pagination} from '../models/pagination';
-import {Section} from '../models/section';
-import {ResponseDto, ResponseDtoSuccess, ResponseDtoError} from '../models/response';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, Subject, tap, take } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { Course } from '../models/course';
+import { Material } from '../models/material';
+import { Pagination } from '../models/pagination';
+import { ResponseDto } from '../models/response';
+import { Section } from '../models/section';
 
 @Injectable({
   providedIn: 'root',
@@ -27,10 +27,13 @@ export class CourseService {
   ) {
     this.http
       .get<Pagination<Course>>(
-        `${environment.coursesApi}?filter=${filter ?? ''}&filterValue=${filterValue ?? ''
-        }&page=${page ?? ''}&size=${size ?? ''}&sortBy=${sortBy ?? ''}&desc=${desc ?? ''
+        `${environment.coursesApi}?filter=${filter ?? ''}&filterValue=${
+          filterValue ?? ''
+        }&page=${page ?? ''}&size=${size ?? ''}&sortBy=${sortBy ?? ''}&desc=${
+          desc ?? ''
         }`
       )
+      .pipe(take(1))
       .subscribe({
         next: (resp) => this.pagination$.next(resp),
         error: (err) => console.log(err),
@@ -40,7 +43,7 @@ export class CourseService {
   createCourse(course: Course): Observable<Course> {
     return this.http
       .post<Course>(`${environment.coursesApi}`, course)
-      .pipe(tap({error: (resp) => console.log(resp)}));
+      .pipe(tap({ error: (resp) => console.log(resp) }), take(1));
   }
 
   updateCourse(course: Course): Observable<Course> {
@@ -49,7 +52,8 @@ export class CourseService {
         error: (resp) => {
           console.log(resp);
         },
-      })
+      }),
+      take(1)
     );
   }
 
@@ -57,17 +61,20 @@ export class CourseService {
     return this.http.get<Course>(`${environment.coursesApi}/${courseId}`).pipe(
       tap({
         error: (err) => console.log(err),
-      })
+      }),
+      take(1)
     );
   }
 
   deleteCourseById(courseId: number): Observable<ResponseDto> {
-    return this.http.delete<ResponseDto>(`${environment.coursesApi}/${courseId}`).pipe(
-      tap({
-        next: resp => console.log(resp),
-        error: (resp) => console.log(resp),
-      })
-    );
+    return this.http
+      .delete<ResponseDto>(`${environment.coursesApi}/${courseId}`)
+      .pipe(
+        tap({
+          error: (resp) => console.log(resp),
+        }),
+        take(1)
+      );
   }
 
   getCourseSections(courseId: number): Observable<Section[]> {
@@ -76,7 +83,8 @@ export class CourseService {
       .pipe(
         tap({
           error: (err) => console.log(err),
-        })
+        }),
+        take(1)
       );
   }
 
@@ -86,7 +94,8 @@ export class CourseService {
       .pipe(
         tap({
           error: (err) => console.log(err),
-        })
+        }),
+        take(1)
       );
   }
 
@@ -96,7 +105,8 @@ export class CourseService {
       .pipe(
         tap({
           error: (err) => console.log(err),
-        })
+        }),
+        take(1)
       );
   }
 
@@ -105,10 +115,9 @@ export class CourseService {
       .patch<Section>(`${environment.coursesApi}/sections`, section)
       .pipe(
         tap({
-          error: (resp) => {
-            console.log(resp);
-          },
-        })
+          error: (resp) => console.log(resp),
+        }),
+        take(1)
       );
   }
 
@@ -118,7 +127,8 @@ export class CourseService {
       .pipe(
         tap({
           error: (resp) => console.log(resp),
-        })
+        }),
+        take(1)
       );
   }
 
@@ -126,12 +136,13 @@ export class CourseService {
     return this.http
       .get(
         `${environment.coursesApi}/sections/${sectionId}/materials/${materialName}`,
-        {responseType: 'blob'}
+        { responseType: 'blob' }
       )
       .pipe(
         tap({
           error: (err) => console.log(err),
-        })
+        }),
+        take(1)
       );
   }
 
@@ -143,7 +154,8 @@ export class CourseService {
       .pipe(
         tap({
           error: (err) => console.log(err),
-        })
+        }),
+        take(1)
       );
   }
 
@@ -153,7 +165,12 @@ export class CourseService {
         `${environment.coursesApi}/sections/${sectionId}/materials`,
         formData
       )
-      .pipe(tap({error: (err) => console.log(err)}));
+      .pipe(
+        tap({
+          error: (err) => console.log(err),
+        }),
+        take(1)
+      );
   }
 
   deleteMaterialById(materialId: number): Observable<Material> {
@@ -161,6 +178,11 @@ export class CourseService {
       .delete<Material>(
         `${environment.coursesApi}/sections/materials/${materialId}`
       )
-      .pipe(tap({error: (err) => console.log(err)}));
+      .pipe(
+        tap({
+          error: (err) => console.log(err),
+        }),
+        take(1)
+      );
   }
 }

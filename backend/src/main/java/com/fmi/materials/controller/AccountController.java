@@ -8,6 +8,7 @@ import com.fmi.materials.service.UserService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,5 +35,10 @@ public class AccountController {
         return new ResponseEntity<UserDto>(
                 this.userService.authenticateUser(userDto),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("is-authenticated")
+    public void isAuthenticated() {
+        return;
     }
 }

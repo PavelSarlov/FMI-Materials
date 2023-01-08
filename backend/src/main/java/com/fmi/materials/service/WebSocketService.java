@@ -1,7 +1,7 @@
 package com.fmi.materials.service;
 
 public interface WebSocketService {
-    void notifyFronted(String topicSuffix);
+    void notifyFrontend(String topic, String prefix);
 
-    void notifyFrontedUser(String username, String topicSuffix);
+    void notifyFrontendUser(Long userId, String topic);
 }

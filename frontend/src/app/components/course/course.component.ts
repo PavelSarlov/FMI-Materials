@@ -1,20 +1,22 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import { StompService } from 'src/app/services/stomp.service';
-import {Course} from '../../models/course';
-import {COURSE_GROUPS} from '../../models/course-group';
-import {FacultyDepartment} from '../../models/faculty-department';
-import {Section} from '../../models/section';
-import {User, USER_ROLES} from '../../models/user';
-import {AlertService} from '../../services/alert.service';
-import {AuthService} from '../../services/auth.service';
-import {CourseService} from '../../services/course.service';
-import {CrossEventService} from '../../services/cross-event.service';
-import {FacultyDepartmentService} from '../../services/faculty-department.service';
-import {FILE_FORMATS} from '../../vo/file-formats';
-import {SaveCourseFormComponent} from '../save-course-form/save-course-form.component';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil, Observable } from 'rxjs';
+import { Subscription } from 'src/app/models/subscription';
+import { StompService, TopicSub } from 'src/app/services/stomp.service';
+import { UserService } from 'src/app/services/user.service';
+import { Course } from '../../models/course';
+import { COURSE_GROUPS } from '../../models/course-group';
+import { FacultyDepartment } from '../../models/faculty-department';
+import { Section } from '../../models/section';
+import { User, USER_ROLES } from '../../models/user';
+import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { CourseService } from '../../services/course.service';
+import { CrossEventService } from '../../services/cross-event.service';
+import { FacultyDepartmentService } from '../../services/faculty-department.service';
+import { FILE_FORMATS } from '../../vo/file-formats';
+import { SaveCourseFormComponent } from '../save-course-form/save-course-form.component';
 
 @Component({
   selector: 'app-course',
@@ -22,14 +24,13 @@ import {SaveCourseFormComponent} from '../save-course-form/save-course-form.comp
   styleUrls: ['./course.component.scss'],
 })
 export class CourseComponent implements OnInit, OnDestroy {
-  authSubscription?: Subscription;
-  sectionEventSubscription?: Subscription;
-
-  user?: User | null;
+  user?: User;
   USER_ROLES = USER_ROLES;
 
   course?: Course;
   sectionBackup?: Section[] = [];
+
+  courseId: number = NaN;
 
   facultyDepartments: FacultyDepartment[] = [];
 
@@ -42,9 +43,19 @@ export class CourseComponent implements OnInit, OnDestroy {
   materialSearchFileFormat: string = '';
   materialSearchSectionName: string = '';
 
+  requestsSubscription: Subscription & { checked: boolean } = {
+    checked: false,
+  };
+
+  topic: TopicSub | null = null;
+  topic$?: Observable<TopicSub | null>;
+
+  private unsubscribe$ = new Subject();
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
+    private userService: UserService,
     private courseService: CourseService,
     private alertService: AlertService,
     private authService: AuthService,
@@ -55,44 +66,77 @@ export class CourseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe((user) => {
-      this.user = user;
-    });
-    this.authService.isAuthenticated();
+    this.authService.user$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((user) => {
+        this.user = user;
 
-    this.fetchCourse(
-      parseInt(this.activatedRoute.snapshot.paramMap.get('courseId')!)
-    );
+        if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
+          this.facultyDepartmentService
+            .getAllFacultyDepartments()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: (resp) => (this.facultyDepartments = resp),
+              error: (resp) => this.alertService.error(resp.error.error),
+            });
+        }
 
-    if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
-      this.facultyDepartmentService.getAllFacultyDepartments().subscribe({
-        next: (resp) => (this.facultyDepartments = resp),
-        error: (resp) => this.alertService.error(resp.error.error),
-      });
-    }
-
-    this.sectionEventSubscription =
-      this.crossEventService.sectionEvent.subscribe((courseId) => {
-        if (courseId === this.course?.id) {
-          this.fetchCourseSections(this.course?.id!);
+        if (this.user) {
+          this.userService.subscriptions$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((value) => {
+              const result = value.find(
+                (sub) => sub.type === 'materialRequests'
+              );
+              this.requestsSubscription = { ...result, checked: !!result };
+            });
+          this.userService.findSubscriptionsByUserId(this.user!.id!);
         }
       });
 
-    this.stompService.subscribe('/topic/section', (): void => {
-      this.fetchCourseSections(this.course?.id!);
+    this.courseId = parseInt(
+      this.activatedRoute.snapshot.paramMap.get('courseId')!
+    );
+
+    if (isNaN(this.courseId)) {
+      this.router.navigateByUrl('/');
+    }
+
+    this.fetchCourse(this.courseId);
+
+    this.crossEventService.sectionEvent
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((courseId) => {
+        if (courseId === this.courseId) {
+          this.fetchCourseSections(this.courseId);
+        }
+      });
+
+    this.topic$ = this.stompService.subscribe('/topic/section', (): void => {
+      this.fetchCourseSections(this.courseId);
     });
+    if (this.topic$) {
+      this.topic$
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((topic) => (this.topic = topic));
+    }
   }
 
   ngOnDestroy() {
-    this.authSubscription?.unsubscribe();
-    this.sectionEventSubscription?.unsubscribe();
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.complete();
+    this.stompService.unsubscribe(this.topic);
   }
 
-  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+  openDialog(
+    enterAnimationDuration: string,
+    exitAnimationDuration: string
+  ): void {
     this.dialog.open(SaveCourseFormComponent, {
       width: '25%',
       enterAnimationDuration,
       exitAnimationDuration,
+      data: { courseId: this.course?.id },
     });
   }
 
@@ -204,5 +248,19 @@ export class CourseComponent implements OnInit, OnDestroy {
       }
       return false;
     });
+  }
+
+  onUpdateRequestsSubscription() {
+    if (this.requestsSubscription.checked) {
+      this.userService.createSubscription(this.user!.id!, {
+        targetId: this.course!.id!,
+        type: 'materialRequests',
+      });
+    } else {
+      this.userService.deleteSubscriptionById(
+        this.user!.id!,
+        this.requestsSubscription
+      );
+    }
   }
 }

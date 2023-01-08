@@ -7,9 +7,9 @@ import com.fmi.materials.dto.material.MaterialDtoWithData;
 import com.fmi.materials.dto.materialrequest.MaterialRequestDto;
 
 public interface MaterialRequestService {
-    List<MaterialRequestDto> getAllUserMaterialRequests(Long userId);
-
     List<MaterialRequestDto> getAllAdminMaterialRequests(Long adminId);
+
+    List<MaterialRequestDto> getAllMaterialRequests(Long adminId);
 
     MaterialRequestDto getMaterialRequestById(Long userId, Long materialRequestId);
 

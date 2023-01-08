@@ -38,16 +38,6 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
 
     @Override
     @Transactional
-    public List<MaterialRequestDto> getAllUserMaterialRequests(Long userId) {
-        CustomUtils.authenticateCurrentUser(userId);
-
-        return this.materialRequestRepository.findAllByUserId(userId).stream()
-                .map(r -> this.materialRequestDtoMapper.convertToDtoWithCourseId(r, r.getSection().getCourse().getId()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
     public List<MaterialRequestDto> getAllAdminMaterialRequests(Long adminId) {
         CustomUtils.authenticateCurrentUser(adminId);
 
@@ -58,13 +48,22 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
 
     @Override
     @Transactional
+    public List<MaterialRequestDto> getAllMaterialRequests(Long adminId) {
+        CustomUtils.authenticateCurrentUser(adminId);
+
+        return this.materialRequestRepository.findAll().stream()
+                .map(r -> this.materialRequestDtoMapper.convertToDtoWithCourseId(r, r.getSection().getCourse().getId()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
     public MaterialRequestDto getMaterialRequestById(Long userId, Long materialRequestId) {
         CustomUtils.authenticateCurrentUser(userId);
 
-        return this.materialRequestDtoMapper
-                .convertToDto(this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
-                        .orElseThrow(() -> new EntityNotFoundException(
-                                ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId))));
+        return this.materialRequestDtoMapper.convertToDto(this.materialRequestRepository.findById(materialRequestId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId))));
     }
 
     @Override
@@ -72,7 +71,7 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     public MaterialDtoWithData getMaterialFromMaterialRequest(Long userId, Long materialRequestId) {
         CustomUtils.authenticateCurrentUser(userId);
 
-        MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
+        MaterialRequest materialRequest = this.materialRequestRepository.findById(materialRequestId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
@@ -87,17 +86,14 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     public void processRequest(Long userId, Long materialRequestId, Boolean status) throws IOException {
         CustomUtils.authenticateCurrentUser(userId);
 
-        MaterialRequest materialRequest = this.materialRequestRepository.findByIdAndAdminId(materialRequestId, userId)
+        MaterialRequest materialRequest = this.materialRequestRepository.findById(materialRequestId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId)));
 
         this.materialRequestRepository.deleteById(materialRequestId);
 
-        String courseAdmin = this.userRepository.findById(userId)
-            .orElseThrow(() -> new EntityNotFoundException(
-            ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId))).getName();
-
-        this.webSocketService.notifyFrontedUser(courseAdmin, "request");
+        this.userRepository.findAllAdmins()
+                .forEach(admin -> this.webSocketService.notifyFrontendUser(admin.getId(), "request"));
 
         if (status) {
             this.materialService.createMaterial(this.materialRequestDtoMapper.convertToMaterialDto(materialRequest),

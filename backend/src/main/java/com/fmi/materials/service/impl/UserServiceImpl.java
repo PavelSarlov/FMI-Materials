@@ -1,11 +1,6 @@
 package com.fmi.materials.service.impl;
 
-import java.io.Console;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -22,12 +17,18 @@ import com.fmi.materials.model.MaterialRequest;
 import com.fmi.materials.model.Section;
 import com.fmi.materials.model.User;
 import com.fmi.materials.model.UserRole;
-import com.fmi.materials.repository.*;
+import com.fmi.materials.repository.MaterialRepository;
+import com.fmi.materials.repository.MaterialRequestRepository;
+import com.fmi.materials.repository.SectionRepository;
+import com.fmi.materials.repository.UserRepository;
+import com.fmi.materials.repository.UserRolesRepository;
 import com.fmi.materials.service.UserService;
 import com.fmi.materials.service.WebSocketService;
+import com.fmi.materials.service.WorkerJobService;
 import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
 
+import org.json.JSONObject;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ public class UserServiceImpl implements UserService {
     private final MaterialRequestDtoMapper materialRequestDtoMapper;
     private final WebSocketService webSocketService;
     private final UserRolesRepository userRolesRepository;
+    private final WorkerJobService workerJobService;
 
     @Override
     @Transactional
@@ -59,8 +61,7 @@ public class UserServiceImpl implements UserService {
         userDto.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
         User user = this.userDtoMapper.convertToEntity(userDto);
         UserRole role = this.userRolesRepository.findByName("USER").orElseThrow(() -> new EntityNotFoundException(
-            ExceptionMessage.NOT_FOUND.getFormattedMessage("User role", "name", "USER")
-        ));
+                ExceptionMessage.NOT_FOUND.getFormattedMessage("User role", "name", "USER")));
         user.addRole(role);
         return this.userDtoMapper.convertToDto(this.userRepository.save(user));
     }
@@ -90,18 +91,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDtoWithId findUserById(Long id) {
-        User user = this.userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", id)));
+        User user = this.userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", id)));
         return this.userDtoMapper.convertToDtoWithId(user);
     }
 
     @Override
     @Transactional
     public UserDtoWithId findUserByEmail(String email) {
-        User user = this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", email)));
+        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(
+                ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", email)));
         return this.userDtoMapper.convertToDtoWithId(user);
     }
 
@@ -111,13 +110,11 @@ public class UserServiceImpl implements UserService {
             throws IOException {
         CustomUtils.authenticateCurrentUser(userId);
 
-        Section section = this.sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
+        Section section = this.sectionRepository.findById(sectionId).orElseThrow(() -> new EntityNotFoundException(
+                ExceptionMessage.NOT_FOUND.getFormattedMessage("Section", "id", sectionId)));
 
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(
+                ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId)));
 
         if (this.materialRequestRepository.findBySectionAndFileName(section.getId(), materialRequestDto.getFileName())
                 .isPresent()) {
@@ -135,19 +132,31 @@ public class UserServiceImpl implements UserService {
         materialRequest.setSection(section);
         materialRequest.setUser(user);
 
-        String courseAdmin = section.getCourse().getCreatedBy();
+        materialRequest = this.materialRequestRepository.save(materialRequest);
 
-        this.webSocketService.notifyFrontedUser(courseAdmin, "request");
+        this.userRepository.findAllAdmins().stream().map(admin -> {
+            this.webSocketService.notifyFrontendUser(admin.getId(), "request");
+            return admin;
+        }).filter(admin -> admin.getSubscriptions().stream().anyMatch(
+                subs -> subs.getTargetId() == section.getCourse().getId() && subs.getType().equals("materialRequests")))
+                .forEach(admin -> {
+                    JSONObject workerJobData = new JSONObject();
+                    workerJobData.put("requester", user.getName());
+                    workerJobData.put("sectionId", section.getId());
+                    workerJobData.put("courseId", section.getCourse().getId());
 
-        return this.materialRequestDtoMapper.convertToDto(this.materialRequestRepository.save(materialRequest));
+                    this.workerJobService.createEmailJob(admin.getEmail(), "Material Request", "MaterialRequest",
+                            workerJobData);
+                });
+
+        return this.materialRequestDtoMapper.convertToDto(materialRequest);
     }
 
     @Override
     @Transactional
     public UserDtoWithId authenticateUser(UserDto userDto) {
-        User user = this.userRepository.findByEmail(userDto.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", userDto.getEmail())));
+        User user = this.userRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new EntityNotFoundException(
+                ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "email", userDto.getEmail())));
 
         if (!this.passwordEncoder.matches(userDto.getPassword(), user.getPasswordHash())) {
             throw new InvalidArgumentException(ExceptionMessage.LOGIN_INVALID.getFormattedMessage());

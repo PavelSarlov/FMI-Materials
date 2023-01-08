@@ -4,9 +4,8 @@ config:
     host: "localhost"
     port: 5432
     name: "fmi_materials"
-    username: "postgres"
-    password: "45010101Mm"
-
+    username: "${database.username}"
+    password: "${database.password}"
 
 spring:
   jpa:
@@ -16,10 +15,10 @@ spring:
       hibernate:
         dialect: "org.hibernate.dialect.PostgreSQLDialect"
   flyway:
-    locations: ["classpath:db/migration/{vendor}"]
+    locations: ["classpath:db/migration"]
     url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
-    user: "postgres"
-    password: "45010101Mm"
+    user: "${config.database.username}"
+    password: "${config.database.password}"
     schemas: "public"
     defaultSchema: "public"
     createSchemas: "true"

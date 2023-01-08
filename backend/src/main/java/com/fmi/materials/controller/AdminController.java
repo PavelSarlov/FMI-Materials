@@ -32,21 +32,21 @@ public class AdminController {
     @GetMapping("material-requests")
     public ResponseEntity<List<MaterialRequestDto>> getAllMaterialRequests(@PathVariable Long adminId) {
         return new ResponseEntity<List<MaterialRequestDto>>(
-                this.materialRequestService.getAllAdminMaterialRequests(adminId),
-                HttpStatus.OK
-        );
+                this.materialRequestService.getAllMaterialRequests(adminId),
+                HttpStatus.OK);
     }
 
     @GetMapping("material-requests/{requestId}")
-    public ResponseEntity<MaterialRequestDto> getMaterialRequestById(@PathVariable Long adminId, @PathVariable Long requestId) {
+    public ResponseEntity<MaterialRequestDto> getMaterialRequestById(@PathVariable Long adminId,
+            @PathVariable Long requestId) {
         return new ResponseEntity<MaterialRequestDto>(
                 this.materialRequestService.getMaterialRequestById(adminId, requestId),
-                HttpStatus.OK
-        );
+                HttpStatus.OK);
     }
 
     @GetMapping("material-requests/{requestId}/material")
-    public ResponseEntity<byte[]> getMaterialFromMaterialRequest(@PathVariable Long adminId, @PathVariable Long requestId) {
+    public ResponseEntity<byte[]> getMaterialFromMaterialRequest(@PathVariable Long adminId,
+            @PathVariable Long requestId) {
         MaterialDtoWithData material = this.materialRequestService.getMaterialFromMaterialRequest(adminId, requestId);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(material.getFileFormat()));
@@ -55,12 +55,12 @@ public class AdminController {
         return new ResponseEntity<byte[]>(
                 material.getData(),
                 headers,
-                HttpStatus.OK
-        );
+                HttpStatus.OK);
     }
 
     @PostMapping("material-requests/{requestId}")
-    public ResponseEntity<ResponseDto> processRequest(@RequestParam Boolean status, @PathVariable Long adminId, @PathVariable Long requestId) throws IOException {
+    public ResponseEntity<ResponseDto> processRequest(@RequestParam Boolean status, @PathVariable Long adminId,
+            @PathVariable Long requestId) throws IOException {
         this.materialRequestService.processRequest(adminId, requestId, status);
 
         return new ResponseEntity<ResponseDto>(

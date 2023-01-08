@@ -1,4 +1,4 @@
-@import "../../../assets/scss/global.scss";
+@import '../../../assets/scss/global.scss';
 
 :host,
 .course-wrapper {
@@ -112,6 +112,21 @@ mat-card.course-card section.form-btns {
 .rightSide {
   display: flex;
   align-items: center;
+}
+
+.file-format-select {
+  display: flex;
+  align-items: center;
+}
+
+.file-format-icon {
+  margin-right: 5px;
+}
+
+.subscribe-checkbox {
+  margin: 0;
+  max-width: 100%;
+  white-space: pre-wrap;
 }
 
 @media screen and (max-width: 900px) {

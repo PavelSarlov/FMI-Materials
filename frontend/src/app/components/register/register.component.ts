@@ -1,18 +1,21 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl, FormBuilder,
-  FormGroup, ValidationErrors, Validators
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
 } from '@angular/forms';
-import {Router} from '@angular/router';
-import {AlertService} from '../../services/alert.service';
-import {AuthService} from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
 
 const checkPasswordsMatch = (
   control: AbstractControl
 ): ValidationErrors | null => {
   return control.get('password')?.value !==
     control.get('repeatedPassword')?.value
-    ? {passwordsDontMatch: true}
+    ? { passwordsDontMatch: true }
     : null;
 };
 
@@ -34,13 +37,6 @@ export class RegisterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.authService.isAuthenticated()) {
-      this.alertService.warn('You are already logged in!', {
-        keepAfterRouteChange: true,
-      });
-      this.router.navigateByUrl('courses');
-    }
-
     this.registerForm = this.fb.group(
       {
         email: ['', [Validators.required, Validators.email]],

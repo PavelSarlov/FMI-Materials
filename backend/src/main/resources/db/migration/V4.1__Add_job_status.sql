@@ -1,0 +1,2 @@
+ALTER TABLE worker_jobs
+ADD COLUMN status INTEGER DEFAULT 0;

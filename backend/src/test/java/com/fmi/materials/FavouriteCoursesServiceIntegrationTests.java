@@ -12,6 +12,7 @@ import com.fmi.materials.exception.EntityAlreadyExistsException;
 import com.fmi.materials.exception.EntityNotFoundException;
 import com.fmi.materials.exception.InvalidArgumentException;
 import com.fmi.materials.model.User;
+import com.fmi.materials.service.CourseService;
 import com.fmi.materials.service.FavouriteCoursesService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,14 +24,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 
 import lombok.RequiredArgsConstructor;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FavouriteCoursesServiceIntegrationTests {
 
     private final FavouriteCoursesService favouriteCoursesService;
+    private final CourseService coursesService;
 
     @BeforeEach
     public void setup() {
@@ -48,9 +52,10 @@ public class FavouriteCoursesServiceIntegrationTests {
     @Test
     @Transactional
     public void whenGetFavouriteCoursesWithValidUserId_thenReturnListWithCourseDtoWithId() {
+        this.favouriteCoursesService.addCourse(1L, 1L);
         List<CourseDtoWithId> found = this.favouriteCoursesService.getFavouriteCourses(1L);
 
-        assertThat(found.size() == 1);
+        assertThat(found.size()).isEqualTo(1);
         assertThat(found.get(0).getName()).isEqualTo("Web Development with Java");
     }
 
@@ -65,8 +70,9 @@ public class FavouriteCoursesServiceIntegrationTests {
     @Test
     @Transactional
     public void whenDeleteFavouriteCourseWithValidUserIdAndCourseId_thenListSizeIsOneLess() {
-        Integer sizeBeforeDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
+        this.favouriteCoursesService.addCourse(1L, 1L);
 
+        Integer sizeBeforeDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
         this.favouriteCoursesService.deleteFavouriteCourse(1L, 1L);
         Integer sizeAfterDeletion = this.favouriteCoursesService.getFavouriteCourses(1L).size();
 
@@ -96,7 +102,7 @@ public class FavouriteCoursesServiceIntegrationTests {
     public void whenAddFavouriteCourseWithValidUserIdAndCourseId_thenListSizeIsOneGreater() {
         Integer sizeBeforeAddition = this.favouriteCoursesService.getFavouriteCourses(1L).size();
 
-        this.favouriteCoursesService.addCourse(1L, 2L);
+        this.favouriteCoursesService.addCourse(1L, 1L);
         Integer sizeAfterAddition = this.favouriteCoursesService.getFavouriteCourses(1L).size();
 
         assertThat(sizeAfterAddition).isEqualTo(sizeBeforeAddition + 1);
@@ -122,8 +128,10 @@ public class FavouriteCoursesServiceIntegrationTests {
     @Test
     @Transactional
     public void whenAddFavouriteCourseWithValidCourseId_thenThrowntityAlreadyExistsException() {
-        Exception exception = assertThrows(EntityAlreadyExistsException.class,
-                () -> this.favouriteCoursesService.addCourse(1L, 1L));
+        Exception exception = assertThrows(EntityAlreadyExistsException.class, () -> {
+            this.favouriteCoursesService.addCourse(1L, 1L);
+            this.favouriteCoursesService.addCourse(1L, 1L);
+        });
         assertThat(exception.getMessage()).isEqualTo("Course with id = '1' already exists");
     }
 }

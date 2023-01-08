@@ -18,10 +18,12 @@ import com.fmi.materials.service.SectionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import lombok.RequiredArgsConstructor;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SectionServiceIntegrationTests {
 
@@ -52,12 +54,17 @@ public class SectionServiceIntegrationTests {
     @Test
     @Transactional
     public void whenPatchSection_thenReturnPatchedSection() {
-        SectionDto sectionDto = new SectionDto(1L, "Patched", null, null);
+        SectionDto sectionDto = new SectionDto(null, "Created", null, null);
+
+        SectionDto created = this.sectionService.createSection(sectionDto, 1L);
+
+        SectionDto patched = created;
+        patched.setName("Patched");
 
         var wrapper = new Object() {
             SectionDto patched = null;
         };
-        assertDoesNotThrow(() -> wrapper.patched = this.sectionService.patchSection(sectionDto));
+        assertDoesNotThrow(() -> wrapper.patched = this.sectionService.patchSection(patched));
 
         assertThat(wrapper.patched).isNotNull();
         assertThat(wrapper.patched.getName()).isEqualTo("Patched");
@@ -66,8 +73,12 @@ public class SectionServiceIntegrationTests {
     @Test
     @Transactional
     public void whenFindSectionById_thenReturnFoundSection() {
-        SectionDto found = this.sectionService.findSectionById(1L);
+        SectionDto sectionDto = new SectionDto(null, "Created", null, null);
 
-        assertThat(found.getId()).isEqualTo(1L);
+        SectionDto created = this.sectionService.createSection(sectionDto, 1L);
+
+        SectionDto found = this.sectionService.findSectionById(created.getId());
+
+        assertThat(found.getId()).isEqualTo(created.getId());
     }
 }

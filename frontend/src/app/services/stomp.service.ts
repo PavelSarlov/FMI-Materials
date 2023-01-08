@@ -1,53 +1,92 @@
 import { Injectable } from '@angular/core';
 import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
+import { BehaviorSubject, take } from 'rxjs';
+import { v4 } from 'uuid';
+
+export interface Topic {
+  id: string;
+  topic: string;
+  callback: any;
+}
+
+export interface TopicSub extends Topic {
+  sub: any;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StompService {
   private connecting: boolean = false;
-    private topicQueue: any[] = [];
+  private topicQueue: Topic[] = [];
+  private topicSubjects = new Map<string, BehaviorSubject<TopicSub | null>>();
 
-    socket = new SockJS('http://localhost:8080/websocket');
-    stompClient = Stomp.over(this.socket);
+  socket = new SockJS('http://localhost:8080/websocket');
+  stompClient = Stomp.over(this.socket);
 
-    subscribe(topic: string, callback: any): void {
-        // If stomp client is currently connecting add the topic to the queue
-        if (this.connecting) {
-            this.topicQueue.push({
-                topic,
-                callback
-            });
-            return;
-        }
+  subscribe(topic: string, callback: any) {
+    const current = {
+      id: v4(),
+      topic,
+      callback,
+    };
 
-        const connected: boolean = this.stompClient.connected;
-        if (connected) {
-            // Once we are connected set connecting flag to false
-            this.connecting = false;
-            this.subscribeToTopic(topic, callback);
-            return;
-        }
+    this.topicSubjects.set(
+      current.id,
+      new BehaviorSubject<TopicSub | null>(null)
+    );
 
-        // If stomp client is not connected connect and subscribe to topic
-        this.connecting = true;
-        this.stompClient.connect({}, (): any => {
-            this.subscribeToTopic(topic, callback);
+    const obs$ = this.topicSubjects.get(current.id)?.asObservable();
 
-            // Once we are connected loop the queue and subscribe to remaining topics from it
-            this.topicQueue.forEach((item:any) => {
-                this.subscribeToTopic(item.topic, item.callback);
-            })
-
-            // Once done empty the queue
-            this.topicQueue = [];
-        });
+    // If stomp client is currently connecting add the topic to the queue
+    if (this.connecting) {
+      this.topicQueue.push(current);
+      return obs$;
     }
 
-    private subscribeToTopic(topic: string, callback: any): void {
-        this.stompClient.subscribe(topic, (response?:string): any => {
-            callback(response);
-        });
+    if (this.stompClient.connected) {
+      // Once we are connected set connecting flag to false
+      this.connecting = false;
+      this.subscribeToTopic(current);
+      return obs$;
     }
+
+    // If stomp client is not connected connect and subscribe to topic
+    this.connecting = true;
+    this.stompClient.connect({}, (): any => {
+      this.connecting = false;
+      this.subscribeToTopic(current);
+
+      // Once we are connected loop the queue and subscribe to remaining topics from it
+      this.topicQueue.forEach((item) => {
+        this.subscribeToTopic(item);
+      });
+
+      // Once done empty the queue
+      this.topicQueue = [];
+    });
+
+    return obs$;
+  }
+
+  unsubscribe(topic: TopicSub | null) {
+    if (topic) {
+      if (topic.sub) {
+        topic.sub.unsubscribe();
+      }
+
+      this.topicSubjects.get(topic.id)?.complete();
+      this.topicSubjects.delete(topic.id);
+    }
+  }
+
+  private subscribeToTopic(topic: Topic): void {
+    this.topicSubjects.get(topic.id)?.next({
+      ...topic,
+      sub: this.stompClient.subscribe(topic.topic, (response?: string): any => {
+        topic.callback(response);
+      }),
+    });
+  }
 }

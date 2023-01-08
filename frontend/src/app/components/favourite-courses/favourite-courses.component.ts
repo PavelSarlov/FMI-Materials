@@ -1,50 +1,43 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {Course} from 'src/app/models/course';
-import {AuthService} from 'src/app/services/auth.service';
-import {User} from '../../models/user';
-import {FavouriteCoursesService} from '../../services/favourite-courses.service';
-
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
+import { Course } from 'src/app/models/course';
+import { AuthService } from 'src/app/services/auth.service';
+import { User } from '../../models/user';
+import { FavouriteCoursesService } from '../../services/favourite-courses.service';
 
 @Component({
   selector: 'app-favourite-courses',
   templateUrl: './favourite-courses.component.html',
-  styleUrls: ['./favourite-courses.component.scss']
+  styleUrls: ['./favourite-courses.component.scss'],
 })
 export class FavouriteCoursesComponent implements OnInit, OnDestroy {
-
   courses: Course[] = [];
-  currentUser?: User | null;
-  authSubscription?: Subscription;
-  courseListSubscription?: Subscription;
+  currentUser?: User;
 
-  constructor(private favouriteCoursesService: FavouriteCoursesService,
-    private authService: AuthService,
-    private router: Router) {}
+  private unsubscribe$ = new Subject();
+
+  constructor(
+    private favouriteCoursesService: FavouriteCoursesService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe(
-      (resp) => {
-        this.currentUser = resp;
-      }
-    );
+    this.authService.user$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((user) => {
+        this.currentUser = user;
+      });
 
-    if (this.authService.isAuthenticated()) {
-      this.favouriteCoursesService.getFavouriteCourses(this.currentUser!.id!);
-      this.courseListSubscription = this.favouriteCoursesService.courses$.subscribe(
-        (resp) => {
-          this.courses = resp;
-        }
-      );
-    }
-    else {
-      this.router.navigateByUrl('/auth/login');
-    }
+    this.favouriteCoursesService.getFavouriteCourses(this.currentUser!.id!);
+    this.favouriteCoursesService.courses$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((resp) => {
+        this.courses = resp;
+      });
   }
 
   ngOnDestroy() {
-    this.authSubscription?.unsubscribe();
-    this.courseListSubscription?.unsubscribe();
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.complete();
   }
 }
