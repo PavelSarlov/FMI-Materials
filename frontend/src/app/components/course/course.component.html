@@ -235,6 +235,7 @@
           mat-raised-button
           (click)="openDialog('0ms', '0ms')"
           class="saveToList"
+          *ngIf="user"
         >
           <mat-icon>playlist_add</mat-icon> Save
         </button>

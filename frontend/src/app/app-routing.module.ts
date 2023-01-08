@@ -28,8 +28,13 @@ const routes: Routes = [
       {
         path: 'courses',
         component: CoursesComponent,
+        data: { noLogin: true },
       },
-      { path: 'courses/:courseId', component: CourseComponent },
+      {
+        path: 'courses/:courseId',
+        component: CourseComponent,
+        data: { noLogin: true },
+      },
       {
         path: 'create-course',
         component: CourseCreateFormComponent,

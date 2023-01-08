@@ -72,6 +72,10 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     | UrlTree
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
+    if (childRoute.data['noLogin']) {
+      return true;
+    }
+
     return this.canActivate(childRoute, state);
   }
 }
