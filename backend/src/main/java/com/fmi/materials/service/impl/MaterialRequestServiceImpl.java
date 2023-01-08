@@ -61,10 +61,9 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
     public MaterialRequestDto getMaterialRequestById(Long userId, Long materialRequestId) {
         CustomUtils.authenticateCurrentUser(userId);
 
-        return this.materialRequestDtoMapper
-                .convertToDto(this.materialRequestRepository.findById(materialRequestId)
-                        .orElseThrow(() -> new EntityNotFoundException(
-                                ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId))));
+        return this.materialRequestDtoMapper.convertToDto(this.materialRequestRepository.findById(materialRequestId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        ExceptionMessage.NOT_FOUND.getFormattedMessage("Request", "id", materialRequestId))));
     }
 
     @Override
@@ -93,11 +92,8 @@ public class MaterialRequestServiceImpl implements MaterialRequestService {
 
         this.materialRequestRepository.deleteById(materialRequestId);
 
-        String courseAdmin = this.userRepository.findById(userId)
-            .orElseThrow(() -> new EntityNotFoundException(
-            ExceptionMessage.NOT_FOUND.getFormattedMessage("User", "id", userId))).getName();
-
-        this.webSocketService.notifyFrontedUser(courseAdmin, "request");
+        this.userRepository.findAllAdmins()
+                .forEach(admin -> this.webSocketService.notifyFrontendUser(admin.getId(), "request"));
 
         if (status) {
             this.materialService.createMaterial(this.materialRequestDtoMapper.convertToMaterialDto(materialRequest),

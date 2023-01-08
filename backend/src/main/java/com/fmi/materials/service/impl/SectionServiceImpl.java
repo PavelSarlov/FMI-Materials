@@ -42,7 +42,7 @@ public class SectionServiceImpl implements SectionService {
                 courseDtoMapper.convertToEntityWithId((CourseDtoWithId) this.courseService.findById(courseId)));
         section = this.sectionRepository.save(section);
 
-        this.webSocketService.notifyFronted("section");
+        this.webSocketService.notifyFrontend("section", "topic");
 
         return this.sectionDtoMapper.convertToDto(section);
     }
@@ -64,7 +64,7 @@ public class SectionServiceImpl implements SectionService {
         }
         this.sectionRepository.deleteById(sectionId);
 
-        this.webSocketService.notifyFronted("section");
+        this.webSocketService.notifyFrontend("section", "topic");
 
         return new ResponseDtoSuccess(HttpStatus.OK,
                 String.format("Section with id = '%s' deleted successfully", sectionId));
@@ -89,7 +89,7 @@ public class SectionServiceImpl implements SectionService {
             }
         }
 
-        this.webSocketService.notifyFronted("section");
+        this.webSocketService.notifyFrontend("section", "topic");
 
         return this.sectionDtoMapper.convertToDto(this.sectionRepository.save(section));
     }

@@ -16,22 +16,31 @@ public class WebSocketServiceImpl implements WebSocketService {
     private final SimpMessagingTemplate messagingTemplate;
     private Logger logger = LoggerFactory.getLogger(WebSocketServiceImpl.class);
 
-    private void sendMessage(String topicSuffix) {
-        this.logger.info("sending to topic " + topicSuffix);
-        this.messagingTemplate.convertAndSend("/topic/" + topicSuffix, "");
+    private void sendMessage(String topic, String prefix) {
+        String formattedTopic = this.sanitize(topic);
+        String formattedPrefix = this.sanitize(prefix);
+        String fullPath = "/" + formattedPrefix + "/" + formattedTopic;
+
+        this.logger.info("sending to " + fullPath);
+        this.messagingTemplate.convertAndSend(fullPath, "");
     }
 
-    private void sendMessageUser(String username, String topicSuffix, @Payload String message) {
-        this.logger.info("sending to user " + username + " on topic " + topicSuffix + " message: " + message);
-        this.messagingTemplate.convertAndSendToUser(username, "/queue/" + topicSuffix, message);
+    private void sendMessageUser(Long userId, String topic, @Payload String message) {
+        this.logger.info("sending to user with id " + userId + " on topic " + topic + " message: " + message);
+        this.messagingTemplate.convertAndSendToUser(userId.toString(), topic, message);
     }
 
-    public void notifyFronted(String topicSuffix) {
-        this.sendMessage(topicSuffix);
+    private String sanitize(String path) {
+        return path.trim().replaceAll("/+", "/").replaceFirst("/", "").replaceAll("/+$", "");
     }
 
     @Override
-    public void notifyFrontedUser(String username, String topicSuffix) {
-        this.sendMessageUser(username, topicSuffix, "");
+    public void notifyFrontend(String topic, String prefix) {
+        this.sendMessage(topic, prefix);
+    }
+
+    @Override
+    public void notifyFrontendUser(Long userId, String topic) {
+        this.sendMessageUser(userId, topic, "");
     }
 }

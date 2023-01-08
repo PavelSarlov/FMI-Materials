@@ -80,7 +80,7 @@
             *ngIf="fileToUpload?.name; else elseBlock"
           >
             <mat-icon>{{
-              (fileToUpload?.type
+              (fileFormatSupported(fileToUpload?.type)
                 ? FILE_FORMATS[fileToUpload?.type!]
                 : FILE_FORMATS['default']
               ).icon

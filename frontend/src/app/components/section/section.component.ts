@@ -29,6 +29,7 @@ export class SectionComponent implements OnInit, OnDestroy {
   USER_ROLES = USER_ROLES;
 
   FILE_FORMATS = FILE_FORMATS;
+  Object = Object;
 
   @Input()
   courseId?: number;
@@ -148,5 +149,9 @@ export class SectionComponent implements OnInit, OnDestroy {
       },
       error: (resp) => this.alertService.error(resp.error.error),
     });
+  }
+
+  fileFormatSupported(format: string | undefined) {
+    return format === undefined ? false : format in this.FILE_FORMATS;
   }
 }

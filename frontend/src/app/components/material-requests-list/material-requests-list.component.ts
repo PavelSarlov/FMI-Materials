@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { StompService } from 'src/app/services/stomp.service';
+import { Subject, takeUntil, Observable } from 'rxjs';
+import { StompService, TopicSub } from 'src/app/services/stomp.service';
 import { MaterialRequest } from '../../models/material-request';
 import { User } from '../../models/user';
 import { AdminService } from '../../services/admin.service';
@@ -17,6 +17,9 @@ export class MaterialRequestsListComponent implements OnInit, OnDestroy {
 
   materialRequests: MaterialRequest[] = [];
 
+  topic: TopicSub | null = null;
+  topic$?: Observable<TopicSub | null>;
+
   private unsubscribe$ = new Subject();
 
   constructor(
@@ -31,26 +34,37 @@ export class MaterialRequestsListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((user) => {
         this.user = user;
+
+        this.fetchMaterialRequests();
+
+        this.stompService.unsubscribe(this.topic);
+        this.topic$ = this.stompService.subscribe(
+          `/user/${this.user?.id}/request`,
+          () => {
+            this.fetchMaterialRequests();
+          }
+        );
+        if (this.topic$) {
+          this.topic$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((topic) => (this.topic = topic));
+        }
       });
-
-    this.adminService.getAllMaterialRequests(this.user!.id!).subscribe({
-      next: (resp) => (this.materialRequests = resp),
-      error: (resp) => this.alertService.error(resp.error.error),
-    });
-
-    this.stompService.subscribe(
-      `/user/${this.user?.name}/queue/request`,
-      () => {
-        this.adminService.getAllMaterialRequests(this.user!.id!).subscribe({
-          next: (resp) => (this.materialRequests = resp),
-          error: (resp) => this.alertService.error(resp.error.error),
-        });
-      }
-    );
   }
 
   ngOnDestroy() {
     this.unsubscribe$.next(true);
     this.unsubscribe$.complete();
+    this.stompService.unsubscribe(this.topic);
+  }
+
+  fetchMaterialRequests() {
+    this.adminService
+      .getAllMaterialRequests(this.user!.id!)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (resp) => (this.materialRequests = resp),
+        error: (resp) => this.alertService.error(resp.error.error),
+      });
   }
 }

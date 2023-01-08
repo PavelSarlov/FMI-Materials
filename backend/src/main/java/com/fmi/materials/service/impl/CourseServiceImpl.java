@@ -73,7 +73,7 @@ public class CourseServiceImpl implements CourseService {
 
         course.setSections(Stream.of(defaultSection).collect(Collectors.toSet()));
 
-        this.webSocketService.notifyFronted("course");
+        this.webSocketService.notifyFrontend("course", "topic");
 
         return this.courseDtoMapper.convertToDtoWithId(course);
     }
@@ -86,7 +86,7 @@ public class CourseServiceImpl implements CourseService {
         }
         this.courseRepository.deleteById(courseId);
 
-        this.webSocketService.notifyFronted("course");
+        this.webSocketService.notifyFrontend("course", "topic");
 
         return new ResponseDtoSuccess(HttpStatus.OK,
                 String.format("Course with id = '%s' deleted successfully", courseId));
@@ -101,7 +101,7 @@ public class CourseServiceImpl implements CourseService {
         }
         Course course = this.courseDtoMapper.convertToEntityWithId(courseDto);
 
-        this.webSocketService.notifyFronted("course");
+        this.webSocketService.notifyFrontend("course", "topic");
 
         return this.courseDtoMapper.convertToDtoWithId(this.courseRepository.save(course));
     }

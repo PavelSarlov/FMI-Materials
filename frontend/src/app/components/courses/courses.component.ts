@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, takeUntil, Subject } from 'rxjs';
-import { StompService } from 'src/app/services/stomp.service';
+import { Subscription, takeUntil, Subject, Observable } from 'rxjs';
+import { StompService, TopicSub } from 'src/app/services/stomp.service';
 import { Course } from '../../models/course';
 import { User, USER_ROLES } from '../../models/user';
 import { AuthService } from '../../services/auth.service';
@@ -32,6 +32,9 @@ export class CoursesComponent implements OnInit, OnDestroy {
   };
   filterKeys = Object.keys(this.filters);
 
+  topic: TopicSub | null = null;
+  topic$?: Observable<TopicSub | null>;
+
   private unsubscribe$ = new Subject();
 
   constructor(
@@ -58,14 +61,20 @@ export class CoursesComponent implements OnInit, OnDestroy {
       });
     this.courseService.getCourses();
 
-    this.stompService.subscribe('/topic/course', (): void => {
+    this.topic$ = this.stompService.subscribe('/course', (): void => {
       this.fetchCourses();
     });
+    if (this.topic$) {
+      this.topic$
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((topic) => (this.topic = topic));
+    }
   }
 
   ngOnDestroy() {
     this.unsubscribe$.next(true);
     this.unsubscribe$.complete();
+    this.stompService.unsubscribe(this.topic);
   }
 
   handlePageEvent(event: any) {

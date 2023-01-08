@@ -3,7 +3,7 @@
     materialRequest?.userDto?.name ?? 'unknown'
   }}</span>
   <mat-icon class="icon" [inline]="true">{{
-    (materialRequest?.fileFormat
+    (fileFormatSupported(materialRequest?.fileFormat)
       ? FILE_FORMATS[materialRequest?.fileFormat!]
       : FILE_FORMATS['default']
     ).icon
@@ -39,7 +39,7 @@
     materialRequest?.userDto?.name ?? 'unknown'
   }}</span>
   <mat-icon class="icon" [inline]="true">{{
-    (materialRequest?.fileFormat
+    (fileFormatSupported(materialRequest?.fileFormat)
       ? FILE_FORMATS[materialRequest?.fileFormat!]
       : FILE_FORMATS['default']
     ).icon

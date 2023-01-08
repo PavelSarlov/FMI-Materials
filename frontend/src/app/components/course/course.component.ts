@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription as RXJSSubscription, takeUntil, Subject } from 'rxjs';
+import { Subject, takeUntil, Observable } from 'rxjs';
 import { Subscription } from 'src/app/models/subscription';
-import { StompService } from 'src/app/services/stomp.service';
+import { StompService, TopicSub } from 'src/app/services/stomp.service';
 import { UserService } from 'src/app/services/user.service';
 import { Course } from '../../models/course';
 import { COURSE_GROUPS } from '../../models/course-group';
@@ -30,6 +30,8 @@ export class CourseComponent implements OnInit, OnDestroy {
   course?: Course;
   sectionBackup?: Section[] = [];
 
+  courseId: number = NaN;
+
   facultyDepartments: FacultyDepartment[] = [];
 
   COURSE_GROUPS = COURSE_GROUPS;
@@ -44,6 +46,9 @@ export class CourseComponent implements OnInit, OnDestroy {
   requestsSubscription: Subscription & { checked: boolean } = {
     checked: false,
   };
+
+  topic: TopicSub | null = null;
+  topic$?: Observable<TopicSub | null>;
 
   private unsubscribe$ = new Subject();
 
@@ -65,48 +70,62 @@ export class CourseComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((user) => {
         this.user = user;
+
+        if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
+          this.facultyDepartmentService
+            .getAllFacultyDepartments()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: (resp) => (this.facultyDepartments = resp),
+              error: (resp) => this.alertService.error(resp.error.error),
+            });
+        }
+
+        if (this.user) {
+          this.userService.subscriptions$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((value) => {
+              const result = value.find(
+                (sub) => sub.type === 'materialRequests'
+              );
+              this.requestsSubscription = { ...result, checked: !!result };
+            });
+          this.userService.findSubscriptionsByUserId(this.user!.id!);
+        }
       });
 
-    if (this.user) {
-      this.userService.subscriptions$
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe((value) => {
-          const result = value.find((sub) => sub.type === 'materialRequests');
-          this.requestsSubscription = { ...result, checked: !!result };
-        });
-      this.userService.findSubscriptionsByUserId(this.user!.id!);
-    }
-
-    this.fetchCourse(
-      parseInt(this.activatedRoute.snapshot.paramMap.get('courseId')!)
+    this.courseId = parseInt(
+      this.activatedRoute.snapshot.paramMap.get('courseId')!
     );
 
-    if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
-      this.facultyDepartmentService
-        .getAllFacultyDepartments()
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: (resp) => (this.facultyDepartments = resp),
-          error: (resp) => this.alertService.error(resp.error.error),
-        });
+    if (isNaN(this.courseId)) {
+      this.router.navigateByUrl('/');
     }
+
+    this.fetchCourse(this.courseId);
 
     this.crossEventService.sectionEvent
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((courseId) => {
-        if (courseId === this.course?.id) {
-          this.fetchCourseSections(this.course?.id!);
+        if (courseId === this.courseId) {
+          this.fetchCourseSections(this.courseId);
         }
       });
 
-    this.stompService.subscribe('/topic/section', (): void => {
-      this.fetchCourseSections(this.course?.id!);
+    this.topic$ = this.stompService.subscribe('/topic/section', (): void => {
+      this.fetchCourseSections(this.courseId);
     });
+    if (this.topic$) {
+      this.topic$
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((topic) => (this.topic = topic));
+    }
   }
 
   ngOnDestroy() {
     this.unsubscribe$.next(true);
     this.unsubscribe$.complete();
+    this.stompService.unsubscribe(this.topic);
   }
 
   openDialog(

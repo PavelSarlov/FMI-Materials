@@ -31,7 +31,6 @@ export class SaveCourseFormComponent implements OnInit, OnDestroy {
     private favouriteCoursesService: FavouriteCoursesService,
     private authService: AuthService,
     private alertService: AlertService,
-    private dialogRef: MatDialogRef<SaveCourseFormComponent>,
     @Inject(MAT_DIALOG_DATA) data: any
   ) {
     this.courseId = data.courseId;

@@ -85,4 +85,8 @@ export class MaterialRequestComponent implements OnInit, OnDestroy {
         },
       });
   }
+
+  fileFormatSupported(format: string | undefined) {
+    return format === undefined ? false : format in this.FILE_FORMATS;
+  }
 }

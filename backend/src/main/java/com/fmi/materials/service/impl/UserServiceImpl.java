@@ -134,7 +134,10 @@ public class UserServiceImpl implements UserService {
 
         materialRequest = this.materialRequestRepository.save(materialRequest);
 
-        this.userRepository.findAllAdmins().stream().filter(admin -> admin.getSubscriptions().stream().anyMatch(
+        this.userRepository.findAllAdmins().stream().map(admin -> {
+            this.webSocketService.notifyFrontendUser(admin.getId(), "request");
+            return admin;
+        }).filter(admin -> admin.getSubscriptions().stream().anyMatch(
                 subs -> subs.getTargetId() == section.getCourse().getId() && subs.getType().equals("materialRequests")))
                 .forEach(admin -> {
                     JSONObject workerJobData = new JSONObject();
@@ -145,10 +148,6 @@ public class UserServiceImpl implements UserService {
                     this.workerJobService.createEmailJob(admin.getEmail(), "Material Request", "MaterialRequest",
                             workerJobData);
                 });
-
-        String courseAdmin = section.getCourse().getCreatedBy();
-
-        this.webSocketService.notifyFrontedUser(courseAdmin, "request");
 
         return this.materialRequestDtoMapper.convertToDto(materialRequest);
     }

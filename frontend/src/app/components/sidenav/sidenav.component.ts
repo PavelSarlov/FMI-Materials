@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { AdminService } from 'src/app/services/admin.service';
 import { AlertService } from 'src/app/services/alert.service';
-import { StompService } from 'src/app/services/stomp.service';
+import { StompService, TopicSub } from 'src/app/services/stomp.service';
 import { User, USER_ROLES } from '../../models/user';
 import { AuthService } from '../../services/auth.service';
 import { CrossEventService } from '../../services/cross-event.service';
@@ -19,6 +19,9 @@ export class SidenavComponent implements OnInit {
 
   requestsCount: number = 0;
 
+  topic: TopicSub | null = null;
+  topic$?: Observable<TopicSub | null>;
+
   private unsubscribe$ = new Subject();
 
   constructor(
@@ -32,7 +35,26 @@ export class SidenavComponent implements OnInit {
   ngOnInit(): void {
     this.authService.user$
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((user) => (this.user = user));
+      .subscribe((user) => {
+        this.user = user;
+
+        if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
+          this.fetchMaterialRequests();
+
+          this.stompService.unsubscribe(this.topic);
+          this.topic$ = this.stompService.subscribe(
+            `/user/${this.user?.id}/request`,
+            () => {
+              this.fetchMaterialRequests();
+            }
+          );
+          if (this.topic$) {
+            this.topic$
+              .pipe(takeUntil(this.unsubscribe$))
+              .subscribe((topic) => (this.topic = topic));
+          }
+        }
+      });
 
     this.crossEventService.toggleSidenav
       .pipe(takeUntil(this.unsubscribe$))
@@ -40,34 +62,22 @@ export class SidenavComponent implements OnInit {
         this.sidenavToggled = status;
         this.toggleSidenav();
       });
-
-    if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
-      this.adminService
-        .getAllMaterialRequests(this.user!.id!)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: (resp) => (this.requestsCount = resp.length),
-          error: (resp) => this.alertService.error(resp.error.error),
-        });
-
-      this.stompService.subscribe(
-        `/user/${this.user?.name}/queue/request`,
-        () => {
-          this.adminService
-            .getAllMaterialRequests(this.user!.id!)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-              next: (resp) => (this.requestsCount = resp.length),
-              error: (resp) => this.alertService.error(resp.error.error),
-            });
-        }
-      );
-    }
   }
 
   ngOnDestroy() {
     this.unsubscribe$.next(true);
     this.unsubscribe$.complete();
+    this.stompService.unsubscribe(this.topic);
+  }
+
+  fetchMaterialRequests() {
+    this.adminService
+      .getAllMaterialRequests(this.user!.id!)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (resp) => (this.requestsCount = resp.length),
+        error: (resp) => this.alertService.error(resp.error.error),
+      });
   }
 
   toggleSidenav() {
