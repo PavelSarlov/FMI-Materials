@@ -1,32 +1,63 @@
-<mat-expansion-panel class="section" expanded id="section-{{section?.id}}">
+<mat-expansion-panel class="section" expanded id="section-{{ section?.id }}">
   <mat-expansion-panel-header class="section-header">
     <div class="header-wrapper">
       <mat-panel-title class="section-title">
-        <ng-container *ngIf="user?.roles?.includes(USER_ROLES.ADMIN); else notAdmin">
-          <form #patchSectionForm="ngForm" class="patch-section-form" (submit)="patchSectionName(patchSectionForm)">
+        <ng-container
+          *ngIf="user?.roles?.includes(USER_ROLES.ADMIN); else notAdmin"
+        >
+          <form
+            #patchSectionForm="ngForm"
+            class="patch-section-form"
+            (submit)="patchSectionName(patchSectionForm)"
+          >
             <mat-form-field class="input-field" appearance="legacy">
               <mat-label>Name</mat-label>
-              <input matInput type="text" placeholder="Name" name="name" required #name="ngModel"
-                [(ngModel)]="section!.name" minlength="1" maxlength="50" (click)="$event.stopPropagation()"
-                (keyup)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" />
+              <input
+                matInput
+                type="text"
+                placeholder="Name"
+                name="name"
+                required
+                #name="ngModel"
+                [(ngModel)]="section!.name"
+                minlength="1"
+                maxlength="50"
+                (click)="$event.stopPropagation()"
+                (keyup)="$event.stopPropagation()"
+                (keydown)="$event.stopPropagation()"
+              />
               <mat-hint>{{ name?.value?.length }}/50</mat-hint>
-              <mat-error *ngIf="name.errors?.['minlength'] && !name.errors?.['required']">
+              <mat-error
+                *ngIf="name.errors?.['minlength'] && !name.errors?.['required']"
+              >
                 Section name should be at least 4 characters
               </mat-error>
-              <mat-error *ngIf="name.errors?.['maxlength'] && !name.errors?.['required']">
+              <mat-error
+                *ngIf="name.errors?.['maxlength'] && !name.errors?.['required']"
+              >
                 Section name should be maximum 50 characters
               </mat-error>
               <mat-error *ngIf="name.errors?.['required']">
                 Section name is <strong>required</strong>
               </mat-error>
             </mat-form-field>
-            <button mat-mini-fab matTooltip="Save changes" type="submit" class="primary-btn"
-              (click)="$event.stopPropagation()">
+            <button
+              mat-mini-fab
+              matTooltip="Save changes"
+              type="submit"
+              class="primary-btn"
+              (click)="$event.stopPropagation()"
+            >
               <mat-icon>save</mat-icon>
             </button>
           </form>
-          <button mat-mini-fab matTooltip="Delete section" type="button" class="primary-btn"
-            (click)="$event.stopPropagation(); deleteSection()">
+          <button
+            mat-mini-fab
+            matTooltip="Delete section"
+            type="button"
+            class="primary-btn"
+            (click)="$event.stopPropagation(); deleteSection()"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </ng-container>
@@ -35,37 +66,73 @@
         </ng-template>
       </mat-panel-title>
       <form *ngIf="user" class="material-upload" (submit)="onMaterialUpload()">
-        <input type="file" class="material" name="material" (change)="onMaterialSelected($event)" #material />
+        <input
+          type="file"
+          class="material"
+          name="material"
+          (change)="onMaterialSelected($event)"
+          #material
+        />
 
         <div class="material-upload">
-          <div class="material-upload-details" *ngIf="fileToUpload?.name; else elseBlock">
+          <div
+            class="material-upload-details"
+            *ngIf="fileToUpload?.name; else elseBlock"
+          >
             <mat-icon>{{
-              (FILE_FORMATS[fileToUpload?.type!] ?? FILE_FORMATS['default']).icon
-              }}</mat-icon>
-            <span>{{ fileToUpload?.name ?? "unknown" }}</span>
-            <button mat-mini-fab matTooltip="Upload selected" type="submit" class="primary-btn"
-              (click)="$event.stopPropagation()">
+              (fileToUpload?.type
+                ? FILE_FORMATS[fileToUpload?.type!]
+                : FILE_FORMATS['default']
+              ).icon
+            }}</mat-icon>
+            <span>{{ fileToUpload?.name ?? 'unknown' }}</span>
+            <button
+              mat-mini-fab
+              matTooltip="Upload selected"
+              type="submit"
+              class="primary-btn"
+              (click)="$event.stopPropagation()"
+            >
               <mat-icon>upload</mat-icon>
             </button>
           </div>
-          <ng-template #elseBlock>Select material to upload<mat-icon class="slide-sideways">arrow_forward</mat-icon>
+          <ng-template #elseBlock
+            >Select material to upload<mat-icon class="slide-sideways"
+              >arrow_forward</mat-icon
+            >
           </ng-template>
         </div>
-        <button mat-mini-fab matTooltip="Select material to upload" type="button" class="primary-btn"
-          (click)="material.click()">
+        <button
+          mat-mini-fab
+          matTooltip="Select material to upload"
+          type="button"
+          class="primary-btn"
+          (click)="material.click()"
+        >
           <mat-icon>attach_file</mat-icon>
         </button>
       </form>
     </div>
   </mat-expansion-panel-header>
   <div class="material-list">
-    <div *ngFor="let material of section?.materialDtos ?? []" class="material-list-item">
-      <app-material [material]="material" [sectionId]="section?.id"></app-material>
+    <div
+      *ngFor="let material of section?.materialDtos ?? []"
+      class="material-list-item"
+    >
+      <app-material
+        [material]="material"
+        [sectionId]="section?.id"
+      ></app-material>
     </div>
     <ng-container *ngIf="user?.roles?.includes(USER_ROLES.ADMIN)">
-      <div *ngFor="let materialRequest of section?.materialRequestDtos ?? []"
-        class="material-list-item material-request">
-        <app-material-request [materialRequest]="materialRequest" [sectionId]="section?.id"></app-material-request>
+      <div
+        *ngFor="let materialRequest of section?.materialRequestDtos ?? []"
+        class="material-list-item material-request"
+      >
+        <app-material-request
+          [materialRequest]="materialRequest"
+          [sectionId]="section?.id"
+        ></app-material-request>
       </div>
     </ng-container>
   </div>
