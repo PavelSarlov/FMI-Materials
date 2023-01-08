@@ -74,7 +74,7 @@ import { SaveCourseFormComponent } from './components/save-course-form/save-cour
       useClass: BlobErrorInterceptor,
       multi: true,
     },
-    CookieService,
+    CookieService
   ],
   bootstrap: [AppComponent],
 })

@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription as RXJSSubscription } from 'rxjs';
+import { Subscription as RXJSSubscription, takeUntil, Subject } from 'rxjs';
 import { Subscription } from 'src/app/models/subscription';
+import { StompService } from 'src/app/services/stomp.service';
 import { UserService } from 'src/app/services/user.service';
 import { Course } from '../../models/course';
 import { COURSE_GROUPS } from '../../models/course-group';
@@ -23,11 +24,7 @@ import { SaveCourseFormComponent } from '../save-course-form/save-course-form.co
   styleUrls: ['./course.component.scss'],
 })
 export class CourseComponent implements OnInit, OnDestroy {
-  authSubscription?: RXJSSubscription;
-  sectionEventSubscription?: RXJSSubscription;
-  userSubscription?: RXJSSubscription;
-
-  user?: User | null;
+  user?: User;
   USER_ROLES = USER_ROLES;
 
   course?: Course;
@@ -48,6 +45,8 @@ export class CourseComponent implements OnInit, OnDestroy {
     checked: false,
   };
 
+  private unsubscribe$ = new Subject();
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -57,46 +56,57 @@ export class CourseComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private crossEventService: CrossEventService,
     private facultyDepartmentService: FacultyDepartmentService,
+    private stompService: StompService,
     public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe((user) => {
-      this.user = user;
-    });
-    this.authService.isAuthenticated();
+    this.authService.user$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((user) => {
+        this.user = user;
+      });
 
-    this.userSubscription = this.userService.subscriptions$.subscribe(
-      (value) => {
-        const result = value.find((sub) => sub.type === 'materialRequests');
-        this.requestsSubscription = { ...result, checked: !!result };
-      }
-    );
-    this.userService.findSubscriptionsByUserId(this.user!.id!);
+    if (this.user) {
+      this.userService.subscriptions$
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((value) => {
+          const result = value.find((sub) => sub.type === 'materialRequests');
+          this.requestsSubscription = { ...result, checked: !!result };
+        });
+      this.userService.findSubscriptionsByUserId(this.user!.id!);
+    }
 
     this.fetchCourse(
       parseInt(this.activatedRoute.snapshot.paramMap.get('courseId')!)
     );
 
     if (this.user?.roles?.includes(USER_ROLES.ADMIN)) {
-      this.facultyDepartmentService.getAllFacultyDepartments().subscribe({
-        next: (resp) => (this.facultyDepartments = resp),
-        error: (resp) => this.alertService.error(resp.error.error),
-      });
+      this.facultyDepartmentService
+        .getAllFacultyDepartments()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: (resp) => (this.facultyDepartments = resp),
+          error: (resp) => this.alertService.error(resp.error.error),
+        });
     }
 
-    this.sectionEventSubscription =
-      this.crossEventService.sectionEvent.subscribe((courseId) => {
+    this.crossEventService.sectionEvent
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((courseId) => {
         if (courseId === this.course?.id) {
           this.fetchCourseSections(this.course?.id!);
         }
       });
+
+    this.stompService.subscribe('/topic/section', (): void => {
+      this.fetchCourseSections(this.course?.id!);
+    });
   }
 
   ngOnDestroy() {
-    this.authSubscription?.unsubscribe();
-    this.sectionEventSubscription?.unsubscribe();
-    this.userSubscription?.unsubscribe();
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.complete();
   }
 
   openDialog(
@@ -107,6 +117,7 @@ export class CourseComponent implements OnInit, OnDestroy {
       width: '25%',
       enterAnimationDuration,
       exitAnimationDuration,
+      data: { courseId: this.course?.id },
     });
   }
 

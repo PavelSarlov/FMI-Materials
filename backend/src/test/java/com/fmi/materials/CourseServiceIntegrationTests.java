@@ -47,7 +47,7 @@ public class CourseServiceIntegrationTests {
         CourseDto toCreate = new CourseDto("Some new course", "asd", "myself", new FacultyDepartmentDto(1L, "asd"),
                 CourseGroup.AM, null);
 
-        CourseDtoWithId created = (CourseDtoWithId) this.courseService.createCourse(toCreate);
+        CourseDto created = this.courseService.createCourse(toCreate);
 
         assertThat(created.getName()).isEqualTo("Some new course");
         assertThat(created.getFacultyDepartmentDto().getName()).isEqualTo("Algebra");
@@ -65,7 +65,7 @@ public class CourseServiceIntegrationTests {
     public void whenUpdateCourse_thenReturnUpdatedCourse() {
         CourseDtoWithId toUpdate = new CourseDtoWithId(1L, "asd", null, null, null, null, null);
 
-        CourseDtoWithId updated = (CourseDtoWithId) this.courseService.updateCourse(toUpdate);
+        CourseDto updated = this.courseService.updateCourse(toUpdate);
 
         assertThat(updated.getName()).isEqualTo("asd");
         assertThat(updated.getDescription()).isNull();

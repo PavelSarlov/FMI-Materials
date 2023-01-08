@@ -40,7 +40,7 @@
         <div class="material-upload">
           <div class="material-upload-details" *ngIf="fileToUpload?.name; else elseBlock">
             <mat-icon>{{
-              FILE_FORMATS[fileToUpload?.type ?? "default"].icon
+              (FILE_FORMATS[fileToUpload?.type!] ?? FILE_FORMATS['default']).icon
               }}</mat-icon>
             <span>{{ fileToUpload?.name ?? "unknown" }}</span>
             <button mat-mini-fab matTooltip="Upload selected" type="submit" class="primary-btn"

@@ -19,5 +19,5 @@ export const FILE_FORMATS: FileFormat = {
   },
   'application/pdf': { icon: 'picture_as_pdf', name: 'PDF' },
   'application/octet-stream': { icon: 'insert_drive_file', name: 'Binary' },
-  default: { icon: 'text_snippet', name: 'Text' },
+  'default': { icon: 'insert_drive_file', name: 'Binary' },
 };

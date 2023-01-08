@@ -1,8 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {User, USER_ROLES} from '../../models/user';
-import {AuthService} from '../../services/auth.service';
-import {CrossEventService} from '../../services/cross-event.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { User, USER_ROLES } from '../../models/user';
+import { AuthService } from '../../services/auth.service';
+import { CrossEventService } from '../../services/cross-event.service';
 
 @Component({
   selector: 'app-header',
@@ -10,32 +11,31 @@ import {CrossEventService} from '../../services/cross-event.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  authSubscription?: Subscription;
-  toggleSidenavSubscription?: Subscription;
-
   sidenavToggled: boolean = true;
-  user?: User | null;
+  user?: User;
   USER_ROLES = USER_ROLES;
+
+  private unsubscribe$ = new Subject();
 
   constructor(
     private crossEventService: CrossEventService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe(
-      (user) => (this.user = user)
-    );
-    this.authService.isAuthenticated();
+    this.authService.user$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((user) => (this.user = user));
 
-    this.toggleSidenavSubscription = this.crossEventService.toggleSidenav.subscribe(
-      (status) => (this.sidenavToggled = status)
-    );
+    this.crossEventService.toggleSidenav
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((status) => (this.sidenavToggled = status));
   }
 
   ngOnDestroy() {
-    this.authSubscription?.unsubscribe();
-    this.toggleSidenavSubscription?.unsubscribe();
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.complete();
   }
 
   toggleSidenav() {
@@ -44,5 +44,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onLogout() {
     this.authService.logout();
+    this.router.navigateByUrl('/auth/login');
   }
 }

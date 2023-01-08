@@ -11,42 +11,54 @@ import { CourseListComponent } from './components/course-list/course-list.compon
 import { ProfileComponent } from './components/profile/profile.component';
 import { FavouriteCoursesComponent } from './components/favourite-courses/favourite-courses.component';
 import { MaterialRequestsListComponent } from './components/material-requests-list/material-requests-list.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'courses' },
   {
-    path: 'auth',
-    component: AuthComponent,
+    path: '',
     children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent },
+      {
+        path: 'auth',
+        component: AuthComponent,
+        children: [
+          { path: 'login', component: LoginComponent },
+          { path: 'register', component: RegisterComponent },
+        ],
+      },
+      {
+        path: 'courses',
+        component: CoursesComponent,
+      },
+      { path: 'courses/:courseId', component: CourseComponent },
+      {
+        path: 'create-course',
+        component: CourseCreateFormComponent,
+        data: { role: 'ADMIN' },
+      },
+      {
+        path: 'user/course-lists',
+        component: ListOfCoursesComponent,
+      },
+      {
+        path: 'user/course-lists/:coursesListId',
+        component: CourseListComponent,
+      },
+      {
+        path: 'user/favourite-courses',
+        component: FavouriteCoursesComponent,
+      },
+      {
+        path: 'user',
+        component: ProfileComponent,
+      },
+      {
+        path: 'material-requests',
+        component: MaterialRequestsListComponent,
+        data: { role: 'ADMIN' },
+      },
+      { path: '**', pathMatch: 'full', redirectTo: 'courses' },
     ],
-  },
-  {
-    path: 'courses',
-    component: CoursesComponent,
-  },
-  { path: 'courses/:courseId', component: CourseComponent },
-  { path: 'create-course', component: CourseCreateFormComponent },
-  {
-    path: 'user/course-lists',
-    component: ListOfCoursesComponent,
-  },
-  {
-    path: 'user/course-lists/:coursesListId',
-    component: CourseListComponent,
-  },
-  {
-    path: 'user/favourite-courses',
-    component: FavouriteCoursesComponent,
-  },
-  {
-    path: 'user',
-    component: ProfileComponent,
-  },
-  {
-    path: 'material-requests',
-    component: MaterialRequestsListComponent,
+    canActivateChild: [AuthGuard],
   },
 ];
 

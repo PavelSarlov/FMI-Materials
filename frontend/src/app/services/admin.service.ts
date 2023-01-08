@@ -1,9 +1,8 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable, tap} from 'rxjs';
-import {environment} from '../../environments/environment';
-import {MaterialRequest} from '../models/material-request';
-import {ResponseDto} from '../models/response';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, take, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { MaterialRequest } from '../models/material-request';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +18,8 @@ export class AdminService {
       .pipe(
         tap({
           error: (err) => console.log(err),
-        })
+        }),
+        take(1)
       );
   }
 
@@ -45,12 +45,13 @@ export class AdminService {
     return this.http
       .get(
         `${environment.adminsApi}/${adminId}/material-requests/${materialRequestId}/material`,
-        {responseType: 'blob'}
+        { responseType: 'blob' }
       )
       .pipe(
         tap({
           error: (err) => console.log(err),
-        })
+        }),
+        take(1)
       );
   }
 
@@ -66,9 +67,9 @@ export class AdminService {
       )
       .pipe(
         tap({
-          next: (resp) => console.log(resp),
           error: (err) => console.log(err),
-        })
+        }),
+        take(1)
       );
   }
 }

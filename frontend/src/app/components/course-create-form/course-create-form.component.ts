@@ -1,15 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {Course} from '../../models/course';
-import {CourseGroup, COURSE_GROUPS} from '../../models/course-group';
-import {FacultyDepartment} from '../../models/faculty-department';
-import {User, USER_ROLES} from '../../models/user';
-import {AlertService} from '../../services/alert.service';
-import {AuthService} from '../../services/auth.service';
-import {CourseService} from '../../services/course.service';
-import {FacultyDepartmentService} from '../../services/faculty-department.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription, takeUntil, Subject } from 'rxjs';
+import { Course } from '../../models/course';
+import { CourseGroup, COURSE_GROUPS } from '../../models/course-group';
+import { FacultyDepartment } from '../../models/faculty-department';
+import { User } from '../../models/user';
+import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { CourseService } from '../../services/course.service';
+import { FacultyDepartmentService } from '../../services/faculty-department.service';
 
 @Component({
   selector: 'app-course-create-form',
@@ -19,7 +18,7 @@ import {FacultyDepartmentService} from '../../services/faculty-department.servic
 export class CourseCreateFormComponent implements OnInit, OnDestroy {
   authSubscription?: Subscription;
 
-  user?: User | null;
+  user?: User;
 
   createCourseForm!: FormGroup;
 
@@ -29,53 +28,49 @@ export class CourseCreateFormComponent implements OnInit, OnDestroy {
 
   courseId?: number = undefined;
 
+  private unsubscribe$ = new Subject();
+
   constructor(
     private facultyDepartmentService: FacultyDepartmentService,
     private courseService: CourseService,
     private alertService: AlertService,
     private authService: AuthService,
-    private router: Router,
     private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe(
-      (user) => (this.user = user)
-    );
+    this.authService.user$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((user) => {
+        this.user = user;
+      });
 
-    if (
-      !this.authService.isAuthenticated() ||
-      !this.user?.roles?.includes(USER_ROLES.ADMIN)
-    ) {
-      this.alertService.warn(
-        'You do not have the necessary permission to do that',
-        {keepAfterRouteChange: true}
-      );
-      this.router.navigateByUrl('courses');
-    } else {
-      this.facultyDepartmentService.getAllFacultyDepartments().subscribe({
+    this.facultyDepartmentService
+      .getAllFacultyDepartments()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
         next: (resp) => (this.facultyDepartments = resp),
         error: (resp) => this.alertService.error(resp.error.error),
       });
 
-      this.createCourseForm = this.fb.group({
-        name: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(4),
-            Validators.maxLength(50),
-          ],
+    this.createCourseForm = this.fb.group({
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(50),
         ],
-        facultyDepartment: [''],
-        courseGroup: [''],
-        description: ['', [Validators.maxLength(255)]],
-      });
-    }
+      ],
+      facultyDepartment: [''],
+      courseGroup: [''],
+      description: ['', [Validators.maxLength(255)]],
+    });
   }
 
   ngOnDestroy() {
-    this.authSubscription?.unsubscribe();
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.complete();
   }
 
   get courseData() {

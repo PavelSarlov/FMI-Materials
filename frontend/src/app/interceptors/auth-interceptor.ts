@@ -1,23 +1,28 @@
 import {
-  HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
 } from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {AuthService} from '../services/auth.service';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { UserStorageService } from '../services/local-storage.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private userStorageService: UserStorageService) {}
 
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (this.authService.isAuthenticated()) {
+    const auth = this.userStorageService.getAuth();
+
+    if (auth) {
       request = request.clone({
         headers: request.headers.set(
           'Authorization',
-          `Basic ${localStorage.getItem('auth')}`
+          `Basic ${btoa(auth.email + ':' + auth.password)}`
         ),
       });
     }

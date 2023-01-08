@@ -1,9 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Course} from '../../models/course';
-import {User, USER_ROLES} from '../../models/user';
-import {AuthService} from '../../services/auth.service';
-import {CourseService} from '../../services/course.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription, takeUntil, Subject } from 'rxjs';
+import { StompService } from 'src/app/services/stomp.service';
+import { Course } from '../../models/course';
+import { User, USER_ROLES } from '../../models/user';
+import { AuthService } from '../../services/auth.service';
+import { CourseService } from '../../services/course.service';
 
 @Component({
   selector: 'app-courses',
@@ -11,10 +12,7 @@ import {CourseService} from '../../services/course.service';
   styleUrls: ['./courses.component.scss'],
 })
 export class CoursesComponent implements OnInit, OnDestroy {
-  authSubscription?: Subscription;
-  paginationSubscription?: Subscription;
-
-  user?: User | null;
+  user?: User;
   USER_ROLES = USER_ROLES;
 
   courses?: Course[];
@@ -34,32 +32,40 @@ export class CoursesComponent implements OnInit, OnDestroy {
   };
   filterKeys = Object.keys(this.filters);
 
+  private unsubscribe$ = new Subject();
+
   constructor(
     private courseService: CourseService,
-    private authService: AuthService
+    private authService: AuthService,
+    private stompService: StompService
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe(
-      (user) => (this.user = user)
-    );
-    this.authService.isAuthenticated();
+    this.authService.user$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((user) => {
+        this.user = user;
+      });
 
-    this.paginationSubscription = this.courseService.pagination$.subscribe(
-      (pagination) => {
+    this.courseService.pagination$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((pagination) => {
         this.courses = pagination?.items;
         this.itemsPerPage = pagination?.itemsPerPage;
         this.totalPages = pagination?.totalPages;
         this.totalItems = pagination?.totalItems;
         this.currentPage = pagination?.currentPage;
-      }
-    );
+      });
     this.courseService.getCourses();
+
+    this.stompService.subscribe('/topic/course', (): void => {
+      this.fetchCourses();
+    });
   }
 
   ngOnDestroy() {
-    this.authSubscription?.unsubscribe();
-    this.paginationSubscription?.unsubscribe();
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.complete();
   }
 
   handlePageEvent(event: any) {

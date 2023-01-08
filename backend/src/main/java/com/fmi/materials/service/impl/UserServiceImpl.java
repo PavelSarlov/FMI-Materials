@@ -1,7 +1,6 @@
 package com.fmi.materials.service.impl;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -24,11 +23,11 @@ import com.fmi.materials.repository.SectionRepository;
 import com.fmi.materials.repository.UserRepository;
 import com.fmi.materials.repository.UserRolesRepository;
 import com.fmi.materials.service.UserService;
+import com.fmi.materials.service.WebSocketService;
 import com.fmi.materials.service.WorkerJobService;
 import com.fmi.materials.util.CustomUtils;
 import com.fmi.materials.vo.ExceptionMessage;
 
-import org.hibernate.annotations.Where;
 import org.json.JSONObject;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,6 +45,7 @@ public class UserServiceImpl implements UserService {
     private final MaterialRequestRepository materialRequestRepository;
     private final MaterialRepository materialRepository;
     private final MaterialRequestDtoMapper materialRequestDtoMapper;
+    private final WebSocketService webSocketService;
     private final UserRolesRepository userRolesRepository;
     private final WorkerJobService workerJobService;
 
@@ -134,19 +134,21 @@ public class UserServiceImpl implements UserService {
 
         materialRequest = this.materialRequestRepository.save(materialRequest);
 
-        this.userRepository.findAllAdmins().stream().filter(admin -> admin.getSubscriptions().stream()
-                .anyMatch(
-                        subs -> subs.getTargetId() == section.getCourse().getId()
-                                && subs.getType().equals("materialRequests")))
+        this.userRepository.findAllAdmins().stream().filter(admin -> admin.getSubscriptions().stream().anyMatch(
+                subs -> subs.getTargetId() == section.getCourse().getId() && subs.getType().equals("materialRequests")))
                 .forEach(admin -> {
                     JSONObject workerJobData = new JSONObject();
                     workerJobData.put("requester", user.getName());
                     workerJobData.put("sectionId", section.getId());
                     workerJobData.put("courseId", section.getCourse().getId());
 
-                    this.workerJobService.createEmailJob(admin.getEmail(), "Material Request",
-                            "MaterialRequest", workerJobData);
+                    this.workerJobService.createEmailJob(admin.getEmail(), "Material Request", "MaterialRequest",
+                            workerJobData);
                 });
+
+        String courseAdmin = section.getCourse().getCreatedBy();
+
+        this.webSocketService.notifyFrontedUser(courseAdmin, "request");
 
         return this.materialRequestDtoMapper.convertToDto(materialRequest);
     }

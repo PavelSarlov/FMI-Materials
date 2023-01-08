@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FacultyDepartment } from '../models/faculty-department';
 import { environment } from '../../environments/environment';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,8 @@ export class FacultyDepartmentService {
       .pipe(
         tap({
           error: (resp) => console.log(resp),
-        })
+        }),
+        take(1)
       );
   }
 }
