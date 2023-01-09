@@ -16,7 +16,7 @@ RUN npm run build --omit=dev
 
 FROM nginx:1.23.3-alpine
 
-COPY --from=builder /app/frontend/dist/fmi-materials/* /usr/share/nginx/html/
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/frontend/dist/ /usr/share/nginx/html/
+COPY --from=builder /app/frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
