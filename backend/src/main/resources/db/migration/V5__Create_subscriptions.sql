@@ -1,4 +1,4 @@
-CREATE TABLE subscriptions(
+CREATE TABLE IF NOT EXISTS subscriptions(
     id SERIAL,
     user_id INT NOT NULL,
     target_id INT NOT NULL,

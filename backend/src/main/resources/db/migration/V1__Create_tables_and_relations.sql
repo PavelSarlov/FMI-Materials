@@ -1,11 +1,11 @@
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   faculty_departments(
     id SERIAL,
     name VARCHAR(50) NOT NULL UNIQUE,
     CONSTRAINT PK_faculty_departments PRIMARY KEY(id)
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   courses(
     id SERIAL,
     name VARCHAR(50) NOT NULL UNIQUE,
@@ -19,7 +19,7 @@ CREATE TABLE
       NULL
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   sections (
     id SERIAL,
     name VARCHAR(50) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE
     CONSTRAINT FK_sections__courses FOREIGN KEY(course_id) REFERENCES courses(id) ON DELETE CASCADE
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   materials (
     id SERIAL,
     file_format VARCHAR(255) NOT NULL,
@@ -40,14 +40,14 @@ CREATE TABLE
     UNIQUE (section_id, file_name)
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   user_roles(
     id SERIAL,
     name VARCHAR(20) NOT NULL UNIQUE,
     CONSTRAINT PK_user_roles PRIMARY KEY(id)
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   users(
     id SERIAL,
     name VARCHAR(50) NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE
     CONSTRAINT PK_users PRIMARY KEY(id)
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   users_user_roles(
     role_id INT NOT NULL,
     user_id INT NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE
     CONSTRAINT FK_users_user_roles__user_roles FOREIGN KEY(role_id) REFERENCES user_roles(id)
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   user_favourite_courses(
     course_id INT NOT NULL,
     user_id INT NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE
     CONSTRAINT FK_user_favourite_courses__courses FOREIGN KEY(course_id) REFERENCES courses(id)
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   user_courses_lists(
     id SERIAL,
     list_name VARCHAR(50) NOT NULL UNIQUE,
@@ -83,7 +83,7 @@ CREATE TABLE
     CONSTRAINT FK_user_courses_lists__users FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   courses_user_courses_lists(
     course_id INT NOT NULL,
     user_courses_list_id INT NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE
     CONSTRAINT FK_courses_user_courses_lists__user_courses_lists FOREIGN KEY(user_courses_list_id) REFERENCES user_courses_lists(id) ON DELETE CASCADE
   );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   material_requests (
     id SERIAL,
     file_format VARCHAR(255) NOT NULL,

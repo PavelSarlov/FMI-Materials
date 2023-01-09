@@ -1,4 +1,4 @@
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
   worker_jobs (
     id SERIAL,
     type VARCHAR NOT NULL,
