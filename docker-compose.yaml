@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    ports:
+      - '8080:8080'
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - db
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - '4200:80'
+    networks:
+      - frontend
+    restart: always
+
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - 'dbdata:/var/lib/postgresql/data'
+    networks:
+      - backend
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fmi_materials
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: ./Dockerfile
+    networks:
+      - backend
+    restart: always
+    depends_on:
+      - db
+      - backend
+
+volumes:
+  dbdata:
+
+networks:
+  frontend: null
+  backend: null

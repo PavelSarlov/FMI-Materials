@@ -1,0 +1,26 @@
+config:
+  database:
+    dialect: "postgresql"
+    host: db
+    port: 5432
+    name: "fmi_materials_test"
+    username: "${database.username}"
+    password: "${database.password}"
+
+spring:
+  jpa:
+    hibernate:
+      enable_lazy_load_no_trans: "true"
+      ddl-auto: "update"
+    properties:
+      hibernate:
+        dialect: "org.hibernate.dialect.PostgreSQLDialect"
+  flyway:
+    locations: ["classpath:db/migration"]
+    baseline-on-migrate: "true"
+    url: "jdbc:${config.database.dialect}://${config.database.host}:${config.database.port}/${config.database.name}"
+    user: "${config.database.username}"
+    password: "${config.database.password}"
+    schemas: "public"
+    defaultSchema: "public"
+    createSchemas: "true"
